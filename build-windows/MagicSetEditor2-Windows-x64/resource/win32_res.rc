@@ -1,0 +1,271 @@
+//+----------------------------------------------------------------------------+
+//| Description:  Magic Set Editor - Program to make Magic (tm) cards          |
+//| Copyright:    (C) 2001 - 2017 Twan van Laarhoven and "coppro"              |
+//| License:      GNU General Public License 2 or later (see file COPYING)     |
+//+----------------------------------------------------------------------------+
+
+#include <winresrc.h> // include for version info constants
+#include <config.hpp>
+
+// -------------------------------------------------------- : Icons
+
+icon/app ICON "icon/app.ico" // has to come first in alphabet!!
+icon/installer ICON "icon/installer.ico"
+icon/updater ICON "icon/updater.ico"
+icon/set ICON "icon/set.ico"
+icon/symbol ICON "icon/symbol.ico"
+
+// -------------------------------------------------------- : Toolbar
+
+cursor/rot_text CURSOR "cursor/rot_text.cur"
+
+tool/new IMAGE "tool/new.png"
+tool/open IMAGE "tool/open.png"
+tool/save IMAGE "tool/save.png"
+tool/export IMAGE "tool/export.png"
+tool/export_html IMAGE "tool/export_html.png"
+tool/export_image IMAGE "tool/export_image.png"
+tool/export_images IMAGE "tool/export_images.png"
+tool/export_mws IMAGE "tool/export_mws.png"
+tool/export_apprentice IMAGE "tool/export_apprentice.png"
+tool/reload_data IMAGE "tool/reload_data.png"
+tool/check_updates IMAGE "tool/check_updates.png"
+tool/print IMAGE "tool/print.png"
+tool/print_preview IMAGE "tool/print_preview.png"
+
+tool/undo IMAGE "tool/undo.png"
+tool/dark_undo IMAGE "tool/dark_undo.png"
+tool/redo IMAGE "tool/redo.png"
+tool/dark_redo IMAGE "tool/dark_redo.png"
+tool/cut IMAGE "tool/cut.png"
+tool/dark_cut IMAGE "tool/dark_cut.png"
+tool/copy IMAGE "tool/copy.png"
+tool/paste IMAGE "tool/paste.png"
+tool/find IMAGE "tool/find.png"
+tool/dark_find IMAGE "tool/dark_find.png"
+tool/preferences IMAGE "tool/preferences.png"
+tool/dark_preferences IMAGE "tool/dark_preferences.png"
+tool/default_reset IMAGE "tool/default_reset.png"
+tool/dark_default_reset IMAGE "tool/dark_default_reset.png"
+
+tool/font IMAGE "tool/font.png"
+tool/dark_font IMAGE "tool/dark_font.png"
+tool/bold IMAGE "tool/bold.png"
+tool/dark_bold IMAGE "tool/dark_bold.png"
+tool/italic IMAGE "tool/italic.png"
+tool/dark_italic IMAGE "tool/dark_italic.png"
+tool/underline IMAGE "tool/underline.png"
+tool/dark_underline IMAGE "tool/dark_underline.png"
+tool/strikethrough IMAGE "tool/strikethrough.png"
+tool/dark_strikethrough IMAGE "tool/dark_strikethrough.png"
+tool/color_text IMAGE "tool/color_text.png"
+tool/bullet_point IMAGE "tool/bullet_point.png"
+tool/dark_bullet_point IMAGE "tool/dark_bullet_point.png"
+tool/symbol IMAGE "tool/symbol.png"
+tool/dark_symbol IMAGE "tool/dark_symbol.png"
+tool/reminder IMAGE "tool/reminder.png"
+tool/dark_reminder IMAGE "tool/dark_reminder.png"
+tool/no_auto IMAGE "tool/no_auto.png"
+
+tool/card_add IMAGE "tool/card_add.png"
+tool/card_add_double IMAGE "tool/card_add_double.png"
+tool/card_add_multiple IMAGE "tool/card_add_multiple.png"
+tool/card_modify_multiple IMAGE "tool/card_modify_multiple.png"
+tool/card_del IMAGE "tool/card_del.png"
+tool/card_link IMAGE "tool/card_link.png"
+tool/dark_card_link IMAGE "tool/dark_card_link.png"
+tool/card_copy IMAGE "tool/card_copy.png"
+tool/card_rotate IMAGE "tool/card_rotate.png"
+tool/card_rotate_0 IMAGE "tool/card_rotate_0.png"
+tool/card_rotate_90 IMAGE "tool/card_rotate_90.png"
+tool/card_rotate_180 IMAGE "tool/card_rotate_180.png"
+tool/card_rotate_270 IMAGE "tool/card_rotate_270.png"
+
+tool/keyword_add IMAGE "tool/keyword_add.png"
+tool/keyword_del IMAGE "tool/keyword_del.png"
+
+tool/graph_pie IMAGE "tool/graph_pie.png"
+tool/graph_bar IMAGE "tool/graph_bar.png"
+tool/graph_stack IMAGE "tool/graph_stack.png"
+tool/graph_scatter IMAGE "tool/graph_scatter.png"
+tool/graph_scatter_pie IMAGE "tool/graph_scatter_pie.png"
+
+tool/clear_console IMAGE "tool/clear_console.png"
+
+tool/window_cards IMAGE "tool/window_cards.png"
+tool/window_set_info IMAGE "tool/window_set_info.png"
+tool/dark_window_set_info IMAGE "tool/dark_window_set_info.png"
+tool/window_style IMAGE "tool/window_style.png"
+tool/window_keywords IMAGE "tool/window_keywords.png"
+tool/dark_window_keywords IMAGE "tool/dark_window_keywords.png"
+tool/window_statistics IMAGE "tool/window_statistics.png"
+tool/window_random_pack IMAGE "tool/window_random_pack.png"
+tool/window_console IMAGE "tool/window_console.png"
+
+tool/help IMAGE "tool/help.png"
+
+// -------------------------------------------------------- : Symbol editor
+
+cursor/point CURSOR "cursor/point.cur"
+cursor/point_add CURSOR "cursor/point_add.cur"
+cursor/point_move CURSOR "cursor/point_move.cur"
+cursor/curve CURSOR "cursor/curve.cur"
+cursor/rotate CURSOR "cursor/rotate.cur"
+cursor/shear_x CURSOR "cursor/shear_x.cur"
+cursor/shear_y CURSOR "cursor/shear_y.cur"
+
+tool/line IMAGE "tool/line.png"
+tool/curve IMAGE "tool/curve.png"
+tool/lock_free IMAGE "tool/lock_free.png"
+tool/lock_dir IMAGE "tool/lock_dir.png"
+tool/lock_size IMAGE "tool/lock_size.png"
+
+tool/circle IMAGE "tool/circle.png"
+tool/dark_circle IMAGE "tool/dark_circle.png"
+tool/rectangle IMAGE "tool/rectangle.png"
+tool/dark_rectangle IMAGE "tool/dark_rectangle.png"
+tool/triangle IMAGE "tool/triangle.png"
+tool/dark_triangle IMAGE "tool/dark_triangle.png"
+tool/star IMAGE "tool/star.png"
+tool/dark_star IMAGE "tool/dark_star.png"
+
+tool/mode_select IMAGE "tool/mode_select.png"
+tool/mode_rotate IMAGE "tool/mode_rotate.png"
+tool/dark_mode_rotate IMAGE "tool/dark_mode_rotate.png"
+tool/mode_curve IMAGE "tool/mode_curve.png"
+tool/mode_paint IMAGE "tool/mode_paint.png"
+tool/dark_mode_paint IMAGE "tool/dark_mode_paint.png"
+tool/mode_symmetry IMAGE "tool/mode_symmetry.png"
+tool/apply IMAGE "tool/apply.png"
+tool/duplicate IMAGE "tool/duplicate.png"
+tool/grid IMAGE "tool/grid.png"
+tool/grid_snap IMAGE "tool/grid_snap.png"
+tool/group IMAGE "tool/group.png"
+tool/ungroup IMAGE "tool/ungroup.png"
+
+tool/symmetry_add IMAGE "tool/symmetry_add.png"
+tool/symmetry_remove IMAGE "tool/symmetry_remove.png"
+
+tool/combine_or IMAGE "tool/combine_or.png"
+tool/combine_sub IMAGE "tool/combine_sub.png"
+tool/combine_sub_dark IMAGE "tool/combine_sub_dark.png"
+tool/combine_and IMAGE "tool/combine_and.png"
+tool/combine_and_dark IMAGE "tool/combine_and_dark.png"
+tool/combine_xor IMAGE "tool/combine_xor.png"
+tool/combine_over IMAGE "tool/combine_over.png"
+tool/combine_border IMAGE "tool/combine_border.png"
+tool/symmetry_rotation IMAGE "tool/symmetry_rotation.png"
+tool/symmetry_reflection IMAGE "tool/symmetry_reflection.png"
+tool/symbol_group IMAGE "tool/symbol_group.png"
+
+icon_combine_merge IMAGE "icon_combine_merge.png"
+icon_combine_subtract IMAGE "icon_combine_subtract.png"
+icon_combine_intersection IMAGE "icon_combine_intersection.png"
+icon_combine_difference IMAGE "icon_combine_difference.png"
+icon_combine_overlap IMAGE "icon_combine_overlap.png"
+icon_combine_border IMAGE "icon_combine_border.png"
+icon_symmetry_rotation IMAGE "icon_symmetry_rotation.png"
+icon_symmetry_reflection IMAGE "icon_symmetry_reflection.png"
+icon_symbol_group IMAGE "icon_symbol_group.png"
+
+handle_rotate IMAGE "handle_rotate.png"
+handle_shear_x IMAGE "handle_shear_x.png"
+handle_center IMAGE "handle_center.png"
+
+// -------------------------------------------------------- : Other
+
+sort_asc IMAGE "sort_asc.png"
+sort_desc IMAGE "sort_desc.png"
+plus IMAGE "plus.png"
+minus IMAGE "minus.png"
+selected IMAGE "selected.png"
+dark_selected IMAGE "dark_selected.png"
+deselected IMAGE "deselected.png"
+dark_deselected IMAGE "dark_deselected.png"
+
+bool_yes IMAGE "bool_yes.png"
+bool_no IMAGE "bool_no.png"
+
+about IMAGE "about.png"
+dark_about IMAGE "dark_about.png"
+btn_normal IMAGE "btn_normal.png"
+btn_hover IMAGE "btn_hover.png"
+btn_focus IMAGE "btn_focus.png"
+btn_down IMAGE "btn_down.png"
+btn_ok_normal IMAGE "btn_ok_normal.png"
+btn_ok_hover IMAGE "btn_ok_hover.png"
+btn_ok_focus IMAGE "btn_ok_focus.png"
+btn_ok_down IMAGE "btn_ok_down.png"
+btn_collapse_normal IMAGE "btn_collapse_normal.png"
+dark_btn_collapse_normal IMAGE "dark_btn_collapse_normal.png"
+btn_collapse_hover IMAGE "btn_collapse_hover.png"
+dark_btn_collapse_hover IMAGE "dark_btn_collapse_hover.png"
+btn_collapse_focus IMAGE "btn_collapse_focus.png"
+dark_btn_collapse_focus IMAGE "dark_btn_collapse_focus.png"
+btn_collapse_down IMAGE "btn_collapse_down.png"
+dark_btn_collapse_down IMAGE "dark_btn_collapse_down.png"
+btn_expand_normal IMAGE "btn_expand_normal.png"
+dark_btn_expand_normal IMAGE "dark_btn_expand_normal.png"
+btn_expand_hover IMAGE "btn_expand_hover.png"
+dark_btn_expand_hover IMAGE "dark_btn_expand_hover.png"
+btn_expand_focus IMAGE "btn_expand_focus.png"
+dark_btn_expand_focus IMAGE "dark_btn_expand_focus.png"
+btn_expand_down IMAGE "btn_expand_down.png"
+dark_btn_expand_down IMAGE "dark_btn_expand_down.png"
+btn_clear_filter_normal IMAGE "btn_clear_filter_normal.png"
+btn_clear_filter_hover IMAGE "btn_clear_filter_hover.png"
+btn_clear_filter_focus IMAGE "btn_clear_filter_focus.png"
+btn_clear_filter_down IMAGE "btn_clear_filter_down.png"
+
+welcome_new IMAGE "welcome_new.png"
+welcome_open IMAGE "welcome_open.png"
+welcome_last IMAGE "welcome_last.png"
+welcome_updates IMAGE "welcome_updates.png"
+
+edit_symbol IMAGE "edit_symbol.png"
+
+installer_group IMAGE "installer_group.png"
+installer_package IMAGE "installer_package.png"
+installer_locales IMAGE "installer_locales.png"
+installer_program IMAGE "installer_program.png"
+//installer_font IMAGE "common/installer_font.png"
+
+message_input IMAGE "message_input.png"
+message_information IMAGE "message_information.png"
+message_warning IMAGE "message_warning.png"
+message_error IMAGE "message_error.png"
+
+shape_align_middle IMAGE "shape_align_middle.png"
+shape_align_center IMAGE "shape_align_center.png"
+shape_align_both IMAGE "shape_align_both.png"
+
+slider_left IMAGE "slider_left.png"
+slider_right IMAGE "slider_right.png"
+slider_center IMAGE "slider_center.png"
+slider_tick IMAGE "slider_tick.png"
+
+// -------------------------------------------------------- : WX
+
+//wxBITMAP_STD_COLOURS BITMAP "wx/msw/colours.bmp"
+//WXCURSOR_HAND CURSOR DISCARDABLE "wx/msw/hand.cur"
+
+// -------------------------------------------------------- : Version info
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION    MSE_VERSION_RESOURCE
+PRODUCTVERSION MSE_VERSION_RESOURCE
+FILETYPE VFT_APP
+{
+  BLOCK "StringFileInfo"
+  {
+    BLOCK "040904E4"
+    {
+      VALUE "FileVersion",     MSE_VERSION_STRING
+      VALUE "License",         "GNU General Public License 2 or later; This is free software, and you are welcome to redistribute it under certain conditions; See the help file for details"
+      VALUE "FileDescription", "Magic Set Editor"
+      VALUE "InternalName",    "magicseteditor"
+      VALUE "LegalCopyright",  "(c) The Magic Set Editor development team"
+      VALUE "ProductName",     "Magic Set Editor"
+    }
+  }
+}

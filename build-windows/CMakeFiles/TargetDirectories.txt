@@ -1,0 +1,12 @@
+/home/cdjensen94/Projects/MagicSetEditor2-GenevensiS/build-windows/CMakeFiles/magicseteditor.dir
+/home/cdjensen94/Projects/MagicSetEditor2-GenevensiS/build-windows/CMakeFiles/magicseteditor-cli.dir
+/home/cdjensen94/Projects/MagicSetEditor2-GenevensiS/build-windows/CMakeFiles/magicseteditor-updater.dir
+/home/cdjensen94/Projects/MagicSetEditor2-GenevensiS/build-windows/CMakeFiles/package.dir
+/home/cdjensen94/Projects/MagicSetEditor2-GenevensiS/build-windows/CMakeFiles/package_source.dir
+/home/cdjensen94/Projects/MagicSetEditor2-GenevensiS/build-windows/CMakeFiles/test.dir
+/home/cdjensen94/Projects/MagicSetEditor2-GenevensiS/build-windows/CMakeFiles/edit_cache.dir
+/home/cdjensen94/Projects/MagicSetEditor2-GenevensiS/build-windows/CMakeFiles/rebuild_cache.dir
+/home/cdjensen94/Projects/MagicSetEditor2-GenevensiS/build-windows/CMakeFiles/list_install_components.dir
+/home/cdjensen94/Projects/MagicSetEditor2-GenevensiS/build-windows/CMakeFiles/install.dir
+/home/cdjensen94/Projects/MagicSetEditor2-GenevensiS/build-windows/CMakeFiles/install/local.dir
+/home/cdjensen94/Projects/MagicSetEditor2-GenevensiS/build-windows/CMakeFiles/install/strip.dir
