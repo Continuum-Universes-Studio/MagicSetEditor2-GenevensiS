@@ -36,12 +36,25 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Portable Linux runtime lookup:
-# Allows bundled libraries beside the executable in ./lib
-if(UNIX AND NOT APPLE)
-    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-    set(CMAKE_INSTALL_RPATH "$ORIGIN/lib")
-    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+find_package(wxWidgets 3.3.1 REQUIRED COMPONENTS core base net html)
+include(${wxWidgets_USE_FILE})
+find_package(Boost REQUIRED COMPONENTS regex)
+
+find_package(PkgConfig)
+
+# find hunspell
+pkg_check_modules(HUNSPELL hunspell)
+if( NOT HUNSPELL_FOUND )
+	message("-- Cannot find Hunspell via pkg-config, checking directly...")
+	find_path(HUNSPELL_INCLUDE_DIRS hunspell.hxx)
+	message("-- HUNSPELL_INCLUDE_DIRS = ${HUNSPELL_INCLUDE_DIRS}")
+	find_library(HUNSPELL_LIBRARIES NAMES hunspell libhunspell)
+	message("-- HUNSPELL_LIBRARIES = ${HUNSPELL_LIBRARIES}")
+	if ( ${HUNSPELL_INCLUDE_DIRS} STREQUAL "HUNSPELL_INCLUDE_DIRS-NOTFOUND" )
+		message(FATAL_ERROR "Hunspell cannot be found")
+	else()
+		message("-- Found Hunspell at ${HUNSPELL_LIBRARIES}")
+	endif()
 endif()
 
 # ------------------------------------------------------------------------------

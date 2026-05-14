@@ -250,7 +250,7 @@ public:
   String installer_list_url;    ///< available installers
   CheckUpdatesTargets check_updates_what;
   CheckUpdates check_updates_when;
-  int check_updates_last_check; ///< date of the last successful update check, as an integer in YYYYMMDD form (0 = never checked).
+  int check_updates_counter;
 
   // --------------------------------------------------- : Help links
 
