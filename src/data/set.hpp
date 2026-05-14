@@ -61,7 +61,11 @@ public:
   ActionStack                     actions;           ///< Actions performed on this set and the cards in it
   KeywordDatabase                 keyword_db;        ///< Database for matching keywords, must be cleared when keywords change
   VCSP                            vcs;               ///< The version control system to use
-  
+  /// What version of the game was this set using when it was last saved?
+  Version                         game_version;
+  /// What version of the default stylesheet was this set using when it was last saved?
+  Version                         stylesheet_version;
+
   /// A context for performing scripts
   /** Should only be used from the main thread! */
   Context& getContext();

@@ -85,7 +85,6 @@ bool Keyword::contains(QuickFilterPart const& query) const {
 
 IMPLEMENT_REFLECTION(Keyword) {
   REFLECT(keyword);
-  if (handler.formatVersion() < 301) read_compat(handler, this);
   REFLECT(match);
   REFLECT(reminder);
   REFLECT(rules);

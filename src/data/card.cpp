@@ -44,6 +44,37 @@ Card::Card(Game& game)
   data.init(game.card_fields);
 }
 
+Card::Card(Set* set, const CardP& card)
+  : game(card->game)
+  , time_created (wxDateTime::Now())
+  , time_modified(wxDateTime::Now())
+  , notes(card->notes)
+  , uid(generate_uid())
+  , linked_card_1(card->linked_card_1)
+  , linked_card_2(card->linked_card_2)
+  , linked_card_3(card->linked_card_3)
+  , linked_card_4(card->linked_card_4)
+  , linked_relation_1(card->linked_relation_1)
+  , linked_relation_2(card->linked_relation_2)
+  , linked_relation_3(card->linked_relation_3)
+  , linked_relation_4(card->linked_relation_4)
+  , has_styling(card->has_styling)
+  , stylesheet_version(card->stylesheet_version)
+  , stylesheet(card->stylesheet)
+{
+  if (!stylesheet && set) {
+    stylesheet = set->stylesheetForP(card);
+  }
+  if (has_styling) {
+    styling_data.cloneFrom(card->styling_data);
+  }
+  else {
+    if (stylesheet && set) styling_data.cloneFrom(set->stylingDataFor(*stylesheet));
+  }
+  data.cloneFrom(card->data);
+  extra_data.cloneFrom(card->extra_data);
+}
+
 String Card::identification() const {
   // an identifying field
   FOR_EACH_CONST(v, data) {
@@ -344,7 +375,12 @@ void reflect_version_check(GetDefaultMember& handler, const Char* key, intrusive
 
 IMPLEMENT_REFLECTION(Card) {
   REFLECT(stylesheet);
-  reflect_version_check(handler, _("stylesheet_version"), stylesheet);
+  if (Handler::isReading) {
+    REFLECT_NO_SCRIPT(stylesheet_version);
+  }
+  else {
+    reflect_version_check(handler, _("stylesheet_version"), stylesheet);
+  }
   REFLECT(has_styling);
   if (has_styling) {
     if (stylesheet) {

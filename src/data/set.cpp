@@ -14,6 +14,7 @@
 #include <data/keyword.hpp>
 #include <data/pack.hpp>
 #include <data/field.hpp>
+#include <data/update_cards_script.hpp>
 #include <data/field/text.hpp>    // for 0.2.7 fix
 #include <data/field/information.hpp>
 #include <data/field/image.hpp>
@@ -172,7 +173,7 @@ void fix_value_207(const ValueP& value) {
 
 void Set::validate(Version file_app_version) {
   Packaged::validate(file_app_version);
-  // are the
+  // are the game and stylesheet defined?
   if (!game) {
     throw Error(_ERROR_1_("no game specified",_TYPE_("set")));
   }
@@ -184,6 +185,8 @@ void Set::validate(Version file_app_version) {
     throw Error(_ERROR_("stylesheet and set refer to different game"));
   }
 
+  // We can probably retire this
+  /*
   // This is our chance to fix version incompatabilities
   if (file_app_version < 207) {
     // Since 0.2.7 we use </tag> style close tags, in older versions it was </>
@@ -192,16 +195,52 @@ void Set::validate(Version file_app_version) {
       FOR_EACH(v, c->data) fix_value_207(v);
     }
     FOR_EACH(v, data) fix_value_207(v);
-/*    FOR_EACH(s, styleData) {
+    FOR_EACH(s, styleData) {
       FOR_EACH(v, s.second->data) fix_value_207(v);
     }
-*/  }
+  }
+  */
+
   // we want at least one card
   if (cards.empty()) cards.push_back(make_intrusive<Card>(*game));
   // update scripts
   script_manager->updateAll();
   // build uid map
   buildUIDMap();
+  // update cards with game update_cards_scripts
+  for (int j = 0; j < game->update_cards_scripts.size(); ++j) {
+    UpdateCardsScriptP& script = game->update_cards_scripts[j];
+    if (game_version >= script->before_version) continue;
+    size_t size = cards.size();
+    for (int i = 0; i < size; ++i) {
+      CardP& card = cards[i];
+      vector<CardP> new_cards = script->perform(*this, card);
+      if (!new_cards.empty()) {
+        --i;
+        --size;
+      }
+    }
+  }
+  // update cards with stylesheet update_cards_scripts
+  for (int i = 0; i < cards.size(); ++i) {
+    CardP& card = cards[i];
+    StyleSheetP stylesheet = stylesheetForP(card);
+    for (int j = 0; j < stylesheet->update_cards_scripts.size(); ++j) {
+      UpdateCardsScriptP& script = stylesheet->update_cards_scripts[j];
+      if (card->stylesheet_version >= script->before_version) continue;
+      vector<CardP> new_cards = script->perform(*this, card);
+      if (!new_cards.empty()) {
+        FOR_EACH(new_card, new_cards) {
+          // Initialize the stylesheet_version if it wasn't defined, to prevent this script from applying again
+          if (stylesheet == stylesheetForP(new_card) && new_card->stylesheet_version < script->before_version) {
+            new_card->stylesheet_version = script->before_version;
+          }
+        }
+        --i;
+        break;
+      }
+    }
+  }
 }
 
 void reflect_version_check(Reader& handler, const Char* key, intrusive_ptr<Packaged> const& package) {
@@ -225,15 +264,23 @@ IMPLEMENT_REFLECTION(Set) {
     REFLECT_IF_READING {
       data.init(game->set_fields);
     }
-    reflect_version_check(handler, _("game_version"), game);
+    if (Handler::isReading) {
+      REFLECT_NO_SCRIPT(game_version);
+    }
+    else {
+      reflect_version_check(handler, _("game_version"), game);
+    }
     WITH_DYNAMIC_ARG(game_for_reading, game.get());
     REFLECT(stylesheet);
-    REFLECT_COMPAT(<300, "style", stylesheet);
-    reflect_version_check(handler, _("stylesheet_version"), stylesheet);
+    if (Handler::isReading) {
+      REFLECT_NO_SCRIPT(stylesheet_version);
+    }
+    else {
+      reflect_version_check(handler, _("stylesheet_version"), stylesheet);
+    }
     WITH_DYNAMIC_ARG(stylesheet_for_reading, stylesheet.get());
     REFLECT_N("set_info", data);
     if (stylesheet) {
-      REFLECT_COMPAT(<300, "extra_set_info", styling_data);
       REFLECT_N("styling", styling_data);
     }
     // Experimental: save each card to a different file

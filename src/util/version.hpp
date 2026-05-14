@@ -21,16 +21,34 @@
 /// A version number
 struct Version {
 public:
-  Version()             : version(0)       {}
-  Version(UInt version) : version(version) {}
+  Version()                                      : major(0u),    minor(0u),    revision(0u)       {}
+  Version(UInt major, UInt minor, UInt revision) : major(major), minor(minor), revision(revision) {}
   
-  inline bool operator == (Version v) const { return version == v.version; }
-  inline bool operator != (Version v) const { return version != v.version; }
-  inline bool operator <  (Version v) const { return version <  v.version; }
-  inline bool operator <= (Version v) const { return version <= v.version; }
-  inline bool operator >  (Version v) const { return version >  v.version; }
-  inline bool operator >= (Version v) const { return version >= v.version; }
-  
+  bool operator==(const Version& v) const {
+    return std::tie(major, minor, revision)
+      == std::tie(v.major, v.minor, v.revision);
+  }
+  bool operator!=(const Version& v) const {
+    return std::tie(major, minor, revision)
+      != std::tie(v.major, v.minor, v.revision);
+  }
+  bool operator<(const Version& v) const {
+    return std::tie(major, minor, revision)
+      < std::tie(v.major, v.minor, v.revision);
+  }
+  bool operator>(const Version& v) const {
+    return std::tie(major, minor, revision)
+      > std::tie(v.major, v.minor, v.revision);
+  }
+  bool operator<=(const Version& v) const {
+    return std::tie(major, minor, revision)
+      <= std::tie(v.major, v.minor, v.revision);
+  }
+  bool operator>=(const Version& v) const {
+    return std::tie(major, minor, revision)
+      >= std::tie(v.major, v.minor, v.revision);
+  }
+
   /// Convert a version number to a string
   String toString() const;
   /// Get the version number as an integer number
@@ -38,9 +56,14 @@ public:
   
   /// Convert a string to a version number
   static Version fromString(const String& version);
-  
+
+  /// Did this version get properly initialized?
+  bool   isZero() const;
+
 private:
-  UInt version; ///< Version number encoded as aabbcc, where a=major, b=minor, c=revision
+  UInt major = 0;
+  UInt minor = 0;
+  UInt revision = 0;
 };
 
 // ----------------------------------------------------------------------------- : Versions

@@ -22,6 +22,7 @@ DECLARE_POINTER_TYPE(StyleSheet);
 DECLARE_POINTER_TYPE(Field);
 DECLARE_POINTER_TYPE(Style);
 DECLARE_POINTER_TYPE(CardRegion);
+DECLARE_POINTER_TYPE(UpdateCardsScript);
 
 // ----------------------------------------------------------------------------- : StyleSheet
 
@@ -33,12 +34,13 @@ class StyleSheet : public Packaged {
 public:
   StyleSheet();
   
-  GameP game;            ///< The game this stylesheet is made for
-  OptionalScript init_script;    ///< Script of variables available to other scripts in this stylesheet
-  double card_width;        ///< The width of a card in pixels
-  double card_height;        ///< The height of a card in pixels
-  double card_dpi;        ///< The resolution of a card in dots per inch
-  Color  card_background;      ///< The background color of cards
+  GameP game;                                      ///< The game this stylesheet is made for
+  OptionalScript init_script;                      ///< Script of variables available to other scripts in this stylesheet
+  vector<UpdateCardsScriptP> update_cards_scripts; ///< Scripts for updating cards made with an earlier version of this stylesheet
+  double card_width;                               ///< The width of a card in pixels
+  double card_height;                              ///< The height of a card in pixels
+  double card_dpi;                                 ///< The resolution of a card in dots per inch
+  Color  card_background;                          ///< The background color of cards
   vector<CardRegionP> card_regions;
   /// The styling for card fields
   /** The indices should correspond to the card_fields in the Game */

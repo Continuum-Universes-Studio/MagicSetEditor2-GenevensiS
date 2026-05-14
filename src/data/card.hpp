@@ -35,6 +35,8 @@ public:
   Card();
   /// Creates a card using the given game
   Card(Game& game);
+  /// Copy constructor, makes a deep copy
+  Card(Set* set, const CardP& card);
 
   /// The game this card is made for
   Game* game;
@@ -61,6 +63,8 @@ public:
   /// Alternative style to use for this card
   /** Optional; if not set use the card style from the set */
   StyleSheetP stylesheet;
+  /// What version of the stylesheet was this card using when it was last saved?
+  Version stylesheet_version;
   /// Alternative options to use for this card, for this card's stylesheet
   /** Optional; if not set use the styling data from the set.
   *  If stylesheet is set then contains data for the this->stylesheet, otherwise for set->stylesheet

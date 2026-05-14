@@ -26,11 +26,13 @@
 
 SCRIPT_FUNCTION(new_card) {
   SCRIPT_PARAM(GameP, game);
+  ScriptValueP set_ = ctx.getVariableOpt(BOOST_PP_CAT(L, "set")); // this is just SCRIPT_OPTIONAL_PARAM_(Set*, set) but the macro fails
+  Set* set = set_ && set_ != script_nil ? from_script<Set*>(set_, BOOST_PP_CAT(L, "set")) : nullptr;
   SCRIPT_OPTIONAL_PARAM_(bool, ignore_field_not_found);
-  // create a new card object
-  CardP new_card = make_intrusive<Card>(*game);
-  // iterate on the given key/value pairs
+  SCRIPT_OPTIONAL_PARAM_(CardP, copy_from);
   SCRIPT_PARAM(ScriptValueP, input);
+  // create a new card object, or a copy
+  CardP new_card = copy_from ?  make_intrusive<Card>(set, copy_from) : make_intrusive<Card>(*game);
   // check for a stylesheet first, since other things depend on it
   ScriptValueP it = input->makeIterator();
   ScriptValueP key;

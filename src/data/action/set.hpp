@@ -50,6 +50,18 @@ public:
   vector<ActionP> card_link_actions;
 };
 
+/// Update one or more cards from a set by replacing them with other cards
+class UpdateCardAction : public CardListAction {
+public:
+  UpdateCardAction(Set& set, const vector<CardP>& cards_to_add, const vector<CardP>& cards_to_remove);
+
+  String getName(bool to_undo) const override;
+  void perform(bool to_undo) override;
+
+  AddCardAction action_add;
+  AddCardAction action_remove;
+};
+
 // ----------------------------------------------------------------------------- : Reorder cards
 
 /// Change the position of a card in the card list by swapping two cards

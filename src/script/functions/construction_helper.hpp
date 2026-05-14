@@ -94,7 +94,10 @@ inline static bool set_stylesheet_container(const Game& game, CardP& card, Scrip
   if (key_name == _("style") || key_name == _("stylesheet") || key_name == _("template")) {
     if (!trim(value->toString()).empty()) {
       card->stylesheet = StyleSheet::byGameAndName(game, value->toString());
-      if (card->stylesheet) card->styling_data.init(card->stylesheet->styling_fields);
+      if (card->stylesheet) {
+        card->styling_data.init(card->stylesheet->styling_fields);
+        card->extraDataFor(*card->stylesheet).init(card->stylesheet->extra_card_fields);
+      }
     }
     return true;
   }
@@ -104,7 +107,14 @@ inline static bool set_stylesheet_container(const Game& game, CardP& card, Scrip
 inline static bool set_builtin_container(const Game& game, CardP& card, ScriptValueP& value, String key_name, bool ignore_field_not_found) {
   // check if the given value is for a built-in field, if found set it and return true
   key_name = unified_form(key_name);
-  if (key_name == _("card_notes") || key_name == _("notes") || key_name == _("note")) {
+  if (key_name == _("style") || key_name == _("stylesheet") || key_name == _("template")) {
+    return true; // we already took care of this
+  }
+  else if (key_name == _("style_version") || key_name == _("stylesheet_version") || key_name == _("template_version")) {
+    card->stylesheet_version = Version::fromString(value->toString());
+    return true;
+  }
+  else if (key_name == _("card_notes") || key_name == _("notes") || key_name == _("note")) {
     card->notes = value->toString();
     return true;
   }
@@ -237,7 +247,7 @@ inline static bool cards_from_table(SetP& set, vector<String>& headers, std::vec
     // is this a new card?
     if (contains(set->cards, card) || contains(cards_out, card)) {
       // make copy
-      card = make_intrusive<Card>(*card);
+      card = make_intrusive<Card>(set.get(), card);
     }
     cards_out.push_back(card);
   }

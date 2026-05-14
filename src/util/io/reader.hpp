@@ -49,7 +49,7 @@ public:
   /// Is the thing currently being read 'complex', i.e. does it have children
   inline bool isCompound() const { return indent != expected_indent - 1 || value.empty(); }
   /// Ignore old keys
-  void handleIgnore(int, const Char*);
+  void handleIgnore(Version, const Char*);
   /// Get the version of the format we are reading
   inline Version formatVersion() const { return file_app_version; }
   
@@ -189,7 +189,7 @@ private:
       value = key == _("include_localized_file") ? addLocale(value) : key == _("include_dark_file") ? addDark(value) : value;
       auto [stream, include_package] = openFileFromPackage(package, value);
       Reader sub_reader(*stream, include_package, value, ignore_invalid);
-      if (sub_reader.file_app_version == 0) {
+      if (sub_reader.file_app_version.isZero()) {
         // in an included file, use the app version of the parent if there is none
         sub_reader.file_app_version = file_app_version;
       }

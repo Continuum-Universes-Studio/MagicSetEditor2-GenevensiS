@@ -30,7 +30,7 @@ Reader::Reader(wxInputStream& input, Packaged* package, const String& filename, 
   handleAppVersion();
 }
 
-void Reader::handleIgnore(int end_version, const Char* a) {
+void Reader::handleIgnore(Version end_version, const Char* a) {
   if (file_app_version < end_version) {
     if (enterBlock(a)) exitBlock();
   }

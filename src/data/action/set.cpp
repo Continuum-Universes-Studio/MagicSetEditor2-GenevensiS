@@ -87,6 +87,31 @@ void AddCardAction::perform(bool to_undo) {
   set.buildUIDMap();
 }
 
+UpdateCardAction::UpdateCardAction(Set& set, const vector<CardP>& cards_to_add, const vector<CardP>& cards_to_remove)
+  : CardListAction(set)
+  , action_add(ADD, set, cards_to_add)
+  , action_remove(REMOVE, set, cards_to_remove)
+{}
+
+String UpdateCardAction::getName(bool to_undo) const {
+  return _ACTION_("update card");
+}
+
+void UpdateCardAction::perform(bool to_undo) {
+  if (to_undo) {
+    action_remove.perform(to_undo);
+    set.actions.tellListeners(action_remove, to_undo);
+    action_add.perform(to_undo);
+    set.actions.tellListeners(action_add, to_undo);
+  }
+  else {
+    action_add.perform(to_undo);
+    set.actions.tellListeners(action_add, to_undo);
+    action_remove.perform(to_undo);
+    set.actions.tellListeners(action_remove, to_undo);
+  }
+}
+
 // ----------------------------------------------------------------------------- : Reorder cards
 
 ReorderCardsAction::ReorderCardsAction(Set& set, size_t card_id1, size_t card_id2)

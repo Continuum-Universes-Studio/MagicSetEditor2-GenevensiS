@@ -16,6 +16,7 @@
 #include <data/pack.hpp>
 #include <data/word_list.hpp>
 #include <data/add_cards_script.hpp>
+#include <data/update_cards_script.hpp>
 #include <util/io/package_manager.hpp>
 #include <script/script.hpp>
 
@@ -55,7 +56,6 @@ IMPLEMENT_REFLECTION(Game) {
   REFLECT_NO_SCRIPT(json_paths);
   REFLECT_NO_SCRIPT(statistics_dimensions);
   REFLECT_NO_SCRIPT(statistics_categories);
-  REFLECT_COMPAT(<308, "pack_item", pack_types);
   REFLECT_NO_SCRIPT(pack_types);
   REFLECT_NO_SCRIPT(keyword_match_script);
   REFLECT(has_keywords);
@@ -64,6 +64,7 @@ IMPLEMENT_REFLECTION(Game) {
   REFLECT_NO_SCRIPT(keywords);
   REFLECT_NO_SCRIPT(word_lists);
   REFLECT_NO_SCRIPT(add_cards_scripts);
+  REFLECT_NO_SCRIPT(update_cards_scripts);
   REFLECT_NO_SCRIPT(auto_replaces);
 }
 
@@ -206,6 +207,8 @@ void Game::validate(Version v) {
       card_links_alt_names.emplace(linked_tr, linked_default);
     }
   }
+  // sort the update_cards_scripts from oldest to newest
+  std::sort(update_cards_scripts.begin(), update_cards_scripts.end());
 }
 
 void Game::initCardListColorScript() {

@@ -10,6 +10,7 @@
 #include <data/stylesheet.hpp>
 #include <data/game.hpp>
 #include <data/field.hpp>
+#include <data/update_cards_script.hpp>
 #include <util/io/package_manager.hpp>
 #include <gui/new_window.hpp> // for selecting stylesheets on load error
 
@@ -76,6 +77,10 @@ void StyleSheet::validate(Version ver) {
   }
   // a stylesheet depends on the game it is made for
   requireDependency(game.get());
+  // sort the update_cards_scripts from oldest to newest
+  std::sort(update_cards_scripts.begin(), update_cards_scripts.end(), [](const auto& a, const auto& b) {
+    return *a < *b;
+  });
 }
 
 
@@ -125,6 +130,7 @@ IMPLEMENT_REFLECTION(StyleSheet) {
     extra_card_style.init(extra_card_fields);
   }
   REFLECT(extra_card_style);
+  REFLECT_NO_SCRIPT(update_cards_scripts);
 }
 
 

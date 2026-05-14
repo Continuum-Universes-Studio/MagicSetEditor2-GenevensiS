@@ -26,6 +26,7 @@ DECLARE_POINTER_TYPE(KeywordMode);
 DECLARE_POINTER_TYPE(Keyword);
 DECLARE_POINTER_TYPE(WordList);
 DECLARE_POINTER_TYPE(AddCardsScript);
+DECLARE_POINTER_TYPE(UpdateCardsScript);
 DECLARE_POINTER_TYPE(AutoReplace);
 
 // ----------------------------------------------------------------------------- : Game
@@ -38,27 +39,28 @@ class Game : public Packaged {
 public:
   Game();
   
-  OptionalScript          init_script;            ///< Script of variables available to other scripts in this game
-  vector<FieldP>          set_fields;             ///< Fields for set information
-  IndexMap<FieldP,StyleP> default_set_style;      ///< Default style for the set fields, because it is often the same
-  vector<FieldP>          card_fields;            ///< Fields on each card
-  vector<CardLinkP>       card_links;             ///< Possible links between cards
-  OptionalScript          card_list_color_script; ///< Script that determines the color of items in the card list
-  OptionalScript          import_script;          ///< Script applied as the last step of the new_card function
-  vector<String>          json_paths;             ///< Paths inside JSON files to find the card array
-  vector<StatsDimensionP> statistics_dimensions;  ///< (Additional) statistics dimensions
-  vector<StatsCategoryP>  statistics_categories;  ///< (Additional) statistics categories
-  vector<PackTypeP>       pack_types;             ///< Types of random card packs to generate
-  vector<WordListP>       word_lists;             ///< Word lists for editing with a drop down list
-  vector<AddCardsScriptP> add_cards_scripts;      ///< Scripts for adding multiple cards to the set
-  vector<AutoReplaceP>    auto_replaces;          ///< Things to autoreplace in textboxes
-  map<String,String>      card_fields_alt_names;  ///< Other names that fields might go by, for example in CSV files
-  map<String,String>      card_links_alt_names;   ///< Localized names that card links go by
-  bool                    has_keywords;           ///< Does this game use keywords?
-  OptionalScript          keyword_match_script;   ///< For the keyword editor
-  vector<KeywordParamP>   keyword_parameter_types;///< Types of keyword parameters
-  vector<KeywordModeP>    keyword_modes;          ///< Modes of keywords
-  vector<KeywordP>        keywords;               ///< Keywords for use in text
+  OptionalScript             init_script;            ///< Script of variables available to other scripts in this game
+  vector<FieldP>             set_fields;             ///< Fields for set information
+  IndexMap<FieldP,StyleP>    default_set_style;      ///< Default style for the set fields, because it is often the same
+  vector<FieldP>             card_fields;            ///< Fields on each card
+  vector<CardLinkP>          card_links;             ///< Possible links between cards
+  OptionalScript             card_list_color_script; ///< Script that determines the color of items in the card list
+  OptionalScript             import_script;          ///< Script applied as the last step of the new_card function
+  vector<String>             json_paths;             ///< Paths inside JSON files to find the card array
+  vector<StatsDimensionP>    statistics_dimensions;  ///< (Additional) statistics dimensions
+  vector<StatsCategoryP>     statistics_categories;  ///< (Additional) statistics categories
+  vector<PackTypeP>          pack_types;             ///< Types of random card packs to generate
+  vector<WordListP>          word_lists;             ///< Word lists for editing with a drop down list
+  vector<AddCardsScriptP>    add_cards_scripts;      ///< Scripts for adding multiple cards to the set
+  vector<UpdateCardsScriptP> update_cards_scripts;   ///< Scripts for updating cards made with an earlier version of this game
+  vector<AutoReplaceP>       auto_replaces;          ///< Things to autoreplace in textboxes
+  map<String,String>         card_fields_alt_names;  ///< Other names that fields might go by, for example in CSV files
+  map<String,String>         card_links_alt_names;   ///< Localized names that card links go by
+  bool                       has_keywords;           ///< Does this game use keywords?
+  OptionalScript             keyword_match_script;   ///< For the keyword editor
+  vector<KeywordParamP>      keyword_parameter_types;///< Types of keyword parameters
+  vector<KeywordModeP>       keyword_modes;          ///< Modes of keywords
+  vector<KeywordP>           keywords;               ///< Keywords for use in text
   
   Dependencies dependent_scripts_cards;           ///< scripts that depend on the card list
   Dependencies dependent_scripts_keywords;        ///< scripts that depend on the keywords

@@ -256,6 +256,7 @@ CardP json_to_mse_card(boost::json::object& jv, Set* set) {
         StyleSheetP stylesheet = StyleSheet::byGameAndName(*set->game, String::FromUTF8(stylesheet_view.data(), stylesheet_view.size()));
         if (!stylesheet) continue;
         IndexMap<FieldP, ValueP>& stylesheet_data = card->extraDataFor(*stylesheet);
+        stylesheet_data.init(stylesheet->extra_card_fields);
         boost::json::object stylesheet_datav = it->value().as_object();
         for (auto stylesheet_it = stylesheet_datav.begin(); stylesheet_it != stylesheet_datav.end(); ++stylesheet_it) {
           boost::json::string_view key_view = stylesheet_it->key();
@@ -404,7 +405,7 @@ ScriptValueP json_to_mse(const String& string, Set* set) {
     options.allow_invalid_utf8 = true;
     wxScopedCharBuffer buffer = string.ToUTF8();
     boost::json::value jv = boost::json::parse(boost::json::string_view(buffer.data(), buffer.length()), ec, {}, options);
-    if(ec && buffer.length() > 0) queue_message(MESSAGE_ERROR, _ERROR_("json cant parse") + _("\n\n") + ec.message());
+    //if(ec && buffer.length() > 0) queue_message(MESSAGE_ERROR, _ERROR_("json cant parse") + _("\n\n") + ec.message());
     if(ec) return script_nil;
     return json_to_mse(jv, set);
   }

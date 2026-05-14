@@ -178,7 +178,6 @@ IMPLEMENT_REFLECTION(SymbolInFont) {
   REFLECT(draw_text);
   REFLECT(text_font);
   REFLECT(text_alignment);
-  REFLECT_COMPAT(<300,"text_align",text_alignment);
   REFLECT(text_margin_left);
   REFLECT(text_margin_right);
   REFLECT(text_margin_top);

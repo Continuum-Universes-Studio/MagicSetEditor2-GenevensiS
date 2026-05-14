@@ -60,7 +60,7 @@ public:
     }
     return true;
   }
-  /// Initialize this map with cloned values from another list
+  /// Initialize this map with cloned values from another map
   void cloneFrom(const IndexMap<Key,Value>& values) {
     if (this->size() == values.size()) return;
     this->reserve(values.size());
@@ -147,6 +147,8 @@ class DelayedIndexMaps {
 public:
   /// Get the data for a specific name. Initialize the map with init_with (if it is not alread initialized)
   IndexMap<Key,Value>& get(const String& name, const vector<Key>& init_with);
+  /// Initialize this map with cloned values from another map
+  void cloneFrom(const DelayedIndexMaps<Key,Value>& values);
   /// Clear the delayed index map
   void clear();
   map<String, intrusive_ptr<DelayedIndexMapsData<Key,Value>>> data;

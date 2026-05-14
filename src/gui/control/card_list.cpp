@@ -376,12 +376,12 @@ bool CardListBase::parseText(String& text, vector<CardP>& out) {
       if (ScriptCustomCollection* custom = dynamic_cast<ScriptCustomCollection*>(sv.get())) {
         for (size_t i = 0; i < custom->value.size(); i++) {
           if (ScriptObject<CardP>* c = dynamic_cast<ScriptObject<CardP>*>(custom->value[i].get())) {
-            out.push_back(make_intrusive<Card>(*c->getValue()));
+            out.push_back(c->getValue());
           }
         }
       }
     } else if (ScriptObject<CardP>* c = dynamic_cast<ScriptObject<CardP>*>(sv.get())) {
-      out.push_back(make_intrusive<Card>(*c->getValue()));
+      out.push_back(c->getValue());
     }
   } catch (...) {}
   

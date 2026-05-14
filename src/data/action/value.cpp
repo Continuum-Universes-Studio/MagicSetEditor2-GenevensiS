@@ -401,7 +401,9 @@ String BulkAction::getName(bool to_undo) const {
 }
 
 void BulkAction::perform(bool to_undo) {
-  FOR_EACH(action, actions) {
+  size_t size = actions.size();
+  for (size_t i = 0 ; i < size ; ++i) {
+    ActionP& action = actions[to_undo ? size - i - 1 : i];
     action->perform(to_undo);
     set->actions.tellListeners(*action, to_undo);
   }

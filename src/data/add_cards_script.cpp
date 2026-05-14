@@ -26,17 +26,21 @@ IMPLEMENT_REFLECTION_NO_SCRIPT(AddCardsScript) {
 void AddCardsScript::perform(Set& set, vector<CardP>& out) {
   // Perform script
   Context& ctx = set.getContext();
+  if (enabled.hasBeenRead()) {
+    enabled.update(ctx);
+    if (!enabled()) return;
+  }
   ScriptValueP result = script.invoke(ctx);
   // Add cards to out
   ScriptValueP it = result->makeIterator();
   while (ScriptValueP item = it->next()) {
-    CardP card = from_script<CardP>(item);
+    CardP new_card = from_script<CardP>(item);
     // is this a new card?
-    if (contains(set.cards,card) || contains(out,card)) {
+    if (contains(set.cards,new_card) || contains(out,new_card)) {
       // make copy
-      card = make_intrusive<Card>(*card);
+      new_card = make_intrusive<Card>(&set, new_card);
     }
-    out.push_back(card);
+    out.push_back(new_card);
   }
 }
 
