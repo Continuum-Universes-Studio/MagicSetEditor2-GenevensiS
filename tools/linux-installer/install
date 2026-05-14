@@ -10,7 +10,7 @@
 
 case $UID in
     0)
-        INSTALL_DIR='/usr/local/share/magicseteditor/';
+        INSTALL_DIR='/usr/local/share/magicseteditor';
         EXEC_SYMLINK='/usr/local/bin/magicseteditor';
         FONTS_DIR='/usr/local/share/fonts/';
         CHMOD='chmod +x';;
