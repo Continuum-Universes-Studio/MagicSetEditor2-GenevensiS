@@ -206,9 +206,11 @@ void SymbolPointEditor::onUpdateUI(wxUpdateUIEvent& ev) {
         break;
     }
   }
-  
+
   ev.Enable(enabled);
-  ev.Check(checked);
+  if (ev.IsCheckable()) {
+    ev.Check(checked);
+  }
 }
 
 void SymbolPointEditor::onCommand(int id) {

@@ -367,7 +367,9 @@ void CardsPanel::onUpdateUI(wxUpdateUIEvent& ev) {
             : ev.GetId() == ID_CARD_ROTATE_90  ? 90
             : ev.GetId() == ID_CARD_ROTATE_180 ? 180
             :                                    270;
-      ev.Check(ss.card_angle() == a);
+      if (ev.IsCheckable()) {
+        ev.Check(ss.card_angle() == a);
+      }
       break;
     }
     case ID_CARD_ADD_MULT: {
@@ -381,13 +383,19 @@ void CardsPanel::onUpdateUI(wxUpdateUIEvent& ev) {
     case ID_FORMAT_COLOR: case ID_FORMAT_BULLETPOINT: case ID_FORMAT_SYMBOL: case ID_FORMAT_REMINDER: {
       if (focused_control(this) == ID_EDITOR) {
         ev.Enable(editor->canFormat(ev.GetId()));
-        ev.Check (editor->hasFormat(ev.GetId()));
+        if (ev.IsCheckable()) {
+          ev.Check(editor->hasFormat(ev.GetId()));
+        }
       } else if (focused_control(this) == ID_CARD_LINK_EDITOR) {
         ev.Enable(link_editor->canFormat(ev.GetId()));
-        ev.Check (link_editor->hasFormat(ev.GetId()));
+        if (ev.IsCheckable()) {
+          ev.Check(link_editor->hasFormat(ev.GetId()));
+        }
       } else {
         ev.Enable(false);
-        ev.Check(false);
+        if (ev.IsCheckable()) {
+          ev.Check(false);
+        }
       }
       break;
     }

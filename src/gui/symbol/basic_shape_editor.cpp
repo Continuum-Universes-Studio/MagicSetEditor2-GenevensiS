@@ -70,7 +70,9 @@ void SymbolBasicShapeEditor::destroyUI(wxToolBar* tb, wxMenuBar* mb) {
 
 void SymbolBasicShapeEditor::onUpdateUI(wxUpdateUIEvent& ev) {
   if (ev.GetId() >= ID_SHAPE && ev.GetId() < ID_SHAPE_MAX) {
-    ev.Check(ev.GetId() == mode);
+    if (ev.IsCheckable()) {
+      ev.Check(ev.GetId() == mode);
+    }
   } else if (ev.GetId() == ID_SIDES) {
     ev.Enable(mode == ID_SHAPE_POLYGON || mode == ID_SHAPE_STAR);
   } else {

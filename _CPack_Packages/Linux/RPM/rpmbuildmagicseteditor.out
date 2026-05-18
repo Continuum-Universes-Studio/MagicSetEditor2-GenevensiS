@@ -1,0 +1,18 @@
+Executing(%mkbuilddir): /usr/bin/bash -e /var/tmp/rpm-tmp.wOvpVa
+Executing(%prep): /usr/bin/bash -e /var/tmp/rpm-tmp.nQ6Ifq
+Executing(%install): /usr/bin/bash -e /var/tmp/rpm-tmp.BplaYh
+calling /usr/lib/rpm/brp-suse.d/brp-99-compress-vmlinux
+calling /usr/lib/rpm/brp-suse.d/brp-99-pesign
+No spec files found. RemovePaathPostFixes mapping failed.
+No buildservice signing certificate
+/mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/magicseteditor-2.6.0-x86_64 /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/BUILD/magicseteditor-2.6.0-build
+Creating /home/cdjensen94/rpmbuild/OTHER/magicseteditor.cpio.rsasign
+No files in /home/cdjensen94/rpmbuild/OTHER/magicseteditor.cpio.rsasign, giving up
+Processing files: magicseteditor-2.6.0-1.x86_64
+Provides: magicseteditor = 2.6.0-1 magicseteditor(x86-64) = 2.6.0-1
+Requires(rpmlib): rpmlib(CompressedFileNames) <= 3.0.4-1 rpmlib(FileDigests) <= 4.6.0-1 rpmlib(PayloadFilesHavePrefix) <= 4.0-1
+Requires: libboost_regex.so.1.91.0()(64bit) libc.so.6()(64bit) libc.so.6(GLIBC_2.14)(64bit) libc.so.6(GLIBC_2.2.5)(64bit) libc.so.6(GLIBC_2.3)(64bit) libc.so.6(GLIBC_2.32)(64bit) libc.so.6(GLIBC_2.33)(64bit) libc.so.6(GLIBC_2.34)(64bit) libc.so.6(GLIBC_2.38)(64bit) libgcc_s.so.1()(64bit) libgcc_s.so.1(GCC_3.0)(64bit) libgcc_s.so.1(GCC_4.0.0)(64bit) libhunspell-1.7.so.0()(64bit) libm.so.6()(64bit) libm.so.6(GLIBC_2.2.5)(64bit) libm.so.6(GLIBC_2.29)(64bit) libm.so.6(GLIBC_2.38)(64bit) libstdc++.so.6()(64bit) libstdc++.so.6(CXXABI_1.3)(64bit) libstdc++.so.6(CXXABI_1.3.15)(64bit) libstdc++.so.6(CXXABI_1.3.5)(64bit) libstdc++.so.6(CXXABI_1.3.8)(64bit) libstdc++.so.6(CXXABI_1.3.9)(64bit) libstdc++.so.6(GLIBCXX_3.4)(64bit) libstdc++.so.6(GLIBCXX_3.4.11)(64bit) libstdc++.so.6(GLIBCXX_3.4.14)(64bit) libstdc++.so.6(GLIBCXX_3.4.15)(64bit) libstdc++.so.6(GLIBCXX_3.4.18)(64bit) libstdc++.so.6(GLIBCXX_3.4.20)(64bit) libstdc++.so.6(GLIBCXX_3.4.21)(64bit) libstdc++.so.6(GLIBCXX_3.4.26)(64bit) libstdc++.so.6(GLIBCXX_3.4.29)(64bit) libstdc++.so.6(GLIBCXX_3.4.32)(64bit) libstdc++.so.6(GLIBCXX_3.4.9)(64bit) libwx_baseu-3.3.so.1()(64bit) libwx_baseu-3.3.so.1(WXU_3.3)(64bit) libwx_baseu_net-3.3.so.1()(64bit) libwx_baseu_net-3.3.so.1(WXU_3.3)(64bit) libwx_gtk3u_core-3.3.so.1()(64bit) libwx_gtk3u_core-3.3.so.1(WXU_3.3)(64bit) libwx_gtk3u_html-3.3.so.1()(64bit)
+Checking for unpackaged file(s): /usr/lib/rpm/check-files /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/magicseteditor-2.6.0-x86_64
+Wrote: /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/RPMS/magicseteditor-2.6.0-x86_64.rpm
+Executing(%clean): /usr/bin/bash -e /var/tmp/rpm-tmp.fTVC2d
+Executing(rmbuild): /usr/bin/bash -e /var/tmp/rpm-tmp.j6XpXD

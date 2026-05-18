@@ -1,0 +1,31 @@
+Building target platforms: x86_64
+Building for target x86_64
++ umask 022
++ cd /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/BUILD/magicseteditor-2.6.0-build
++ mv /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/magicseteditor-2.6.0-x86_64 /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/tmpBBroot
++ RPM_EC=0
+++ jobs -p
++ exit 0
++ umask 022
++ cd /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/BUILD/magicseteditor-2.6.0-build
++ /usr/bin/rm -rf /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/magicseteditor-2.6.0-x86_64
++ /usr/bin/mkdir -p /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM
++ /usr/bin/mkdir /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/magicseteditor-2.6.0-x86_64
++ '[' -e /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/magicseteditor-2.6.0-x86_64 ']'
++ rm -rf /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/magicseteditor-2.6.0-x86_64
++ mv /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/tmpBBroot /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/magicseteditor-2.6.0-x86_64
++ /usr/lib/rpm/brp-compress
++ /usr/lib/rpm/brp-suse
++ umask 022
++ cd /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/BUILD/magicseteditor-2.6.0-build
++ RPM_EC=0
+++ jobs -p
++ exit 0
++ umask 022
++ cd /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/BUILD/magicseteditor-2.6.0-build
++ test -d /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/BUILD/magicseteditor-2.6.0-build
++ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/BUILD/magicseteditor-2.6.0-build
++ rm -rf /mnt/y/Dev/Softwares/GenevensiS-MSE2/_CPack_Packages/Linux/RPM/BUILD/magicseteditor-2.6.0-build
++ RPM_EC=0
+++ jobs -p
++ exit 0

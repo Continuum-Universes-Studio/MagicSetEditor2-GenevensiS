@@ -412,7 +412,9 @@ void StatsPanel::onUpdateUI(wxUpdateUIEvent& ev) {
   switch (ev.GetId()) {
     case ID_GRAPH_PIE: case ID_GRAPH_BAR: case ID_GRAPH_STACK: case ID_GRAPH_SCATTER: case ID_GRAPH_SCATTER_PIE: {
       GraphType type = (GraphType)(ev.GetId() - ID_GRAPH_PIE);
-      ev.Check(graph->getLayout() == type);
+      if (ev.IsCheckable()) {
+        ev.Check(graph->getLayout() == type);
+      }
       #if USE_SEPARATE_DIMENSION_LISTS
         ev.Enable(graph->getDimensionality() == dimensionality(type));
       #endif
