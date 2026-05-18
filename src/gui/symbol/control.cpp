@@ -275,7 +275,9 @@ void SymbolControl::onUpdateUI(wxUpdateUIEvent& ev) {
   switch (ev.GetId()) {
     case ID_MODE_SELECT: case ID_MODE_ROTATE: case ID_MODE_POINTS:
     case ID_MODE_SHAPES: case ID_MODE_SYMMETRY: //case ID_MODE_PAINT:
-      ev.Check(editor->modeToolId() == ev.GetId());
+      if (ev.IsCheckable()) {
+        ev.Check(editor->modeToolId() == ev.GetId());
+      }
       if (ev.GetId() == ID_MODE_POINTS) {
         // can only edit points when a shape is available
         ev.Enable((bool)selected_parts.getAShape());
@@ -288,10 +290,14 @@ void SymbolControl::onUpdateUI(wxUpdateUIEvent& ev) {
       ev.Enable(false); // TODO
       break;
     case ID_VIEW_GRID:
-      ev.Check(settings.symbol_grid);
+      if (ev.IsCheckable()) {
+        ev.Check(settings.symbol_grid);
+      }
       break;
     case ID_VIEW_GRID_SNAP:
-      ev.Check(settings.symbol_grid_snap);
+      if (ev.IsCheckable()) {
+        ev.Check(settings.symbol_grid_snap);
+      }
       break;
     default:
       if (ev.GetId() >= ID_CHILD_MIN && ev.GetId() < ID_CHILD_MAX) {

@@ -88,7 +88,9 @@ void SymbolSymmetryEditor::destroyUI(wxToolBar* tb, wxMenuBar* mb) {
 void SymbolSymmetryEditor::onUpdateUI(wxUpdateUIEvent& ev) {
   if (ev.GetId() >= ID_SYMMETRY && ev.GetId() < ID_SYMMETRY_MAX) {
     ev.Enable((bool)symmetry);
-    ev.Check(symmetry && symmetry->kind == ev.GetId() - ID_SYMMETRY);
+    if (ev.IsCheckable()) {
+      ev.Check(symmetry && symmetry->kind == ev.GetId() - ID_SYMMETRY);
+    }
   } else if (ev.GetId() == ID_COPIES) {
     ev.Enable((bool)symmetry);
     if (symmetry) {

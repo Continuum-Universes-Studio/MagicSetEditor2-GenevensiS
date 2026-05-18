@@ -80,10 +80,12 @@ void SetInfoPanel::onUpdateUI(wxUpdateUIEvent& ev) {
     case ID_FORMAT_FONT: case ID_FORMAT_BOLD: case ID_FORMAT_ITALIC: case ID_FORMAT_UNDERLINE: case ID_FORMAT_STRIKETHROUGH:
     case ID_FORMAT_COLOR: case ID_FORMAT_BULLETPOINT: case ID_FORMAT_SYMBOL: case ID_FORMAT_REMINDER: {
       ev.Enable(editor->canFormat(ev.GetId()));
-      ev.Check (editor->hasFormat(ev.GetId()));
+      if (ev.IsCheckable()) {
+        ev.Check(editor->hasFormat(ev.GetId()));
+      }
       break;
-    }
   }
+}
 }
 
 void SetInfoPanel::onCommand(int id) {

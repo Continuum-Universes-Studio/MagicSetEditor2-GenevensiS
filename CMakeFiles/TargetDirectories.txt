@@ -1,0 +1,5 @@
+/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/magicseteditor.dir
+/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/magicseteditor-updater.dir
+/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/test.dir
+/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/edit_cache.dir
+/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/rebuild_cache.dir

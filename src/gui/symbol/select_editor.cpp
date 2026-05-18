@@ -149,7 +149,9 @@ void SymbolSelectEditor::onUpdateUI(wxUpdateUIEvent& ev) {
       } // disable when symmetries are selected?
     }
     ev.Enable(enable);
-    ev.Check(enable && check);
+    if (ev.IsCheckable()) {
+      ev.Check(enable && check);
+    }
   } else if (ev.GetId() == ID_EDIT_DUPLICATE) {
     ev.Enable(!control.selected_parts.empty());
   } else if (ev.GetId() == ID_EDIT_GROUP) {

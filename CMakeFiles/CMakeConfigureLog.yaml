@@ -1,0 +1,3612 @@
+
+---
+events:
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineSystem.cmake:12 (find_program)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_UNAME"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "uname"
+    candidate_directories:
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    searched_directories:
+      - "/usr/lib64/jvm/java-25-openjdk/bin/uname"
+      - "/home/cdjensen94/.local/bin/uname"
+      - "/home/cdjensen94/.pyenv/shims/uname"
+      - "/home/cdjensen94/.pyenv/bin/uname"
+      - "/home/cdjensen94/.cargo/bin/uname"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/uname"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/uname"
+      - "/home/cdjensen94/.dotnet/uname"
+      - "/home/cdjensen94/miniforge3/condabin/uname"
+      - "/opt/temurin/temurin-21/bin/uname"
+      - "/home/cdjensen94/bin/uname"
+      - "/usr/local/bin/uname"
+    found: "/usr/bin/uname"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineSystem.cmake:212 (message)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      The system is: Linux - 7.0.6-1-default - x86_64
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeUnixFindMake.cmake:5 (find_program)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_MAKE_PROGRAM"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "gmake"
+      - "make"
+      - "smake"
+    candidate_directories:
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    searched_directories:
+      - "/usr/lib64/jvm/java-25-openjdk/bin/gmake"
+      - "/home/cdjensen94/.local/bin/gmake"
+      - "/home/cdjensen94/.pyenv/shims/gmake"
+      - "/home/cdjensen94/.pyenv/bin/gmake"
+      - "/home/cdjensen94/.cargo/bin/gmake"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gmake"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gmake"
+      - "/home/cdjensen94/.dotnet/gmake"
+      - "/home/cdjensen94/miniforge3/condabin/gmake"
+      - "/opt/temurin/temurin-21/bin/gmake"
+      - "/home/cdjensen94/bin/gmake"
+      - "/usr/local/bin/gmake"
+    found: "/usr/bin/gmake"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompiler.cmake:73 (find_program)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:64 (_cmake_find_compiler)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_C_COMPILER"
+    description: "C compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "cc"
+      - "gcc"
+      - "cl"
+      - "bcc"
+      - "xlc"
+      - "icx"
+      - "clang"
+    candidate_directories:
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    searched_directories:
+      - "/usr/lib64/jvm/java-25-openjdk/bin/cc"
+      - "/home/cdjensen94/.local/bin/cc"
+      - "/home/cdjensen94/.pyenv/shims/cc"
+      - "/home/cdjensen94/.pyenv/bin/cc"
+      - "/home/cdjensen94/.cargo/bin/cc"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/cc"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/cc"
+      - "/home/cdjensen94/.dotnet/cc"
+      - "/home/cdjensen94/miniforge3/condabin/cc"
+      - "/opt/temurin/temurin-21/bin/cc"
+      - "/home/cdjensen94/bin/cc"
+      - "/usr/local/bin/cc"
+    found: "/usr/bin/cc"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:462 (find_file)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:500 (CMAKE_DETERMINE_COMPILER_ID_WRITE)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:8 (CMAKE_DETERMINE_COMPILER_ID_BUILD)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:122 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "file"
+    variable: "src_in"
+    description: "Path to a file."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "CMakeCCompilerId.c.in"
+    candidate_directories:
+      - "/usr/share/cmake/Modules/"
+    found: "/usr/share/cmake/Modules/CMakeCCompilerId.c.in"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:122 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler: /usr/bin/cc 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+      
+      The C compiler identification is GNU, found in:
+        /mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/4.2.3/CompilerIdC/a.out
+      
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_AR"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "ar"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    found: "/usr/bin/ar"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_RANLIB"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "ranlib"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    found: "/usr/bin/ranlib"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_STRIP"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "strip"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    found: "/usr/bin/strip"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_LINKER"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "ld"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    found: "/usr/bin/ld"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_NM"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "nm"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    found: "/usr/bin/nm"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_OBJDUMP"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "objdump"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    found: "/usr/bin/objdump"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_OBJCOPY"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "objcopy"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    found: "/usr/bin/objcopy"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_READELF"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "readelf"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    found: "/usr/bin/readelf"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_DLLTOOL"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "dlltool"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    searched_directories:
+      - "/usr/bin/dlltool"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/dlltool"
+      - "/home/cdjensen94/.local/bin/dlltool"
+      - "/home/cdjensen94/.pyenv/shims/dlltool"
+      - "/home/cdjensen94/.pyenv/bin/dlltool"
+      - "/home/cdjensen94/.cargo/bin/dlltool"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/dlltool"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/dlltool"
+      - "/home/cdjensen94/.dotnet/dlltool"
+      - "/home/cdjensen94/miniforge3/condabin/dlltool"
+      - "/opt/temurin/temurin-21/bin/dlltool"
+      - "/home/cdjensen94/bin/dlltool"
+      - "/usr/local/bin/dlltool"
+      - "/bin/dlltool"
+      - "/snap/bin/dlltool"
+      - "/var/lib/snapd/snap/bin/dlltool"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_ADDR2LINE"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "addr2line"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    found: "/usr/bin/addr2line"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_TAPI"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "tapi"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    searched_directories:
+      - "/usr/bin/tapi"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/tapi"
+      - "/home/cdjensen94/.local/bin/tapi"
+      - "/home/cdjensen94/.pyenv/shims/tapi"
+      - "/home/cdjensen94/.pyenv/bin/tapi"
+      - "/home/cdjensen94/.cargo/bin/tapi"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/tapi"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/tapi"
+      - "/home/cdjensen94/.dotnet/tapi"
+      - "/home/cdjensen94/miniforge3/condabin/tapi"
+      - "/opt/temurin/temurin-21/bin/tapi"
+      - "/home/cdjensen94/bin/tapi"
+      - "/usr/local/bin/tapi"
+      - "/bin/tapi"
+      - "/snap/bin/tapi"
+      - "/var/lib/snapd/snap/bin/tapi"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/Compiler/GNU-FindBinUtils.cmake:18 (find_program)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:201 (include)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_C_COMPILER_AR"
+    description: "A wrapper around 'ar' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "gcc-ar-15.2"
+      - "gcc-ar-15"
+      - "gcc-ar15"
+      - "gcc-ar"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    searched_directories:
+      - "/usr/bin/gcc-ar-15.2"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/gcc-ar-15.2"
+      - "/home/cdjensen94/.local/bin/gcc-ar-15.2"
+      - "/home/cdjensen94/.pyenv/shims/gcc-ar-15.2"
+      - "/home/cdjensen94/.pyenv/bin/gcc-ar-15.2"
+      - "/home/cdjensen94/.cargo/bin/gcc-ar-15.2"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ar-15.2"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ar-15.2"
+      - "/home/cdjensen94/.dotnet/gcc-ar-15.2"
+      - "/home/cdjensen94/miniforge3/condabin/gcc-ar-15.2"
+      - "/opt/temurin/temurin-21/bin/gcc-ar-15.2"
+      - "/home/cdjensen94/bin/gcc-ar-15.2"
+      - "/usr/local/bin/gcc-ar-15.2"
+      - "/bin/gcc-ar-15.2"
+      - "/snap/bin/gcc-ar-15.2"
+      - "/var/lib/snapd/snap/bin/gcc-ar-15.2"
+    found: "/usr/bin/gcc-ar-15"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/Compiler/GNU-FindBinUtils.cmake:30 (find_program)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:201 (include)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_C_COMPILER_RANLIB"
+    description: "A wrapper around 'ranlib' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "gcc-ranlib-15.2"
+      - "gcc-ranlib-15"
+      - "gcc-ranlib15"
+      - "gcc-ranlib"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    searched_directories:
+      - "/usr/bin/gcc-ranlib-15.2"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/gcc-ranlib-15.2"
+      - "/home/cdjensen94/.local/bin/gcc-ranlib-15.2"
+      - "/home/cdjensen94/.pyenv/shims/gcc-ranlib-15.2"
+      - "/home/cdjensen94/.pyenv/bin/gcc-ranlib-15.2"
+      - "/home/cdjensen94/.cargo/bin/gcc-ranlib-15.2"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ranlib-15.2"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ranlib-15.2"
+      - "/home/cdjensen94/.dotnet/gcc-ranlib-15.2"
+      - "/home/cdjensen94/miniforge3/condabin/gcc-ranlib-15.2"
+      - "/opt/temurin/temurin-21/bin/gcc-ranlib-15.2"
+      - "/home/cdjensen94/bin/gcc-ranlib-15.2"
+      - "/usr/local/bin/gcc-ranlib-15.2"
+      - "/bin/gcc-ranlib-15.2"
+      - "/snap/bin/gcc-ranlib-15.2"
+      - "/var/lib/snapd/snap/bin/gcc-ranlib-15.2"
+    found: "/usr/bin/gcc-ranlib-15"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompiler.cmake:54 (find_program)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake:69 (_cmake_find_compiler)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_CXX_COMPILER"
+    description: "CXX compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "c++"
+      - "CC"
+      - "g++"
+      - "aCC"
+      - "cl"
+      - "bcc"
+      - "xlC"
+      - "icpx"
+      - "icx"
+      - "clang++"
+    candidate_directories:
+      - "/usr/bin/"
+    found: "/usr/bin/c++"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:462 (find_file)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:500 (CMAKE_DETERMINE_COMPILER_ID_WRITE)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:8 (CMAKE_DETERMINE_COMPILER_ID_BUILD)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake:125 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "file"
+    variable: "src_in"
+    description: "Path to a file."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "CMakeCXXCompilerId.cpp.in"
+    candidate_directories:
+      - "/usr/share/cmake/Modules/"
+    found: "/usr/share/cmake/Modules/CMakeCXXCompilerId.cpp.in"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake:125 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler: /usr/bin/c++ 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+      
+      The CXX compiler identification is GNU, found in:
+        /mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/4.2.3/CompilerIdCXX/a.out
+      
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/Compiler/GNU-FindBinUtils.cmake:18 (find_program)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake:207 (include)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_CXX_COMPILER_AR"
+    description: "A wrapper around 'ar' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "gcc-ar-15.2"
+      - "gcc-ar-15"
+      - "gcc-ar15"
+      - "gcc-ar"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    searched_directories:
+      - "/usr/bin/gcc-ar-15.2"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/gcc-ar-15.2"
+      - "/home/cdjensen94/.local/bin/gcc-ar-15.2"
+      - "/home/cdjensen94/.pyenv/shims/gcc-ar-15.2"
+      - "/home/cdjensen94/.pyenv/bin/gcc-ar-15.2"
+      - "/home/cdjensen94/.cargo/bin/gcc-ar-15.2"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ar-15.2"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ar-15.2"
+      - "/home/cdjensen94/.dotnet/gcc-ar-15.2"
+      - "/home/cdjensen94/miniforge3/condabin/gcc-ar-15.2"
+      - "/opt/temurin/temurin-21/bin/gcc-ar-15.2"
+      - "/home/cdjensen94/bin/gcc-ar-15.2"
+      - "/usr/local/bin/gcc-ar-15.2"
+      - "/bin/gcc-ar-15.2"
+      - "/snap/bin/gcc-ar-15.2"
+      - "/var/lib/snapd/snap/bin/gcc-ar-15.2"
+    found: "/usr/bin/gcc-ar-15"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/Compiler/GNU-FindBinUtils.cmake:30 (find_program)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake:207 (include)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_CXX_COMPILER_RANLIB"
+    description: "A wrapper around 'ranlib' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "gcc-ranlib-15.2"
+      - "gcc-ranlib-15"
+      - "gcc-ranlib15"
+      - "gcc-ranlib"
+    candidate_directories:
+      - "/usr/bin/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+    searched_directories:
+      - "/usr/bin/gcc-ranlib-15.2"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/gcc-ranlib-15.2"
+      - "/home/cdjensen94/.local/bin/gcc-ranlib-15.2"
+      - "/home/cdjensen94/.pyenv/shims/gcc-ranlib-15.2"
+      - "/home/cdjensen94/.pyenv/bin/gcc-ranlib-15.2"
+      - "/home/cdjensen94/.cargo/bin/gcc-ranlib-15.2"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ranlib-15.2"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ranlib-15.2"
+      - "/home/cdjensen94/.dotnet/gcc-ranlib-15.2"
+      - "/home/cdjensen94/miniforge3/condabin/gcc-ranlib-15.2"
+      - "/opt/temurin/temurin-21/bin/gcc-ranlib-15.2"
+      - "/home/cdjensen94/bin/gcc-ranlib-15.2"
+      - "/usr/local/bin/gcc-ranlib-15.2"
+      - "/bin/gcc-ranlib-15.2"
+      - "/snap/bin/gcc-ranlib-15.2"
+      - "/var/lib/snapd/snap/bin/gcc-ranlib-15.2"
+    found: "/usr/bin/gcc-ranlib-15"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:83 (try_compile)"
+      - "/usr/share/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/CMakeScratch/TryCompile-5XOGCN"
+      binary: "/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/CMakeScratch/TryCompile-5XOGCN"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/CMakeScratch/TryCompile-5XOGCN'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_5e5c4/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_5e5c4.dir/build.make CMakeFiles/cmTC_5e5c4.dir/build
+        gmake[1]: Entering directory '/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/CMakeScratch/TryCompile-5XOGCN'
+        Building C object CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o
+        /usr/bin/cc   -v -o CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake/Modules/CMakeCCompilerABI.c
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/cc
+        OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
+        OFFLOAD_TARGET_DEFAULT=1
+        Target: x86_64-suse-linux
+        Configured with: ../configure CFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' CXXFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' XCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' TCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' GDCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -g' --prefix=/usr --infodir=/usr/share/info --mandir=/usr/share/man --libdir=/usr/lib64 --libexecdir=/usr/lib64 --enable-languages=c,c++,objc,fortran,obj-c++,ada,go,d,jit,m2,cobol --enable-offload-targets=nvptx-none,amdgcn-amdhsa, --enable-offload-defaulted --without-cuda-driver --enable-host-shared --enable-checking=release --disable-werror --with-gxx-include-dir=/usr/include/c++/15 --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --enable-ssp --disable-libssp --disable-libvtv --enable-cet=auto --disable-libcc1 --enable-plugin --with-bugurl=https://bugs.opensuse.org/ --with-pkgversion='SUSE Linux' --with-slibdir=/lib64 --with-system-zlib --enable-libstdcxx-allocator=new --disable-libstdcxx-pch --enable-libphobos --enable-version-specific-runtime-libs --with-gcc-major-version-only --enable-linker-build-id --enable-linux-futex --enable-gnu-indirect-function --program-suffix=-15 --without-system-libunwind --enable-multilib --with-arch-32=x86-64 --with-tune=generic --with-build-config=bootstrap-lto-lean --enable-link-serialization --build=x86_64-suse-linux --host=x86_64-suse-linux
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 15.2.1 20260202 (SUSE Linux) 
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5e5c4.dir/'
+         /usr/lib64/gcc/x86_64-suse-linux/15/cc1 -quiet -v /usr/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_5e5c4.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mtune=generic -march=x86-64 -version -o /tmp/ccUmKy83.s
+        GNU C23 (SUSE Linux) version 15.2.1 20260202 (x86_64-suse-linux)
+        	compiled by GNU C version 15.2.1 20260202, GMP version 6.3.0, MPFR version 4.2.2, MPC version 1.4.1, isl version isl-0.27-GMP
+        
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /usr/lib64/gcc/x86_64-suse-linux/15/include
+         /usr/local/include
+         /usr/lib64/gcc/x86_64-suse-linux/15/include-fixed
+         /usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/include
+         /usr/include
+        End of search list.
+        Compiler executable checksum: 00000000000000000000000000000000
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5e5c4.dir/'
+         /usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/as -v --64 -o CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o /tmp/ccUmKy83.s
+        GNU assembler version 2.45.0 (x86_64-suse-linux) using BFD version (GNU Binutils; openSUSE Tumbleweed) 2.45.0.20251103-3
+        COMPILER_PATH=/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/:/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/
+        LIBRARY_PATH=/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.'
+        Linking C executable cmTC_5e5c4
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5e5c4.dir/link.txt --verbose=1
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/cc
+        COLLECT_LTO_WRAPPER=/usr/lib64/gcc/x86_64-suse-linux/15/lto-wrapper
+        OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
+        OFFLOAD_TARGET_DEFAULT=1
+        Target: x86_64-suse-linux
+        Configured with: ../configure CFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' CXXFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' XCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' TCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' GDCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -g' --prefix=/usr --infodir=/usr/share/info --mandir=/usr/share/man --libdir=/usr/lib64 --libexecdir=/usr/lib64 --enable-languages=c,c++,objc,fortran,obj-c++,ada,go,d,jit,m2,cobol --enable-offload-targets=nvptx-none,amdgcn-amdhsa, --enable-offload-defaulted --without-cuda-driver --enable-host-shared --enable-checking=release --disable-werror --with-gxx-include-dir=/usr/include/c++/15 --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --enable-ssp --disable-libssp --disable-libvtv --enable-cet=auto --disable-libcc1 --enable-plugin --with-bugurl=https://bugs.opensuse.org/ --with-pkgversion='SUSE Linux' --with-slibdir=/lib64 --with-system-zlib --enable-libstdcxx-allocator=new --disable-libstdcxx-pch --enable-libphobos --enable-version-specific-runtime-libs --with-gcc-major-version-only --enable-linker-build-id --enable-linux-futex --enable-gnu-indirect-function --program-suffix=-15 --without-system-libunwind --enable-multilib --with-arch-32=x86-64 --with-tune=generic --with-build-config=bootstrap-lto-lean --enable-link-serialization --build=x86_64-suse-linux --host=x86_64-suse-linux
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 15.2.1 20260202 (SUSE Linux) 
+        COMPILER_PATH=/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/:/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/
+        LIBRARY_PATH=/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_5e5c4' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_5e5c4.'
+         /usr/lib64/gcc/x86_64-suse-linux/15/collect2 -plugin /usr/lib64/gcc/x86_64-suse-linux/15/liblto_plugin.so -plugin-opt=/usr/lib64/gcc/x86_64-suse-linux/15/lto-wrapper -plugin-opt=-fresolution=/tmp/ccEu7OAj.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_5e5c4 /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crt1.o /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crti.o /usr/lib64/gcc/x86_64-suse-linux/15/crtbegin.o -L/usr/lib64/gcc/x86_64-suse-linux/15 -L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib -L/usr/lib64/gcc/x86_64-suse-linux/15/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib64/gcc/x86_64-suse-linux/15/crtend.o /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crtn.o
+        collect2 version 15.2.1 20260202
+        /usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/ld -plugin /usr/lib64/gcc/x86_64-suse-linux/15/liblto_plugin.so -plugin-opt=/usr/lib64/gcc/x86_64-suse-linux/15/lto-wrapper -plugin-opt=-fresolution=/tmp/ccEu7OAj.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_5e5c4 /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crt1.o /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crti.o /usr/lib64/gcc/x86_64-suse-linux/15/crtbegin.o -L/usr/lib64/gcc/x86_64-suse-linux/15 -L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib -L/usr/lib64/gcc/x86_64-suse-linux/15/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib64/gcc/x86_64-suse-linux/15/crtend.o /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crtn.o
+        GNU ld (GNU Binutils; openSUSE Tumbleweed) 2.45.0.20251103-3
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_5e5c4' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_5e5c4.'
+        /usr/bin/cc  -v -Wl,-v CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o -o cmTC_5e5c4
+        gmake[1]: Leaving directory '/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/CMakeScratch/TryCompile-5XOGCN'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:217 (message)"
+      - "/usr/share/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Parsed C implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/usr/lib64/gcc/x86_64-suse-linux/15/include]
+          add: [/usr/local/include]
+          add: [/usr/lib64/gcc/x86_64-suse-linux/15/include-fixed]
+          add: [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/include]
+          add: [/usr/include]
+        end of search list found
+        collapse include dir [/usr/lib64/gcc/x86_64-suse-linux/15/include] ==> [/usr/lib64/gcc/x86_64-suse-linux/15/include]
+        collapse include dir [/usr/local/include] ==> [/usr/local/include]
+        collapse include dir [/usr/lib64/gcc/x86_64-suse-linux/15/include-fixed] ==> [/usr/lib64/gcc/x86_64-suse-linux/15/include-fixed]
+        collapse include dir [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/include] ==> [/usr/x86_64-suse-linux/include]
+        collapse include dir [/usr/include] ==> [/usr/include]
+        implicit include dirs: [/usr/lib64/gcc/x86_64-suse-linux/15/include;/usr/local/include;/usr/lib64/gcc/x86_64-suse-linux/15/include-fixed;/usr/x86_64-suse-linux/include;/usr/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:253 (message)"
+      - "/usr/share/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Parsed C implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|"|[0-9]+>[ 	-]*Build:[ 	0-9]+ ms[ 	]*)?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)))("|,| |$)]
+        ignore line: [Change Dir: '/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/CMakeScratch/TryCompile-5XOGCN']
+        ignore line: []
+        ignore line: [Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_5e5c4/fast]
+        ignore line: [/usr/bin/gmake  -f CMakeFiles/cmTC_5e5c4.dir/build.make CMakeFiles/cmTC_5e5c4.dir/build]
+        ignore line: [gmake[1]: Entering directory '/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/CMakeScratch/TryCompile-5XOGCN']
+        ignore line: [Building C object CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o]
+        ignore line: [/usr/bin/cc   -v -o CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake/Modules/CMakeCCompilerABI.c]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/cc]
+        ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa]
+        ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+        ignore line: [Target: x86_64-suse-linux]
+        ignore line: [Configured with: ../configure CFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' CXXFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' XCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' TCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' GDCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -g' --prefix=/usr --infodir=/usr/share/info --mandir=/usr/share/man --libdir=/usr/lib64 --libexecdir=/usr/lib64 --enable-languages=c c++ objc fortran obj-c++ ada go d jit m2 cobol --enable-offload-targets=nvptx-none amdgcn-amdhsa  --enable-offload-defaulted --without-cuda-driver --enable-host-shared --enable-checking=release --disable-werror --with-gxx-include-dir=/usr/include/c++/15 --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --enable-ssp --disable-libssp --disable-libvtv --enable-cet=auto --disable-libcc1 --enable-plugin --with-bugurl=https://bugs.opensuse.org/ --with-pkgversion='SUSE Linux' --with-slibdir=/lib64 --with-system-zlib --enable-libstdcxx-allocator=new --disable-libstdcxx-pch --enable-libphobos --enable-version-specific-runtime-libs --with-gcc-major-version-only --enable-linker-build-id --enable-linux-futex --enable-gnu-indirect-function --program-suffix=-15 --without-system-libunwind --enable-multilib --with-arch-32=x86-64 --with-tune=generic --with-build-config=bootstrap-lto-lean --enable-link-serialization --build=x86_64-suse-linux --host=x86_64-suse-linux]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 15.2.1 20260202 (SUSE Linux) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5e5c4.dir/']
+        ignore line: [ /usr/lib64/gcc/x86_64-suse-linux/15/cc1 -quiet -v /usr/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_5e5c4.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mtune=generic -march=x86-64 -version -o /tmp/ccUmKy83.s]
+        ignore line: [GNU C23 (SUSE Linux) version 15.2.1 20260202 (x86_64-suse-linux)]
+        ignore line: [	compiled by GNU C version 15.2.1 20260202  GMP version 6.3.0  MPFR version 4.2.2  MPC version 1.4.1  isl version isl-0.27-GMP]
+        ignore line: []
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /usr/lib64/gcc/x86_64-suse-linux/15/include]
+        ignore line: [ /usr/local/include]
+        ignore line: [ /usr/lib64/gcc/x86_64-suse-linux/15/include-fixed]
+        ignore line: [ /usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/include]
+        ignore line: [ /usr/include]
+        ignore line: [End of search list.]
+        ignore line: [Compiler executable checksum: 00000000000000000000000000000000]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5e5c4.dir/']
+        ignore line: [ /usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/as -v --64 -o CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o /tmp/ccUmKy83.s]
+        ignore line: [GNU assembler version 2.45.0 (x86_64-suse-linux) using BFD version (GNU Binutils]
+        ignore line: [ openSUSE Tumbleweed) 2.45.0.20251103-3]
+        ignore line: [COMPILER_PATH=/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/:/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/]
+        ignore line: [LIBRARY_PATH=/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.']
+        ignore line: [Linking C executable cmTC_5e5c4]
+        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5e5c4.dir/link.txt --verbose=1]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/cc]
+        ignore line: [COLLECT_LTO_WRAPPER=/usr/lib64/gcc/x86_64-suse-linux/15/lto-wrapper]
+        ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa]
+        ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+        ignore line: [Target: x86_64-suse-linux]
+        ignore line: [Configured with: ../configure CFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' CXXFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' XCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' TCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' GDCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -g' --prefix=/usr --infodir=/usr/share/info --mandir=/usr/share/man --libdir=/usr/lib64 --libexecdir=/usr/lib64 --enable-languages=c c++ objc fortran obj-c++ ada go d jit m2 cobol --enable-offload-targets=nvptx-none amdgcn-amdhsa  --enable-offload-defaulted --without-cuda-driver --enable-host-shared --enable-checking=release --disable-werror --with-gxx-include-dir=/usr/include/c++/15 --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --enable-ssp --disable-libssp --disable-libvtv --enable-cet=auto --disable-libcc1 --enable-plugin --with-bugurl=https://bugs.opensuse.org/ --with-pkgversion='SUSE Linux' --with-slibdir=/lib64 --with-system-zlib --enable-libstdcxx-allocator=new --disable-libstdcxx-pch --enable-libphobos --enable-version-specific-runtime-libs --with-gcc-major-version-only --enable-linker-build-id --enable-linux-futex --enable-gnu-indirect-function --program-suffix=-15 --without-system-libunwind --enable-multilib --with-arch-32=x86-64 --with-tune=generic --with-build-config=bootstrap-lto-lean --enable-link-serialization --build=x86_64-suse-linux --host=x86_64-suse-linux]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 15.2.1 20260202 (SUSE Linux) ]
+        ignore line: [COMPILER_PATH=/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/:/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/]
+        ignore line: [LIBRARY_PATH=/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_5e5c4' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_5e5c4.']
+        link line: [ /usr/lib64/gcc/x86_64-suse-linux/15/collect2 -plugin /usr/lib64/gcc/x86_64-suse-linux/15/liblto_plugin.so -plugin-opt=/usr/lib64/gcc/x86_64-suse-linux/15/lto-wrapper -plugin-opt=-fresolution=/tmp/ccEu7OAj.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_5e5c4 /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crt1.o /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crti.o /usr/lib64/gcc/x86_64-suse-linux/15/crtbegin.o -L/usr/lib64/gcc/x86_64-suse-linux/15 -L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib -L/usr/lib64/gcc/x86_64-suse-linux/15/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib64/gcc/x86_64-suse-linux/15/crtend.o /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crtn.o]
+          arg [/usr/lib64/gcc/x86_64-suse-linux/15/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/usr/lib64/gcc/x86_64-suse-linux/15/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/usr/lib64/gcc/x86_64-suse-linux/15/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/ccEu7OAj.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [--build-id] ==> ignore
+          arg [--eh-frame-hdr] ==> ignore
+          arg [-m] ==> ignore
+          arg [elf_x86_64] ==> ignore
+          arg [-dynamic-linker] ==> ignore
+          arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_5e5c4] ==> ignore
+          arg [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crt1.o] ==> obj [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crt1.o]
+          arg [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crti.o] ==> obj [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crti.o]
+          arg [/usr/lib64/gcc/x86_64-suse-linux/15/crtbegin.o] ==> obj [/usr/lib64/gcc/x86_64-suse-linux/15/crtbegin.o]
+          arg [-L/usr/lib64/gcc/x86_64-suse-linux/15] ==> dir [/usr/lib64/gcc/x86_64-suse-linux/15]
+          arg [-L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64] ==> dir [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64]
+          arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+          arg [-L/usr/lib/../lib64] ==> dir [/usr/lib/../lib64]
+          arg [-L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib] ==> dir [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib]
+          arg [-L/usr/lib64/gcc/x86_64-suse-linux/15/../../..] ==> dir [/usr/lib64/gcc/x86_64-suse-linux/15/../../..]
+          arg [-L/lib] ==> dir [/lib]
+          arg [-L/usr/lib] ==> dir [/usr/lib]
+          arg [-v] ==> ignore
+          arg [CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o] ==> ignore
+          arg [-lgcc] ==> lib [gcc]
+          arg [--push-state] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [--pop-state] ==> ignore
+          arg [-lc] ==> lib [c]
+          arg [-lgcc] ==> lib [gcc]
+          arg [--push-state] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [--pop-state] ==> ignore
+          arg [/usr/lib64/gcc/x86_64-suse-linux/15/crtend.o] ==> obj [/usr/lib64/gcc/x86_64-suse-linux/15/crtend.o]
+          arg [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crtn.o] ==> obj [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crtn.o]
+        ignore line: [collect2 version 15.2.1 20260202]
+        ignore line: [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/ld -plugin /usr/lib64/gcc/x86_64-suse-linux/15/liblto_plugin.so -plugin-opt=/usr/lib64/gcc/x86_64-suse-linux/15/lto-wrapper -plugin-opt=-fresolution=/tmp/ccEu7OAj.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_5e5c4 /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crt1.o /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crti.o /usr/lib64/gcc/x86_64-suse-linux/15/crtbegin.o -L/usr/lib64/gcc/x86_64-suse-linux/15 -L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib -L/usr/lib64/gcc/x86_64-suse-linux/15/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_5e5c4.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib64/gcc/x86_64-suse-linux/15/crtend.o /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crtn.o]
+        linker tool for 'C': /usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/ld
+        collapse obj [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crt1.o] ==> [/usr/lib64/crt1.o]
+        collapse obj [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crti.o] ==> [/usr/lib64/crti.o]
+        collapse obj [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crtn.o] ==> [/usr/lib64/crtn.o]
+        collapse library dir [/usr/lib64/gcc/x86_64-suse-linux/15] ==> [/usr/lib64/gcc/x86_64-suse-linux/15]
+        collapse library dir [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64] ==> [/usr/lib64]
+        collapse library dir [/lib/../lib64] ==> [/lib64]
+        collapse library dir [/usr/lib/../lib64] ==> [/usr/lib64]
+        collapse library dir [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib] ==> [/usr/x86_64-suse-linux/lib]
+        collapse library dir [/usr/lib64/gcc/x86_64-suse-linux/15/../../..] ==> [/usr/lib64]
+        collapse library dir [/lib] ==> [/lib]
+        collapse library dir [/usr/lib] ==> [/usr/lib]
+        implicit libs: [gcc;gcc_s;c;gcc;gcc_s]
+        implicit objs: [/usr/lib64/crt1.o;/usr/lib64/crti.o;/usr/lib64/gcc/x86_64-suse-linux/15/crtbegin.o;/usr/lib64/gcc/x86_64-suse-linux/15/crtend.o;/usr/lib64/crtn.o]
+        implicit dirs: [/usr/lib64/gcc/x86_64-suse-linux/15;/usr/lib64;/lib64;/usr/x86_64-suse-linux/lib;/lib;/usr/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/Internal/CMakeDetermineLinkerId.cmake:38 (message)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:299 (cmake_determine_linker_id)"
+      - "/usr/share/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Running the C compiler's linker: "/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/ld" "-v"
+      GNU ld (GNU Binutils; openSUSE Tumbleweed) 2.45.0.20251103-3
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:83 (try_compile)"
+      - "/usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/CMakeScratch/TryCompile-epEAYA"
+      binary: "/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/CMakeScratch/TryCompile-epEAYA"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_CXX_SCAN_FOR_MODULES: "OFF"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/CMakeScratch/TryCompile-epEAYA'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_e98d8/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_e98d8.dir/build.make CMakeFiles/cmTC_e98d8.dir/build
+        gmake[1]: Entering directory '/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/CMakeScratch/TryCompile-epEAYA'
+        Building CXX object CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o
+        /usr/bin/c++   -v -o CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/c++
+        OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
+        OFFLOAD_TARGET_DEFAULT=1
+        Target: x86_64-suse-linux
+        Configured with: ../configure CFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' CXXFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' XCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' TCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' GDCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -g' --prefix=/usr --infodir=/usr/share/info --mandir=/usr/share/man --libdir=/usr/lib64 --libexecdir=/usr/lib64 --enable-languages=c,c++,objc,fortran,obj-c++,ada,go,d,jit,m2,cobol --enable-offload-targets=nvptx-none,amdgcn-amdhsa, --enable-offload-defaulted --without-cuda-driver --enable-host-shared --enable-checking=release --disable-werror --with-gxx-include-dir=/usr/include/c++/15 --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --enable-ssp --disable-libssp --disable-libvtv --enable-cet=auto --disable-libcc1 --enable-plugin --with-bugurl=https://bugs.opensuse.org/ --with-pkgversion='SUSE Linux' --with-slibdir=/lib64 --with-system-zlib --enable-libstdcxx-allocator=new --disable-libstdcxx-pch --enable-libphobos --enable-version-specific-runtime-libs --with-gcc-major-version-only --enable-linker-build-id --enable-linux-futex --enable-gnu-indirect-function --program-suffix=-15 --without-system-libunwind --enable-multilib --with-arch-32=x86-64 --with-tune=generic --with-build-config=bootstrap-lto-lean --enable-link-serialization --build=x86_64-suse-linux --host=x86_64-suse-linux
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 15.2.1 20260202 (SUSE Linux) 
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e98d8.dir/'
+         /usr/lib64/gcc/x86_64-suse-linux/15/cc1plus -quiet -v -D_GNU_SOURCE /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_e98d8.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -o /tmp/ccVFnNUv.s
+        GNU C++17 (SUSE Linux) version 15.2.1 20260202 (x86_64-suse-linux)
+        	compiled by GNU C version 15.2.1 20260202, GMP version 6.3.0, MPFR version 4.2.2, MPC version 1.4.1, isl version isl-0.27-GMP
+        
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /usr/include/c++/15
+         /usr/include/c++/15/x86_64-suse-linux
+         /usr/include/c++/15/backward
+         /usr/lib64/gcc/x86_64-suse-linux/15/include
+         /usr/local/include
+         /usr/lib64/gcc/x86_64-suse-linux/15/include-fixed
+         /usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/include
+         /usr/include
+        End of search list.
+        Compiler executable checksum: 00000000000000000000000000000000
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e98d8.dir/'
+         /usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/as -v --64 -o CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccVFnNUv.s
+        GNU assembler version 2.45.0 (x86_64-suse-linux) using BFD version (GNU Binutils; openSUSE Tumbleweed) 2.45.0.20251103-3
+        COMPILER_PATH=/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/:/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/
+        LIBRARY_PATH=/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.'
+        Linking CXX executable cmTC_e98d8
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e98d8.dir/link.txt --verbose=1
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/c++
+        COLLECT_LTO_WRAPPER=/usr/lib64/gcc/x86_64-suse-linux/15/lto-wrapper
+        OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
+        OFFLOAD_TARGET_DEFAULT=1
+        Target: x86_64-suse-linux
+        Configured with: ../configure CFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' CXXFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' XCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' TCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' GDCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -g' --prefix=/usr --infodir=/usr/share/info --mandir=/usr/share/man --libdir=/usr/lib64 --libexecdir=/usr/lib64 --enable-languages=c,c++,objc,fortran,obj-c++,ada,go,d,jit,m2,cobol --enable-offload-targets=nvptx-none,amdgcn-amdhsa, --enable-offload-defaulted --without-cuda-driver --enable-host-shared --enable-checking=release --disable-werror --with-gxx-include-dir=/usr/include/c++/15 --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --enable-ssp --disable-libssp --disable-libvtv --enable-cet=auto --disable-libcc1 --enable-plugin --with-bugurl=https://bugs.opensuse.org/ --with-pkgversion='SUSE Linux' --with-slibdir=/lib64 --with-system-zlib --enable-libstdcxx-allocator=new --disable-libstdcxx-pch --enable-libphobos --enable-version-specific-runtime-libs --with-gcc-major-version-only --enable-linker-build-id --enable-linux-futex --enable-gnu-indirect-function --program-suffix=-15 --without-system-libunwind --enable-multilib --with-arch-32=x86-64 --with-tune=generic --with-build-config=bootstrap-lto-lean --enable-link-serialization --build=x86_64-suse-linux --host=x86_64-suse-linux
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 15.2.1 20260202 (SUSE Linux) 
+        COMPILER_PATH=/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/:/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/
+        LIBRARY_PATH=/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_e98d8' '-foffload-options=-l_GCC_stdc++' '-foffload-options=-l_GCC_m' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_e98d8.'
+         /usr/lib64/gcc/x86_64-suse-linux/15/collect2 -plugin /usr/lib64/gcc/x86_64-suse-linux/15/liblto_plugin.so -plugin-opt=/usr/lib64/gcc/x86_64-suse-linux/15/lto-wrapper -plugin-opt=-fresolution=/tmp/cc4pajyn.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_e98d8 /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crt1.o /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crti.o /usr/lib64/gcc/x86_64-suse-linux/15/crtbegin.o -L/usr/lib64/gcc/x86_64-suse-linux/15 -L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib -L/usr/lib64/gcc/x86_64-suse-linux/15/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib64/gcc/x86_64-suse-linux/15/crtend.o /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crtn.o
+        collect2 version 15.2.1 20260202
+        /usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/ld -plugin /usr/lib64/gcc/x86_64-suse-linux/15/liblto_plugin.so -plugin-opt=/usr/lib64/gcc/x86_64-suse-linux/15/lto-wrapper -plugin-opt=-fresolution=/tmp/cc4pajyn.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_e98d8 /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crt1.o /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crti.o /usr/lib64/gcc/x86_64-suse-linux/15/crtbegin.o -L/usr/lib64/gcc/x86_64-suse-linux/15 -L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib -L/usr/lib64/gcc/x86_64-suse-linux/15/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib64/gcc/x86_64-suse-linux/15/crtend.o /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crtn.o
+        GNU ld (GNU Binutils; openSUSE Tumbleweed) 2.45.0.20251103-3
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_e98d8' '-foffload-options=-l_GCC_stdc++' '-foffload-options=-l_GCC_m' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_e98d8.'
+        /usr/bin/c++  -v -Wl,-v CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_e98d8
+        gmake[1]: Leaving directory '/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/CMakeScratch/TryCompile-epEAYA'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:217 (message)"
+      - "/usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Parsed CXX implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/usr/include/c++/15]
+          add: [/usr/include/c++/15/x86_64-suse-linux]
+          add: [/usr/include/c++/15/backward]
+          add: [/usr/lib64/gcc/x86_64-suse-linux/15/include]
+          add: [/usr/local/include]
+          add: [/usr/lib64/gcc/x86_64-suse-linux/15/include-fixed]
+          add: [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/include]
+          add: [/usr/include]
+        end of search list found
+        collapse include dir [/usr/include/c++/15] ==> [/usr/include/c++/15]
+        collapse include dir [/usr/include/c++/15/x86_64-suse-linux] ==> [/usr/include/c++/15/x86_64-suse-linux]
+        collapse include dir [/usr/include/c++/15/backward] ==> [/usr/include/c++/15/backward]
+        collapse include dir [/usr/lib64/gcc/x86_64-suse-linux/15/include] ==> [/usr/lib64/gcc/x86_64-suse-linux/15/include]
+        collapse include dir [/usr/local/include] ==> [/usr/local/include]
+        collapse include dir [/usr/lib64/gcc/x86_64-suse-linux/15/include-fixed] ==> [/usr/lib64/gcc/x86_64-suse-linux/15/include-fixed]
+        collapse include dir [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/include] ==> [/usr/x86_64-suse-linux/include]
+        collapse include dir [/usr/include] ==> [/usr/include]
+        implicit include dirs: [/usr/include/c++/15;/usr/include/c++/15/x86_64-suse-linux;/usr/include/c++/15/backward;/usr/lib64/gcc/x86_64-suse-linux/15/include;/usr/local/include;/usr/lib64/gcc/x86_64-suse-linux/15/include-fixed;/usr/x86_64-suse-linux/include;/usr/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:253 (message)"
+      - "/usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|"|[0-9]+>[ 	-]*Build:[ 	0-9]+ ms[ 	]*)?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)))("|,| |$)]
+        ignore line: [Change Dir: '/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/CMakeScratch/TryCompile-epEAYA']
+        ignore line: []
+        ignore line: [Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_e98d8/fast]
+        ignore line: [/usr/bin/gmake  -f CMakeFiles/cmTC_e98d8.dir/build.make CMakeFiles/cmTC_e98d8.dir/build]
+        ignore line: [gmake[1]: Entering directory '/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/CMakeScratch/TryCompile-epEAYA']
+        ignore line: [Building CXX object CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o]
+        ignore line: [/usr/bin/c++   -v -o CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/c++]
+        ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa]
+        ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+        ignore line: [Target: x86_64-suse-linux]
+        ignore line: [Configured with: ../configure CFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' CXXFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' XCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' TCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' GDCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -g' --prefix=/usr --infodir=/usr/share/info --mandir=/usr/share/man --libdir=/usr/lib64 --libexecdir=/usr/lib64 --enable-languages=c c++ objc fortran obj-c++ ada go d jit m2 cobol --enable-offload-targets=nvptx-none amdgcn-amdhsa  --enable-offload-defaulted --without-cuda-driver --enable-host-shared --enable-checking=release --disable-werror --with-gxx-include-dir=/usr/include/c++/15 --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --enable-ssp --disable-libssp --disable-libvtv --enable-cet=auto --disable-libcc1 --enable-plugin --with-bugurl=https://bugs.opensuse.org/ --with-pkgversion='SUSE Linux' --with-slibdir=/lib64 --with-system-zlib --enable-libstdcxx-allocator=new --disable-libstdcxx-pch --enable-libphobos --enable-version-specific-runtime-libs --with-gcc-major-version-only --enable-linker-build-id --enable-linux-futex --enable-gnu-indirect-function --program-suffix=-15 --without-system-libunwind --enable-multilib --with-arch-32=x86-64 --with-tune=generic --with-build-config=bootstrap-lto-lean --enable-link-serialization --build=x86_64-suse-linux --host=x86_64-suse-linux]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 15.2.1 20260202 (SUSE Linux) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e98d8.dir/']
+        ignore line: [ /usr/lib64/gcc/x86_64-suse-linux/15/cc1plus -quiet -v -D_GNU_SOURCE /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_e98d8.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -o /tmp/ccVFnNUv.s]
+        ignore line: [GNU C++17 (SUSE Linux) version 15.2.1 20260202 (x86_64-suse-linux)]
+        ignore line: [	compiled by GNU C version 15.2.1 20260202  GMP version 6.3.0  MPFR version 4.2.2  MPC version 1.4.1  isl version isl-0.27-GMP]
+        ignore line: []
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /usr/include/c++/15]
+        ignore line: [ /usr/include/c++/15/x86_64-suse-linux]
+        ignore line: [ /usr/include/c++/15/backward]
+        ignore line: [ /usr/lib64/gcc/x86_64-suse-linux/15/include]
+        ignore line: [ /usr/local/include]
+        ignore line: [ /usr/lib64/gcc/x86_64-suse-linux/15/include-fixed]
+        ignore line: [ /usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/include]
+        ignore line: [ /usr/include]
+        ignore line: [End of search list.]
+        ignore line: [Compiler executable checksum: 00000000000000000000000000000000]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e98d8.dir/']
+        ignore line: [ /usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/as -v --64 -o CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccVFnNUv.s]
+        ignore line: [GNU assembler version 2.45.0 (x86_64-suse-linux) using BFD version (GNU Binutils]
+        ignore line: [ openSUSE Tumbleweed) 2.45.0.20251103-3]
+        ignore line: [COMPILER_PATH=/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/:/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/]
+        ignore line: [LIBRARY_PATH=/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.']
+        ignore line: [Linking CXX executable cmTC_e98d8]
+        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e98d8.dir/link.txt --verbose=1]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/c++]
+        ignore line: [COLLECT_LTO_WRAPPER=/usr/lib64/gcc/x86_64-suse-linux/15/lto-wrapper]
+        ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa]
+        ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+        ignore line: [Target: x86_64-suse-linux]
+        ignore line: [Configured with: ../configure CFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' CXXFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' XCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' TCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -Werror=return-type -g' GDCFLAGS=' -fcf-protection -O2 -funwind-tables -fasynchronous-unwind-tables -fstack-clash-protection -g' --prefix=/usr --infodir=/usr/share/info --mandir=/usr/share/man --libdir=/usr/lib64 --libexecdir=/usr/lib64 --enable-languages=c c++ objc fortran obj-c++ ada go d jit m2 cobol --enable-offload-targets=nvptx-none amdgcn-amdhsa  --enable-offload-defaulted --without-cuda-driver --enable-host-shared --enable-checking=release --disable-werror --with-gxx-include-dir=/usr/include/c++/15 --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --enable-ssp --disable-libssp --disable-libvtv --enable-cet=auto --disable-libcc1 --enable-plugin --with-bugurl=https://bugs.opensuse.org/ --with-pkgversion='SUSE Linux' --with-slibdir=/lib64 --with-system-zlib --enable-libstdcxx-allocator=new --disable-libstdcxx-pch --enable-libphobos --enable-version-specific-runtime-libs --with-gcc-major-version-only --enable-linker-build-id --enable-linux-futex --enable-gnu-indirect-function --program-suffix=-15 --without-system-libunwind --enable-multilib --with-arch-32=x86-64 --with-tune=generic --with-build-config=bootstrap-lto-lean --enable-link-serialization --build=x86_64-suse-linux --host=x86_64-suse-linux]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 15.2.1 20260202 (SUSE Linux) ]
+        ignore line: [COMPILER_PATH=/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/:/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/]
+        ignore line: [LIBRARY_PATH=/usr/lib64/gcc/x86_64-suse-linux/15/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib/:/usr/lib64/gcc/x86_64-suse-linux/15/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_e98d8' '-foffload-options=-l_GCC_stdc++' '-foffload-options=-l_GCC_m' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_e98d8.']
+        link line: [ /usr/lib64/gcc/x86_64-suse-linux/15/collect2 -plugin /usr/lib64/gcc/x86_64-suse-linux/15/liblto_plugin.so -plugin-opt=/usr/lib64/gcc/x86_64-suse-linux/15/lto-wrapper -plugin-opt=-fresolution=/tmp/cc4pajyn.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_e98d8 /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crt1.o /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crti.o /usr/lib64/gcc/x86_64-suse-linux/15/crtbegin.o -L/usr/lib64/gcc/x86_64-suse-linux/15 -L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib -L/usr/lib64/gcc/x86_64-suse-linux/15/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib64/gcc/x86_64-suse-linux/15/crtend.o /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crtn.o]
+          arg [/usr/lib64/gcc/x86_64-suse-linux/15/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/usr/lib64/gcc/x86_64-suse-linux/15/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/usr/lib64/gcc/x86_64-suse-linux/15/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/cc4pajyn.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [--build-id] ==> ignore
+          arg [--eh-frame-hdr] ==> ignore
+          arg [-m] ==> ignore
+          arg [elf_x86_64] ==> ignore
+          arg [-dynamic-linker] ==> ignore
+          arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_e98d8] ==> ignore
+          arg [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crt1.o] ==> obj [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crt1.o]
+          arg [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crti.o] ==> obj [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crti.o]
+          arg [/usr/lib64/gcc/x86_64-suse-linux/15/crtbegin.o] ==> obj [/usr/lib64/gcc/x86_64-suse-linux/15/crtbegin.o]
+          arg [-L/usr/lib64/gcc/x86_64-suse-linux/15] ==> dir [/usr/lib64/gcc/x86_64-suse-linux/15]
+          arg [-L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64] ==> dir [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64]
+          arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+          arg [-L/usr/lib/../lib64] ==> dir [/usr/lib/../lib64]
+          arg [-L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib] ==> dir [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib]
+          arg [-L/usr/lib64/gcc/x86_64-suse-linux/15/../../..] ==> dir [/usr/lib64/gcc/x86_64-suse-linux/15/../../..]
+          arg [-L/lib] ==> dir [/lib]
+          arg [-L/usr/lib] ==> dir [/usr/lib]
+          arg [-v] ==> ignore
+          arg [CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+          arg [-lstdc++] ==> lib [stdc++]
+          arg [-lm] ==> lib [m]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [-lc] ==> lib [c]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [/usr/lib64/gcc/x86_64-suse-linux/15/crtend.o] ==> obj [/usr/lib64/gcc/x86_64-suse-linux/15/crtend.o]
+          arg [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crtn.o] ==> obj [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crtn.o]
+        ignore line: [collect2 version 15.2.1 20260202]
+        ignore line: [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/ld -plugin /usr/lib64/gcc/x86_64-suse-linux/15/liblto_plugin.so -plugin-opt=/usr/lib64/gcc/x86_64-suse-linux/15/lto-wrapper -plugin-opt=-fresolution=/tmp/cc4pajyn.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_e98d8 /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crt1.o /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crti.o /usr/lib64/gcc/x86_64-suse-linux/15/crtbegin.o -L/usr/lib64/gcc/x86_64-suse-linux/15 -L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib -L/usr/lib64/gcc/x86_64-suse-linux/15/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_e98d8.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib64/gcc/x86_64-suse-linux/15/crtend.o /usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crtn.o]
+        linker tool for 'CXX': /usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/ld
+        collapse obj [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crt1.o] ==> [/usr/lib64/crt1.o]
+        collapse obj [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crti.o] ==> [/usr/lib64/crti.o]
+        collapse obj [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64/crtn.o] ==> [/usr/lib64/crtn.o]
+        collapse library dir [/usr/lib64/gcc/x86_64-suse-linux/15] ==> [/usr/lib64/gcc/x86_64-suse-linux/15]
+        collapse library dir [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../lib64] ==> [/usr/lib64]
+        collapse library dir [/lib/../lib64] ==> [/lib64]
+        collapse library dir [/usr/lib/../lib64] ==> [/usr/lib64]
+        collapse library dir [/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/lib] ==> [/usr/x86_64-suse-linux/lib]
+        collapse library dir [/usr/lib64/gcc/x86_64-suse-linux/15/../../..] ==> [/usr/lib64]
+        collapse library dir [/lib] ==> [/lib]
+        collapse library dir [/usr/lib] ==> [/usr/lib]
+        implicit libs: [stdc++;m;gcc_s;gcc;c;gcc_s;gcc]
+        implicit objs: [/usr/lib64/crt1.o;/usr/lib64/crti.o;/usr/lib64/gcc/x86_64-suse-linux/15/crtbegin.o;/usr/lib64/gcc/x86_64-suse-linux/15/crtend.o;/usr/lib64/crtn.o]
+        implicit dirs: [/usr/lib64/gcc/x86_64-suse-linux/15;/usr/lib64;/lib64;/usr/x86_64-suse-linux/lib;/lib;/usr/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/Internal/CMakeDetermineLinkerId.cmake:38 (message)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:299 (cmake_determine_linker_id)"
+      - "/usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Running the CXX compiler's linker: "/usr/lib64/gcc/x86_64-suse-linux/15/../../../../x86_64-suse-linux/bin/ld" "-v"
+      GNU ld (GNU Binutils; openSUSE Tumbleweed) 2.45.0.20251103-3
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/FindwxWidgets.cmake:1138 (find_library)"
+      - "CMakeLists.txt:10 (find_package)"
+    mode: "library"
+    variable: "_wx_lib_found"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "wx_gtk3u_core-3.3"
+    candidate_directories:
+      - "/opt/wxWidgets-3.3.1/lib64/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/usr/local/lib64/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+      - "/usr/lib64/"
+      - "/usr/lib/"
+      - "/usr/"
+      - "/lib64/"
+      - "/lib/"
+      - "/opt/"
+      - "/usr/lib64/X11/"
+      - "/usr/lib/X11/"
+    found: "/opt/wxWidgets-3.3.1/lib64/libwx_gtk3u_core-3.3.so"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/FindwxWidgets.cmake:1138 (find_library)"
+      - "CMakeLists.txt:10 (find_package)"
+    mode: "library"
+    variable: "_wx_lib_found"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "wx_baseu-3.3"
+    candidate_directories:
+      - "/opt/wxWidgets-3.3.1/lib64/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/usr/local/lib64/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+      - "/usr/lib64/"
+      - "/usr/lib/"
+      - "/usr/"
+      - "/lib64/"
+      - "/lib/"
+      - "/opt/"
+      - "/usr/lib64/X11/"
+      - "/usr/lib/X11/"
+    found: "/opt/wxWidgets-3.3.1/lib64/libwx_baseu-3.3.so"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/FindwxWidgets.cmake:1138 (find_library)"
+      - "CMakeLists.txt:10 (find_package)"
+    mode: "library"
+    variable: "_wx_lib_found"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "wx_baseu_net-3.3"
+    candidate_directories:
+      - "/opt/wxWidgets-3.3.1/lib64/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/usr/local/lib64/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+      - "/usr/lib64/"
+      - "/usr/lib/"
+      - "/usr/"
+      - "/lib64/"
+      - "/lib/"
+      - "/opt/"
+      - "/usr/lib64/X11/"
+      - "/usr/lib/X11/"
+    found: "/opt/wxWidgets-3.3.1/lib64/libwx_baseu_net-3.3.so"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/FindwxWidgets.cmake:1138 (find_library)"
+      - "CMakeLists.txt:10 (find_package)"
+    mode: "library"
+    variable: "_wx_lib_found"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "wx_gtk3u_html-3.3"
+    candidate_directories:
+      - "/opt/wxWidgets-3.3.1/lib64/"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/usr/local/lib64/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+      - "/usr/lib64/"
+      - "/usr/lib/"
+      - "/usr/"
+      - "/lib64/"
+      - "/lib/"
+      - "/opt/"
+      - "/usr/lib64/X11/"
+      - "/usr/lib/X11/"
+    found: "/opt/wxWidgets-3.3.1/lib64/libwx_gtk3u_html-3.3.so"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/FindwxWidgets.cmake:374 (find_file)"
+      - "/usr/share/cmake/Modules/FindwxWidgets.cmake:1157 (wx_extract_version)"
+      - "CMakeLists.txt:10 (find_package)"
+    mode: "file"
+    variable: "_wx_filename"
+    description: "Path to a file."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "wx/version.h"
+    candidate_directories:
+      - "/opt/wxWidgets-3.3.1/lib64/wx/include/gtk3-unicode-3.3/"
+      - "/opt/wxWidgets-3.3.1/include/wx-3.3/"
+    searched_directories:
+      - "/opt/wxWidgets-3.3.1/lib64/wx/include/gtk3-unicode-3.3/wx/version.h"
+    found: "/opt/wxWidgets-3.3.1/include/wx-3.3/wx/version.h"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_INCLUDE_PATH:
+        - "/usr/include/X11"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/FindwxWidgets.cmake:1208 (find_program)"
+      - "CMakeLists.txt:10 (find_package)"
+    mode: "program"
+    variable: "wxWidgets_wxrc_EXECUTABLE"
+    description: "Location of wxWidgets resource file compiler binary (wxrc)"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "wxrc"
+    candidate_directories:
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+      - "/usr/local/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/"
+      - "/usr/bin/"
+      - "/usr/sbin/"
+      - "/usr/"
+      - "/bin/"
+      - "/sbin/"
+      - "/usr/X11R6/bin/"
+      - "/usr/X11R6/sbin/"
+      - "/usr/X11R6/"
+      - "/usr/pkg/bin/"
+      - "/usr/pkg/sbin/"
+      - "/usr/pkg/"
+      - "/opt/bin/"
+      - "/opt/sbin/"
+      - "/opt/"
+      - "/utils/wxrc/vc_msw/"
+    searched_directories:
+      - "/usr/lib64/jvm/java-25-openjdk/bin/wxrc"
+      - "/home/cdjensen94/.local/bin/wxrc"
+      - "/home/cdjensen94/.pyenv/shims/wxrc"
+      - "/home/cdjensen94/.pyenv/bin/wxrc"
+      - "/home/cdjensen94/.cargo/bin/wxrc"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/wxrc"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/wxrc"
+      - "/home/cdjensen94/.dotnet/wxrc"
+      - "/home/cdjensen94/miniforge3/condabin/wxrc"
+      - "/opt/temurin/temurin-21/bin/wxrc"
+      - "/home/cdjensen94/bin/wxrc"
+      - "/usr/local/bin/wxrc"
+    found: "/usr/bin/wxrc"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+  -
+    kind: "find_package-v1"
+    backtrace:
+      - "/usr/lib64/cmake/Boost-1.91.0/BoostConfig.cmake:141 (find_package)"
+      - "/usr/lib64/cmake/Boost-1.91.0/BoostConfig.cmake:215 (boost_find_component)"
+      - "/usr/share/cmake/Modules/FindBoost.cmake:610 (find_package)"
+      - "CMakeLists.txt:12 (find_package)"
+    name: "boost_headers"
+    configs:
+      -
+        filename: "boost_headersConfig.cmake"
+        kind: "cmake"
+      -
+        filename: "boost_headers-config.cmake"
+        kind: "cmake"
+    version_request:
+      version: "1.91.0"
+      version_complete: "1.91.0"
+      exact: true
+    settings:
+      required: "required_explicit"
+      quiet: true
+      global: false
+      policy_scope: true
+      bypass_provider: false
+      hints:
+        - "/usr/lib64/cmake"
+      names:
+        - "boost_headers"
+      path_suffixes:
+        - ""
+      paths:
+        CMAKE_FIND_USE_CMAKE_PATH: true
+        CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+        CMAKE_FIND_USE_INSTALL_PREFIX: true
+        CMAKE_FIND_USE_PACKAGE_ROOT_PATH: true
+        CMAKE_FIND_USE_CMAKE_PACKAGE_REGISTRY: true
+        CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY: true
+        CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
+    candidates:
+      -
+        path: "/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/pkgRedirects/boost_headersConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/pkgRedirects/boost_headers-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_headersConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_headers-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_headers-1.91.0/boost_headersConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+    found:
+      path: "/usr/lib64/cmake/boost_headers-1.91.0/boost_headers-config.cmake"
+      mode: "config"
+      version: "1.91.0"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+  -
+    kind: "find_package-v1"
+    backtrace:
+      - "/usr/lib64/cmake/Boost-1.91.0/BoostConfig.cmake:141 (find_package)"
+      - "/usr/lib64/cmake/Boost-1.91.0/BoostConfig.cmake:262 (boost_find_component)"
+      - "/usr/share/cmake/Modules/FindBoost.cmake:610 (find_package)"
+      - "CMakeLists.txt:12 (find_package)"
+    name: "boost_regex"
+    configs:
+      -
+        filename: "boost_regexConfig.cmake"
+        kind: "cmake"
+      -
+        filename: "boost_regex-config.cmake"
+        kind: "cmake"
+    version_request:
+      version: "1.91.0"
+      version_complete: "1.91.0"
+      exact: true
+    settings:
+      required: "required_explicit"
+      quiet: true
+      global: false
+      policy_scope: true
+      bypass_provider: false
+      hints:
+        - "/usr/lib64/cmake"
+      names:
+        - "boost_regex"
+      path_suffixes:
+        - ""
+      paths:
+        CMAKE_FIND_USE_CMAKE_PATH: true
+        CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+        CMAKE_FIND_USE_INSTALL_PREFIX: true
+        CMAKE_FIND_USE_PACKAGE_ROOT_PATH: true
+        CMAKE_FIND_USE_CMAKE_PACKAGE_REGISTRY: true
+        CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY: true
+        CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
+    candidates:
+      -
+        path: "/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/pkgRedirects/boost_regexConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/pkgRedirects/boost_regex-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_regexConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_regex-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_regex-1.91.0/boost_regexConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+    found:
+      path: "/usr/lib64/cmake/boost_regex-1.91.0/boost_regex-config.cmake"
+      mode: "config"
+      version: "1.91.0"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+  -
+    kind: "find_package-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/FindBoost.cmake:610 (find_package)"
+      - "CMakeLists.txt:12 (find_package)"
+    name: "Boost"
+    components:
+      -
+        name: "regex"
+        required: true
+        found: true
+    configs:
+      -
+        filename: "BoostConfig.cmake"
+        kind: "cmake"
+      -
+        filename: "boost-config.cmake"
+        kind: "cmake"
+    version_request:
+      exact: false
+    settings:
+      required: "optional"
+      quiet: true
+      global: false
+      policy_scope: true
+      bypass_provider: false
+      names:
+        - "Boost"
+      path_suffixes:
+        - ""
+      paths:
+        CMAKE_FIND_USE_CMAKE_PATH: true
+        CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+        CMAKE_FIND_USE_INSTALL_PREFIX: true
+        CMAKE_FIND_USE_PACKAGE_ROOT_PATH: true
+        CMAKE_FIND_USE_CMAKE_PACKAGE_REGISTRY: true
+        CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY: true
+        CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
+    candidates:
+      -
+        path: "/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/pkgRedirects/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/mnt/y/Dev/Softwares/GenevensiS-MSE2/CMakeFiles/pkgRedirects/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/jvm/java-25-openjdk/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/jvm/java-25-openjdk/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/.local/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/.local/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/.pyenv/shims/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/.pyenv/shims/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/.pyenv/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/.pyenv/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/.cargo/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/.cargo/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/.dotnet/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/.dotnet/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/miniforge3/condabin/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/miniforge3/condabin/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/opt/temurin/temurin-21/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/opt/temurin/temurin-21/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/home/cdjensen94/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/local/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/local/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_wserialization-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_wserialization-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_wave-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_wave-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_url-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_url-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_unit_test_framework-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_unit_test_framework-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_type_erasure-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_type_erasure-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_timer-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_timer-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_thread-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_thread-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_test_exec_monitor-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_test_exec_monitor-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_stacktrace_noop-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_stacktrace_noop-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_stacktrace_basic-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_stacktrace_basic-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_stacktrace_addr2line-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_stacktrace_addr2line-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_serialization-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_serialization-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_regex-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_regex-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_random-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_random-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_python-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_python-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_program_options-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_program_options-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_process-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_process-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_prg_exec_monitor-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_prg_exec_monitor-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_numpy-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_numpy-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_nowide-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_nowide-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_mpi_python-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_mpi_python-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_mpi-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_mpi-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_math_tr1l-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_math_tr1l-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_math_tr1f-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_math_tr1f-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_math_tr1-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_math_tr1-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_math_c99l-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_math_c99l-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_math_c99f-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_math_c99f-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_math_c99-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_math_c99-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_math-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_math-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_log_setup-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_log_setup-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_log-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_log-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_locale-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_locale-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_json-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_json-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_iostreams-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_iostreams-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_headers-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_headers-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_graph_parallel-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_graph_parallel-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_graph-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_graph-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_filesystem-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_filesystem-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_fiber-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_fiber-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_date_time-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_date_time-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_coroutine-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_coroutine-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_contract-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_contract-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_context-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_context-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_container-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_container-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_chrono-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_chrono-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_charconv-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_charconv-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_atomic-1.91.0/BoostConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "/usr/lib64/cmake/boost_atomic-1.91.0/boost-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+    found:
+      path: "/usr/lib64/cmake/Boost-1.91.0/BoostConfig.cmake"
+      mode: "config"
+      version: "1.91.0"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/FindBoost.cmake:538 (find_path)"
+      - "/usr/share/cmake/Modules/FindBoost.cmake:643 (_boost_set_legacy_variables_from_config)"
+      - "CMakeLists.txt:12 (find_package)"
+    mode: "path"
+    variable: "Boost_INCLUDE_DIR"
+    description: "Path to a file."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "boost/version.hpp"
+      - "boost/config.hpp"
+    candidate_directories:
+      - "/usr/include/"
+    found: "/usr/include/"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_INCLUDE_PATH:
+        - "/usr/include/X11"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/FindPkgConfig.cmake:517 (find_program)"
+      - "CMakeLists.txt:14 (find_package)"
+    mode: "program"
+    variable: "PKG_CONFIG_EXECUTABLE"
+    description: "pkg-config executable"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "pkg-config"
+      - "pkgconf"
+    candidate_directories:
+      - "/usr/lib64/jvm/java-25-openjdk/bin/"
+      - "/home/cdjensen94/.local/bin/"
+      - "/home/cdjensen94/.pyenv/shims/"
+      - "/home/cdjensen94/.pyenv/bin/"
+      - "/home/cdjensen94/.cargo/bin/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
+      - "/home/cdjensen94/.dotnet/"
+      - "/home/cdjensen94/miniforge3/condabin/"
+      - "/opt/temurin/temurin-21/bin/"
+      - "/home/cdjensen94/bin/"
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/bin/"
+      - "/snap/bin/"
+      - "/var/lib/snapd/snap/bin/"
+      - "/usr/local/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/"
+      - "/usr/bin/"
+      - "/usr/sbin/"
+      - "/usr/"
+      - "/bin/"
+      - "/sbin/"
+      - "/usr/X11R6/bin/"
+      - "/usr/X11R6/sbin/"
+      - "/usr/X11R6/"
+      - "/usr/pkg/bin/"
+      - "/usr/pkg/sbin/"
+      - "/usr/pkg/"
+      - "/opt/bin/"
+      - "/opt/sbin/"
+      - "/opt/"
+    searched_directories:
+      - "/usr/lib64/jvm/java-25-openjdk/bin/pkg-config"
+      - "/usr/lib64/jvm/java-25-openjdk/bin/pkgconf"
+      - "/home/cdjensen94/.local/bin/pkg-config"
+      - "/home/cdjensen94/.local/bin/pkgconf"
+      - "/home/cdjensen94/.pyenv/shims/pkg-config"
+      - "/home/cdjensen94/.pyenv/shims/pkgconf"
+      - "/home/cdjensen94/.pyenv/bin/pkg-config"
+      - "/home/cdjensen94/.pyenv/bin/pkgconf"
+      - "/home/cdjensen94/.cargo/bin/pkg-config"
+      - "/home/cdjensen94/.cargo/bin/pkgconf"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/pkg-config"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/pkgconf"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/pkg-config"
+      - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/pkgconf"
+      - "/home/cdjensen94/.dotnet/pkg-config"
+      - "/home/cdjensen94/.dotnet/pkgconf"
+      - "/home/cdjensen94/miniforge3/condabin/pkg-config"
+      - "/home/cdjensen94/miniforge3/condabin/pkgconf"
+      - "/opt/temurin/temurin-21/bin/pkg-config"
+      - "/opt/temurin/temurin-21/bin/pkgconf"
+      - "/home/cdjensen94/bin/pkg-config"
+      - "/home/cdjensen94/bin/pkgconf"
+      - "/usr/local/bin/pkg-config"
+      - "/usr/local/bin/pkgconf"
+    found: "/usr/bin/pkg-config"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/FindPkgConfig.cmake:761 (find_library)"
+      - "/usr/share/cmake/Modules/FindPkgConfig.cmake:811 (_pkg_find_libs)"
+      - "/usr/share/cmake/Modules/FindPkgConfig.cmake:1149 (_pkg_recalculate)"
+      - "/usr/share/cmake/Modules/FindPkgConfig.cmake:1166 (_pkg_check_modules_internal)"
+      - "CMakeLists.txt:17 (pkg_check_modules)"
+    mode: "library"
+    variable: "pkgcfg_lib_HUNSPELL_hunspell-1.7"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "hunspell-1.7"
+    candidate_directories:
+      - "/usr/lib64/"
+    found: "/usr/lib64/libhunspell-1.7.so"
+    search_context:
+      ENV{PATH}:
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/shims"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+        - "/home/cdjensen94/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/home/cdjensen94/.dotnet"
+        - "/usr/lib64/jvm/java-25-openjdk/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/.local/share/../bin"
+        - "/home/cdjensen94/.pyenv/bin"
+        - "/home/cdjensen94/miniforge3/condabin"
+        - "/home/cdjensen94/.cargo/bin"
+        - "/opt/temurin/temurin-21/bin"
+        - "/home/cdjensen94/.local/bin"
+        - "/home/cdjensen94/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/snap/bin"
+        - "/var/lib/snapd/snap/bin"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+...
