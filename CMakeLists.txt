@@ -36,39 +36,20 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-find_package(wxWidgets 3.3.1 REQUIRED COMPONENTS core base net html)
-include(${wxWidgets_USE_FILE})
-find_package(Boost REQUIRED COMPONENTS regex)
-
-find_package(PkgConfig)
-
-# find hunspell
-pkg_check_modules(HUNSPELL hunspell)
-if( NOT HUNSPELL_FOUND )
-	message("-- Cannot find Hunspell via pkg-config, checking directly...")
-	find_path(HUNSPELL_INCLUDE_DIRS hunspell.hxx)
-	message("-- HUNSPELL_INCLUDE_DIRS = ${HUNSPELL_INCLUDE_DIRS}")
-	find_library(HUNSPELL_LIBRARIES NAMES hunspell libhunspell)
-	message("-- HUNSPELL_LIBRARIES = ${HUNSPELL_LIBRARIES}")
-	if ( ${HUNSPELL_INCLUDE_DIRS} STREQUAL "HUNSPELL_INCLUDE_DIRS-NOTFOUND" )
-		message(FATAL_ERROR "Hunspell cannot be found")
-	else()
-		message("-- Found Hunspell at ${HUNSPELL_LIBRARIES}")
-	endif()
+# Portable Linux runtime lookup:
+# Allows bundled libraries beside the executable in ./lib
+if(UNIX AND NOT APPLE)
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+    set(CMAKE_INSTALL_RPATH "$ORIGIN/lib")
+    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 endif()
 
 # ------------------------------------------------------------------------------
 # Dependencies
 # ------------------------------------------------------------------------------
 
-# You will most likely get a message about being unable to open hunspell-1.7.lib because pkgconf forgets to add the actual path to HUNSPELL_LIBRARIES.
-# If so, uncomment the below line and point it to the correct vcpkg root folder/library. (For debug builds, add "debug\\" just before "lib\\")
-#set(HUNSPELL_LIBRARIES "C:\\PATH\\TO\\ROOT\\vcpkg\\installed\\${VCPKG_TARGET_TRIPLET}\\lib\\hunspell-1.7.lib")
-
 find_package(wxWidgets 3.3.1 REQUIRED COMPONENTS core base net html)
-if(wxWidgets_USE_FILE)
-    include(${wxWidgets_USE_FILE})
-endif()
+include(${wxWidgets_USE_FILE})
 
 find_package(Boost REQUIRED COMPONENTS regex)
 find_package(PkgConfig REQUIRED)
@@ -202,9 +183,6 @@ if(WIN32)
     target_sources(magicseteditor-cli PRIVATE
         "${PROJECT_SOURCE_DIR}/src/cli/win32_cli_wrapper.cpp"
     )
-
-    target_compile_definitions(magicseteditor-cli PRIVATE WIN32)
-    target_link_options(magicseteditor-cli PRIVATE -mconsole)
 
     add_custom_command(
         TARGET magicseteditor-cli
@@ -388,6 +366,4 @@ endif()
 # Test suite
 # ------------------------------------------------------------------------------
 
-# Debug Message
-message("-- Does this have a full path? If not, and it's just a file name, it's broken: ${HUNSPELL_LIBRARIES}")
 include(test/tests.cmake)
