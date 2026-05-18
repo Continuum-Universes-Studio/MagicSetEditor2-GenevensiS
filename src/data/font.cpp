@@ -162,19 +162,31 @@ FontRefP FontRef::make(int add_flags, bool add_underline, bool add_strikethrough
   return f;
 }
 
-static const String BOLD_STRING   = _(" Bold");
+static bool stripFontFaceSuffix(String& familyName, const String& suffix) {
+  if (familyName.length() <= suffix.length()) return false;
+  if (familyName.Right(suffix.length()).CmpNoCase(suffix) != 0) return false;
 
-// Construct a wxFont without going through the legacy 6-argument wxFont(...)
-// That constructor silently treats a pointSize of exactly 70 as a request for wxDEFAULT
-static wxFont make_font(int point_size, wxFontFamily family, wxFontStyle style, wxFontWeight weight, bool underlined, const String& face) {
-  wxFont font;
-  font.SetFamily(family);
-  font.SetStyle(style);
-  font.SetWeight(weight);
-  font.SetUnderlined(underlined);
-  if (!face.empty()) font.SetFaceName(face);
-  font.SetPointSize(point_size);
-  return font;
+  familyName = familyName.Left(familyName.length() - suffix.length());
+  return true;
+}
+
+static void applyFontFaceSuffixes(String& familyName, wxFontWeight& weight, wxFontStyle& style) {
+  bool changed = true;
+  while (changed) {
+    changed = false;
+    if (stripFontFaceSuffix(familyName, _(" Italic"))) {
+      style = wxFONTSTYLE_ITALIC;
+      changed = true;
+    }
+    if (stripFontFaceSuffix(familyName, _(" Oblique"))) {
+      style = wxFONTSTYLE_SLANT;
+      changed = true;
+    }
+    if (stripFontFaceSuffix(familyName, _(" Bold"))) {
+      weight = wxFONTWEIGHT_BOLD;
+      changed = true;
+    }
+  }
 }
 
 wxFont FontRef::toWxFont(double scale) const {
@@ -198,14 +210,14 @@ wxFont FontRef::toWxFont(double scale) const {
     if (strikethrough()) font.MakeStrikethrough();
     return font;
   } else if (!(flags & FONT_FROM_TAG) && (flags & FONT_ITALIC) && !italic_name().empty()) {
-    font = make_font(size_i, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, weight_i, underline(), italic_name());
+    String familyName = italic_name();
+    wxFontStyle italicNameStyle = wxFONTSTYLE_NORMAL;
+    applyFontFaceSuffixes(familyName, weight_i, italicNameStyle);
+    font = wxFont(size_i, wxFONTFAMILY_DEFAULT, italicNameStyle, weight_i, underline(), familyName);
   } else {
     String familyName = name();
-    if(familyName.EndsWith(BOLD_STRING)) {
-      familyName = familyName.Left(familyName.length() - BOLD_STRING.length());
-      weight_i = wxFONTWEIGHT_BOLD;
-    }
-    font = make_font(size_i, wxFONTFAMILY_DEFAULT, style_i, weight_i, underline(), familyName);
+    applyFontFaceSuffixes(familyName, weight_i, style_i);
+    font = wxFont(size_i, wxFONTFAMILY_DEFAULT, style_i, weight_i, underline(), familyName);
   }
   // fix size
 #if defined(__WXMSW__) || defined(__WXGTK__)
