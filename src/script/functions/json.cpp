@@ -872,7 +872,7 @@ boost::json::object mse_to_json(const IndexMap<FieldP, ValueP>& map) {
   return indexmapv;
 }
 
-boost::json::value mse_to_json(const ScriptValueP& sv, Set* set) {
+boost::json::value mse_to_json(const ScriptValueP& sv, Set* set, bool suppress_warnings) {
   // special types
   if (ScriptObject<PackItemP>*            o = dynamic_cast<ScriptObject<PackItemP>*>           (sv.get())) return mse_to_json( o->getValue());
   if (ScriptObject<PackTypeP>*            o = dynamic_cast<ScriptObject<PackTypeP>*>           (sv.get())) return mse_to_json( o->getValue());
@@ -936,6 +936,6 @@ boost::json::value mse_to_json(const ScriptValueP& sv, Set* set) {
       }
     }
   }
-  queue_message(MESSAGE_ERROR, _ERROR_1_("json unknown script type", sv->typeName()));
+  if (!suppress_warnings) queue_message(MESSAGE_WARNING, _ERROR_1_("json unknown script type", sv->typeName()));
   return boost::json::value(nullptr);
 }

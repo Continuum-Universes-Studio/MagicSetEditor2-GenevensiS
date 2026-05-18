@@ -14,6 +14,7 @@
 #include <util/window_id.hpp>
 #include <data/stylesheet.hpp>
 #include <data/card.hpp>
+#include <script/functions/json.hpp>
 #include <wx/splitter.h>
 #include <wx/dcbuffer.h>
 #include <wx/clipbrd.h>
@@ -624,7 +625,7 @@ void ConsolePanel::exec(String const& command) {
     // type of result
     ScriptType type = result->type();
     if (type == SCRIPT_IMAGE) {
-      GeneratedImage::Options options(0,0, set->stylesheet.get(), set.get());
+      GeneratedImage::Options options(0,0, card->stylesheet ? card->stylesheet.get() : set->stylesheet.get(), set.get());
       wxImage image = result->toImage()->generate(options);
       message->bitmap = wxBitmap(image);
     } else if (type == SCRIPT_COLOR) {
@@ -635,7 +636,9 @@ void ConsolePanel::exec(String const& command) {
       set_alpha(image, color.Alpha() / 255.0);
       message->bitmap = wxBitmap(image);
     } else {
-      message->text = result->toCode();
+      boost::json::value jresult = mse_to_json(result, set.get(), true);
+      if (jresult.is_null()) message->text = result->toCode();
+      else message->text = json_pretty_print(jresult);
     }
     messages->add_message(message);
   } catch (ScriptError const& e) {

@@ -31,6 +31,7 @@ String Version::toString() const {
 }
 
 Version Version::fromString(const String& version) {
+  if (version.empty()) return Version();
   UInt major = 0, minor = 0, revision = 0;
   if (wxSscanf(version, _("%u.%u.%u"), &major, &minor, &revision)<=1)  // a.b.c style
       wxSscanf(version, _("%u-%u-%u"), &major, &minor, &revision);  // date style

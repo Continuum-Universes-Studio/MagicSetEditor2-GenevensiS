@@ -200,6 +200,7 @@ void PackagesWindow::init(Window* parent, bool show_only_installable) {
         v2->Add(keep_button,    0, wxEXPAND | wxBOTTOM, 4);
         v2->AddStretchSpacer();
         v2->Add(remove_button,  0, wxEXPAND | wxBOTTOM, 0);
+        v2->SetMinSize(wxSize(170, -1));
       h->Add(v2);
     v->Add(h, 0, wxEXPAND | (wxALL & ~wxTOP), 8);
     wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL);
@@ -207,7 +208,7 @@ void PackagesWindow::init(Window* parent, bool show_only_installable) {
       h2->AddStretchSpacer();
       h2->Add(CreateButtonSizer(wxOK | wxCANCEL), 0, wxEXPAND | (wxALL & ~wxTOP), 8);
     v->Add(h2, 0, wxEXPAND);
-  v->SetMinSize(800,600);
+  v->SetMinSize(820,650);
   SetSizerAndFit(v);
   
   wxUpdateUIEvent::SetMode(wxUPDATE_UI_PROCESS_SPECIFIED);
@@ -217,24 +218,27 @@ void PackagesWindow::init(Window* parent, bool show_only_installable) {
 PackagesWindow::~PackagesWindow() {
 }
 
-
 void PackagesWindow::onPackageSelect(wxCommandEvent& ev) {
-  package_info->setPackage(package = package_list->getSelection());
+  package_info->setPackage(package = package_list->getSelectedPackage());
   UpdateWindowUI(wxUPDATE_UI_RECURSE);
 }
 
 void PackagesWindow::onActionChange(wxCommandEvent& ev) {
-  if (package) {
-    PackageAction act = ev.GetId() == ID_INSTALL ? PACKAGE_ACT_INSTALL
-                      : ev.GetId() == ID_UPGRADE ? PACKAGE_ACT_INSTALL
-                      : ev.GetId() == ID_REMOVE  ? PACKAGE_ACT_REMOVE
-                      : PACKAGE_ACT_NOTHING;
-    act = act | where;
-    // set action
-    set_package_action(installable_packages, package, act);
-    package_list->Refresh(false);
-    UpdateWindowUI(wxUPDATE_UI_RECURSE);
-  }
+  PackageAction act = ev.GetId() == ID_INSTALL ? PACKAGE_ACT_INSTALL
+                    : ev.GetId() == ID_UPGRADE ? PACKAGE_ACT_INSTALL
+                    : ev.GetId() == ID_REMOVE  ? PACKAGE_ACT_REMOVE
+                    : PACKAGE_ACT_NOTHING;
+  act = act | where;
+  // set action
+  package_list->forEachSelectedPackage(
+    [&](const InstallablePackageP& p) {
+      if (p->can(act)) {
+        set_package_action(installable_packages, p, act);
+      }
+    }
+  );
+  package_list->Refresh(false);
+  UpdateWindowUI(wxUPDATE_UI_RECURSE);
 }
 
 void PackagesWindow::onOk(wxCommandEvent& ev) {
@@ -374,27 +378,60 @@ void PackagesWindow::onOk(wxCommandEvent& ev) {
 }
 
 void PackagesWindow::onUpdateUI(wxUpdateUIEvent& ev) {
+  bool is_group = package_list->selectionIsGroup();
   wxToggleButton* w = (wxToggleButton*)ev.GetEventObject();
   switch (ev.GetId()) {
     case ID_KEEP:
-      w->SetValue(package && package->has(PACKAGE_ACT_NOTHING));
-      w->Enable  (package && package->can(PACKAGE_ACT_NOTHING | where));
-      w->SetLabel(package && package->installed ? _BUTTON_("keep package") : _BUTTON_("don't install package"));
+      w->SetValue(
+        package_list->allSelectedPackages([&](const InstallablePackageP& p) {
+          return p->has(PACKAGE_ACT_NOTHING);
+        })
+      );
+      w->Enable(
+        package_list->anySelectedPackage([&](const InstallablePackageP& p) {
+          return p->can(PACKAGE_ACT_NOTHING | where);
+        })
+      );
+      w->SetLabel(is_group                                   ? _BUTTON_("keep group") :
+                  package && package->installed              ? _BUTTON_("keep package") :
+                                                               _BUTTON_("don't install package"));
       break;
     case ID_INSTALL:
-      w->SetValue(package && package->has(PACKAGE_ACT_INSTALL | where));
-      w->Enable  (package && package->can(PACKAGE_ACT_INSTALL | where));
-      w->SetLabel(!(package && package->installed)            ? _BUTTON_("install package")
-                 : (package && package->has(PACKAGE_UPDATES)) ? _BUTTON_("upgrade package")
-                 :                                              _BUTTON_("reinstall package"));
+      w->SetValue(
+        package_list->allSelectedPackages([&](const InstallablePackageP& p) {
+          return p->has(PACKAGE_ACT_INSTALL | where) ||
+            (p->has(PACKAGE_INSTALLED) && !p->has(PACKAGE_ACT_REMOVE) && !p->has(PACKAGE_UPDATES));
+        }) &&
+        package_list->anySelectedPackage([&](const InstallablePackageP& p) {
+          return p->has(PACKAGE_ACT_INSTALL | where);
+        })
+      );
+      w->Enable(
+        package_list->anySelectedPackage([&](const InstallablePackageP& p) {
+          return p->can(PACKAGE_ACT_INSTALL | where);
+        })
+      );
+      w->SetLabel(is_group                                   ? _BUTTON_("install group") :
+                 !(package && package->installed)            ? _BUTTON_("install package") :
+                  (package && package->has(PACKAGE_UPDATES)) ? _BUTTON_("upgrade package") :
+                                                               _BUTTON_("reinstall package"));
       break;
     case ID_REMOVE:
-      w->SetValue(package && package->has(PACKAGE_ACT_REMOVE  | where));
-      w->Enable  (package && package->can(PACKAGE_ACT_REMOVE  | where));
-      //w->SetLabel(package && package->... ? _BUTTON_("remove group") : _BUTTON_("remove package"));
+      w->SetValue(
+        package_list->allSelectedPackages([&](const InstallablePackageP& p) {
+          return p->has(PACKAGE_ACT_REMOVE | where) ||
+            (!p->has(PACKAGE_INSTALLED) && !p->has(PACKAGE_ACT_INSTALL));
+        })
+      );
+      w->Enable(
+        package_list->anySelectedPackage([&](const InstallablePackageP& p) {
+          return p->can(PACKAGE_ACT_REMOVE | where);
+        })
+      );
+      w->SetLabel(is_group                                   ? _BUTTON_("remove group") :
+                                                               _BUTTON_("remove package"));
       break;
   }
-  // TODO: change labels to _BUTTON_("install group"), _BUTTON_("remove group"), _BUTTON_("upgrade group")
 }
 
 void PackagesWindow::onIdle(wxIdleEvent& ev) {
@@ -414,7 +451,7 @@ bool PackagesWindow::checkInstallerList(bool refresh) {
   // refresh
   if (refresh) {
     package_list->rebuild();
-    package_info->setPackage(package = package_list->getSelection());
+    package_info->setPackage(package = package_list->getSelectedPackage());
     UpdateWindowUI(wxUPDATE_UI_RECURSE);
   }
   return true;

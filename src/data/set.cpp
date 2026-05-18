@@ -207,37 +207,50 @@ void Set::validate(Version file_app_version) {
   script_manager->updateAll();
   // build uid map
   buildUIDMap();
-  // update cards with game update_cards_scripts
-  for (int j = 0; j < game->update_cards_scripts.size(); ++j) {
-    UpdateCardsScriptP& script = game->update_cards_scripts[j];
-    if (game_version >= script->before_version) continue;
+  // update_cards_scripts
+  // first apply all the stylesheet scripts that are older than the first game script
+  // then apply the first game script
+  // then apply all the stylesheet scripts that are older than the second game script
+  // then apply the second game script, etc...
+  Version previous_cutoff = Version();
+  Version current_cutoff = Version();
+  for (size_t g = 0; g < game->update_cards_scripts.size() + 1; ++g) {
+    bool last_iteration = g == game->update_cards_scripts.size();
+    UpdateCardsScriptP game_script = last_iteration ? nullptr : game->update_cards_scripts[g];
+    previous_cutoff = current_cutoff;
+    current_cutoff = last_iteration ? current_cutoff : game_script->before_version;
+    // Apply stylesheet scripts that are older than the current game script
+    for (size_t i = 0; i < cards.size(); ++i) {
+      CardP& card = cards[i];
+      StyleSheetP stylesheet = card->stylesheet ? card->stylesheet : stylesheetForP(card);
+      Version stylesheet_version = card->stylesheet_version.isZero() ? this->stylesheet_version : card->stylesheet_version;
+      for (size_t j = 0; j < stylesheet->update_cards_scripts.size(); ++j) {
+        UpdateCardsScriptP& script = stylesheet->update_cards_scripts[j];
+        if (script->before_version >= current_cutoff && !last_iteration) continue;
+        if (script->before_version < previous_cutoff) continue;
+        if (stylesheet_version >= script->before_version) continue;
+        vector<CardP> new_cards = script->perform(*this, card);
+        if (!new_cards.empty()) {
+          FOR_EACH(new_card, new_cards) {
+            // Initialize the stylesheet_version if it wasn't defined, to prevent this script from applying again
+            if (stylesheet == stylesheetForP(new_card) && new_card->stylesheet_version < script->before_version) {
+              new_card->stylesheet_version = script->before_version;
+            }
+          }
+          --i;
+          break;
+        }
+      }
+    }
+    // Apply current game script
+    if (last_iteration || game_version >= current_cutoff) continue;
     size_t size = cards.size();
     for (int i = 0; i < size; ++i) {
       CardP& card = cards[i];
-      vector<CardP> new_cards = script->perform(*this, card);
+      vector<CardP> new_cards = game_script->perform(*this, card);
       if (!new_cards.empty()) {
         --i;
         --size;
-      }
-    }
-  }
-  // update cards with stylesheet update_cards_scripts
-  for (int i = 0; i < cards.size(); ++i) {
-    CardP& card = cards[i];
-    StyleSheetP stylesheet = stylesheetForP(card);
-    for (int j = 0; j < stylesheet->update_cards_scripts.size(); ++j) {
-      UpdateCardsScriptP& script = stylesheet->update_cards_scripts[j];
-      if (card->stylesheet_version >= script->before_version) continue;
-      vector<CardP> new_cards = script->perform(*this, card);
-      if (!new_cards.empty()) {
-        FOR_EACH(new_card, new_cards) {
-          // Initialize the stylesheet_version if it wasn't defined, to prevent this script from applying again
-          if (stylesheet == stylesheetForP(new_card) && new_card->stylesheet_version < script->before_version) {
-            new_card->stylesheet_version = script->before_version;
-          }
-        }
-        --i;
-        break;
       }
     }
   }

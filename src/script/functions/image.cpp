@@ -52,8 +52,14 @@ SCRIPT_FUNCTION(to_card_image) {
 
 SCRIPT_FUNCTION(import_image) {
   SCRIPT_PARAM(Set*, set);
-  SCRIPT_PARAM(String, input);
-  return make_intrusive<ImportedImage>(set, input);
+  SCRIPT_PARAM_C(ScriptValueP, input);
+  if (input->type() == SCRIPT_IMAGE) {
+    return make_intrusive<ScriptedImage>(set, input->toImage());
+  }
+  else if (input->type() == SCRIPT_STRING) {
+    return make_intrusive<ImportedImage>(set, input->toString());
+  }
+  throw ScriptErrorConversion(input->typeName(), _TYPE_("image"));
 }
 
 SCRIPT_FUNCTION(download_image) {
@@ -68,8 +74,8 @@ SCRIPT_FUNCTION(download_image) {
 SCRIPT_FUNCTION(get_metadata) {
   SCRIPT_PARAM(Set*, set);
   SCRIPT_PARAM(GeneratedImageP, input);
-  Image img = input->generate(GeneratedImage::Options(0, 0, set));
-  SCRIPT_RETURN(img.GetOption(wxIMAGE_OPTION_PNG_DESCRIPTION));
+  Image image = input->generate(GeneratedImage::Options(0, 0, set, set));
+  SCRIPT_RETURN(image.GetOption(wxIMAGE_OPTION_PNG_DESCRIPTION));
 }
 
 SCRIPT_FUNCTION(set_metadata) {

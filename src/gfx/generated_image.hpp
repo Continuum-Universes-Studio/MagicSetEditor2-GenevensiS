@@ -522,6 +522,16 @@ protected:
   String savename;
 };
 
+// ----------------------------------------------------------------------------- : ScriptedImage
+
+/// Load an image from a script
+class ScriptedImage : public ExternalImage {
+public:
+  ScriptedImage(Set* set, const GeneratedImageP& image);
+  Image generate(const Options&) override;
+  bool operator == (const GeneratedImage& that) const override;
+};
+
 // ----------------------------------------------------------------------------- : ImportedImage
 
 /// Load an image from the filesystem

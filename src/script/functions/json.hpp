@@ -72,4 +72,4 @@ boost::json::object mse_to_json(const Set* set);
 
 boost::json::object mse_to_json(const IndexMap<FieldP,ValueP>& map);
 
-boost::json::value mse_to_json(const ScriptValueP& sv, Set* set);
+boost::json::value mse_to_json(const ScriptValueP& sv, Set* set, bool suppress_warnings = false);

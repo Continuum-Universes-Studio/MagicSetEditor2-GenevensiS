@@ -208,7 +208,9 @@ void Game::validate(Version v) {
     }
   }
   // sort the update_cards_scripts from oldest to newest
-  std::sort(update_cards_scripts.begin(), update_cards_scripts.end());
+  std::sort(update_cards_scripts.begin(), update_cards_scripts.end(), [](const auto& a, const auto& b) {
+    return *a < *b;
+  });
 }
 
 void Game::initCardListColorScript() {

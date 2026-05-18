@@ -783,16 +783,39 @@ bool SetMetadataImage::operator == (const GeneratedImage& that) const {
     && metadata  == that2->metadata;
 }
 
+// ----------------------------------------------------------------------------- : ScriptedImage
+
+ScriptedImage::ScriptedImage(Set* set, const GeneratedImageP& image) {
+  // get the image
+  Image img = image->generate(GeneratedImage::Options(0, 0, set, set));
+
+  // add the file to the set
+  LocalFileName new_image_file = set->newFileName(_("scripted_image"), _(".png"));
+  savename = new_image_file.toStringForWriting();
+  loadpath = savename;
+  img.SaveFile(set->nameOut(new_image_file), wxBITMAP_TYPE_PNG);
+}
+
+Image ScriptedImage::generate(const Options& opt) {
+  auto imageInputStream = opt.local_package->openIn(savename);
+  Image img(*imageInputStream, wxBITMAP_TYPE_PNG);
+
+  if (!img.IsOk()) throw ScriptError(_ERROR_1_("can't import image", loadpath));
+
+  return img;
+}
+
+bool ScriptedImage::operator == (const GeneratedImage& that) const {
+  const ScriptedImage* that2 = dynamic_cast<const ScriptedImage*>(&that);
+  return that2 && that2->loadpath == loadpath;
+}
+
 // ----------------------------------------------------------------------------- : ImportedImage
 
-ImportedImage::ImportedImage(Set* set, const String& filepath)
-{
-  // has the set already been saved at least once?
-  if (set->needSaveAs()) throw ScriptError(_ERROR_1_("can't import image without set", filepath));
-
+ImportedImage::ImportedImage(Set* set, const String& filepath) {
   // determine save name
   loadpath = filepath;
-  savename = normalize_internal_filename(loadpath + _(".png"));
+  savename = normalize_internal_filename(loadpath);
   savename.Replace(":",  "-");
   savename.Replace("/",  "-");
 
@@ -801,18 +824,16 @@ ImportedImage::ImportedImage(Set* set, const String& filepath)
     if (set->contains(savename)) return;
     else throw ScriptError(_ERROR_1_("import not found", loadpath));
   }
-  
+
   // is the file an image?
   Image img;
   img.LoadFile(loadpath);
   if (!img.IsOk()) throw ScriptError(_ERROR_1_("import not image", loadpath));
 
-  // add the file to the set (or overwrite it if pre-existing), save set
-  auto outStream = set->openOut(savename);
-  img.SaveFile(*outStream, wxBITMAP_TYPE_PNG);
-  if (!outStream->IsOk()) throw ScriptError(_ERROR_1_("can't write image to set", loadpath));
-  outStream->Close();
-  set->save(false);
+  // add the file to the set
+  LocalFileName new_image_file = set->newFileName(savename, _(".png"));
+  savename = new_image_file.toStringForWriting();
+  img.SaveFile(set->nameOut(new_image_file), wxBITMAP_TYPE_PNG);
 }
 
 Image ImportedImage::generate(const Options& opt) {
@@ -831,14 +852,10 @@ bool ImportedImage::operator == (const GeneratedImage& that) const {
 
 // ----------------------------------------------------------------------------- : DownloadedImage
 
-DownloadedImage::DownloadedImage(Set* set, const String& url)
-{
-  // has the set already been saved at least once?
-  if (set->needSaveAs()) throw ScriptError(_ERROR_1_("can't download image without set", url));
-
+DownloadedImage::DownloadedImage(Set* set, const String& url) {
   // determine save name
   loadpath = url;
-  savename = normalize_internal_filename(loadpath + _(".png"));
+  savename = normalize_internal_filename(loadpath);
   savename.Replace(":",  "-");
   savename.Replace("/",  "-");
 
@@ -852,12 +869,10 @@ DownloadedImage::DownloadedImage(Set* set, const String& url)
   // is the data an image?
   if (!wnd.content_type.StartsWith(_("image/"))) throw ScriptError(_ERROR_1_("download not image", loadpath));
   
-  // add the file to the set (or overwrite it if pre-existing), save set
-  auto outStream = set->openOut(savename);
-  wnd.image_out.SaveFile(*outStream, wxBITMAP_TYPE_PNG);
-  if (!outStream->IsOk()) throw ScriptError(_ERROR_1_("can't write image to set", loadpath));
-  outStream->Close();
-  set->save(false);
+  // add the file to the set
+  LocalFileName new_image_file = set->newFileName(savename, _(".png"));
+  savename = new_image_file.toStringForWriting();
+  wnd.image_out.SaveFile(set->nameOut(new_image_file), wxBITMAP_TYPE_PNG);
 }
 
 Image DownloadedImage::generate(const Options& opt) {
