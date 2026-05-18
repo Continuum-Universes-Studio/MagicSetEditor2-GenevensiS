@@ -13,9 +13,13 @@
 !/data/*.mse-locale/**/*
 
 /build_*
+/build-*
 /build
 /out
 /enc_temp_folder
 /resource/RC*
-
+/build-win64
+/build-laptop
+build-win64/
+build-laptop/
 /resource/expected_locale_keys
