@@ -49,9 +49,8 @@ bool ScriptableImage::update(Context& ctx) {
     value = new_value;
     ScriptType type = eval->type();
     if      (type == SCRIPT_NIL)    scriptString = _("<nil>");
-    else if (type == SCRIPT_STRING) scriptString = eval->toString();
+    else if (type == SCRIPT_STRING) { String string = eval->toString(); if (string.empty()) scriptString = _("<nil>"); else scriptString = string; }
     else if (type == SCRIPT_IMAGE)  scriptString = _("<image from script>");
-    else                            scriptString = _("<unknown>");
     return true;
   } else {
     return false;

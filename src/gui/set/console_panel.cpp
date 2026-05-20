@@ -636,9 +636,14 @@ void ConsolePanel::exec(String const& command) {
       set_alpha(image, color.Alpha() / 255.0);
       message->bitmap = wxBitmap(image);
     } else {
-      boost::json::value jresult = mse_to_json(result, set.get(), true);
-      if (jresult.is_null()) message->text = result->toCode();
-      else message->text = json_pretty_print(jresult);
+      try {
+        boost::json::value jresult = mse_to_json(result, set.get(), true);
+        if (jresult.is_null()) message->text = result->toCode();
+        else message->text = json_pretty_print(jresult);
+      }
+      catch (...) {
+        message->text = result->toCode();
+      }
     }
     messages->add_message(message);
   } catch (ScriptError const& e) {

@@ -45,7 +45,19 @@ public:
   bool update(Context& ctx);
 
   /// Get the string (filename) produced by the script, for debugging
-  inline String toScriptString() { return scriptString; }
+  inline String toScriptString() {
+    if (!scriptString.empty()) return scriptString;
+    const String& unparsed = script.getUnparsed();
+    if (starts_with(unparsed, _("script:"))) {
+      if (trim(unparsed.substr(7)) == _("\"\"")) return _("<nil>");
+      else return _("<image from script>");
+    }
+    if (starts_with(unparsed, _("{"))) {
+      if (trim(unparsed.substr(1, unparsed.length()-2)) == _("\"\"")) return _("<nil>");
+      else return _("<image from script>");
+    }
+    return unparsed;
+  }
 
   inline void initDependencies(Context& ctx, const Dependency& dep) const {
     script.initDependencies(ctx, dep);

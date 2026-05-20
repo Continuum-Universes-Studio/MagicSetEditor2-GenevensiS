@@ -12,10 +12,15 @@
 #include <util/delayed_index_maps.hpp>
 #include <util/prec.hpp>
 #include <data/card.hpp>
+#include <data/card_link.hpp>
+#include <data/word_list.hpp>
+#include <data/statistics.hpp>
 #include <data/field/information.hpp>
 #include <data/field/boolean.hpp>
 #include <data/field/multiple_choice.hpp>
 #include <data/format/clipboard.hpp>
+#include <data/update_cards_script.hpp>
+#include <data/add_cards_script.hpp>
 #include <render/symbol/filter.hpp>
 #include <script/functions/construction_helper.hpp>
 #include <sstream>
@@ -863,11 +868,147 @@ boost::json::object mse_to_json(const Set* set) {
   return setv;
 }
 
+boost::json::object mse_to_json(const StyleSheetP stylesheet) {
+  boost::json::object stylesheetv;
+  stylesheetv.emplace("mse_object_type",    "stylesheet");
+  // built-in values
+  write(stylesheetv, "mse_version",        stylesheet->fileVersion());
+  write(stylesheetv, "short_name",         stylesheet->short_name);
+  write(stylesheetv, "full_name",          stylesheet->full_name);
+  write(stylesheetv, "folder_name",        stylesheet->folder_name + _(".mse-style"));
+  write(stylesheetv, "version",            stylesheet->version);
+  write(stylesheetv, "installer_group",    stylesheet->installer_group);
+  write(stylesheetv, "icon",               stylesheet->icon_filename);
+  write(stylesheetv, "dark_icon",          stylesheet->dark_icon_filename);
+  write(stylesheetv, "position_hint",      stylesheet->position_hint);
+  write(stylesheetv, "game",               stylesheet->game);
+  write(stylesheetv, "card_width",         stylesheet->card_width);
+  write(stylesheetv, "card_height",        stylesheet->card_height);
+  write(stylesheetv, "card_dpi",           stylesheet->card_dpi);
+  write(stylesheetv, "card_background",    format_color(stylesheet->card_background));
+  // update scripts
+  boost::json::array updatescriptsv;
+  for (const UpdateCardsScriptP& script : stylesheet->update_cards_scripts) {
+    updatescriptsv.emplace_back(script->before_version.toString());
+  }
+  if (!updatescriptsv.empty()) stylesheetv.emplace("update_cards_scripts", updatescriptsv);
+  // styling fields
+  boost::json::array stylingfieldsv;
+  for (const FieldP& field : stylesheet->styling_fields) {
+    stylingfieldsv.emplace_back(field->name);
+  }
+  if (!stylingfieldsv.empty()) stylesheetv.emplace("styling_fields", stylingfieldsv);
+  // extra fields
+  boost::json::array extrafieldsv;
+  for (const FieldP& field : stylesheet->extra_card_fields) {
+    extrafieldsv.emplace_back(field->name);
+  }
+  if (!extrafieldsv.empty()) stylesheetv.emplace("extra_card_fields", extrafieldsv);
+  // done
+  return stylesheetv;
+}
+
+boost::json::object mse_to_json(const Game* game) {
+  boost::json::object gamev;
+  gamev.emplace("mse_object_type",    "game");
+  // built-in values
+  write(gamev, "mse_version",        game->fileVersion());
+  write(gamev, "short_name",         game->short_name);
+  write(gamev, "full_name",          game->full_name);
+  write(gamev, "folder_name",        game->folder_name + _(".mse-game"));
+  write(gamev, "version",            game->version);
+  write(gamev, "installer_group",    game->installer_group);
+  write(gamev, "icon",               game->icon_filename);
+  write(gamev, "dark_icon",          game->dark_icon_filename);
+  write(gamev, "position_hint",      game->position_hint);
+  // update scripts
+  boost::json::array updatescriptsv;
+  for (const UpdateCardsScriptP& script : game->update_cards_scripts) {
+    updatescriptsv.emplace_back(script->before_version.toString());
+  }
+  if (!updatescriptsv.empty()) gamev.emplace("update_cards_scripts", updatescriptsv);
+  // add scripts
+  boost::json::array addscriptsv;
+  for (const AddCardsScriptP& script : game->add_cards_scripts) {
+    addscriptsv.emplace_back(script->name);
+  }
+  if (!addscriptsv.empty()) gamev.emplace("add_cards_scripts", addscriptsv);
+  // set fields
+  boost::json::array setfieldsv;
+  for (const FieldP& field : game->set_fields) {
+    setfieldsv.emplace_back(field->name);
+  }
+  if (!setfieldsv.empty()) gamev.emplace("set_fields", setfieldsv);
+  // card fields
+  boost::json::array cardfieldsv;
+  for (const FieldP& field : game->card_fields) {
+    cardfieldsv.emplace_back(field->name);
+  }
+  if (!cardfieldsv.empty()) gamev.emplace("card_fields", cardfieldsv);
+  // card links
+  boost::json::array cardlinksv;
+  for (const CardLinkP& link : game->card_links) {
+    cardlinksv.emplace_back(link->name());
+  }
+  if (!cardlinksv.empty()) gamev.emplace("card_links", cardlinksv);
+  // json paths
+  boost::json::array jsonpathsv;
+  for (const String& path : game->json_paths) {
+    jsonpathsv.emplace_back(path);
+  }
+  if (!jsonpathsv.empty()) gamev.emplace("json_paths", jsonpathsv);
+  // word lists
+  boost::json::array wordlistsv;
+  for (const WordListP& list : game->word_lists) {
+    wordlistsv.emplace_back(list->name);
+  }
+  if (!wordlistsv.empty()) gamev.emplace("word_lists", wordlistsv);
+  // keywords
+  boost::json::array keywordmodesv;
+  for (const KeywordModeP& mode : game->keyword_modes) {
+    keywordmodesv.emplace_back(mode->name);
+  }
+  if (!keywordmodesv.empty()) gamev.emplace("keyword_modes", keywordmodesv);
+  boost::json::array keywordparametersv;
+  for (const KeywordParamP& mode : game->keyword_parameter_types) {
+    keywordparametersv.emplace_back(mode->name);
+  }
+  if (!keywordparametersv.empty()) gamev.emplace("keyword_parameters", keywordparametersv);
+  boost::json::array keywordsv;
+  for (const KeywordP& keyword : game->keywords) {
+    keywordsv.emplace_back(keyword->keyword);
+  }
+  if (!keywordsv.empty()) gamev.emplace("keywords", keywordsv);
+  // pack types
+  boost::json::array pack_typesv;
+  for (const PackTypeP& pack_type : game->pack_types) {
+    pack_typesv.emplace_back(pack_type->name);
+  }
+  if (!pack_typesv.empty()) gamev.emplace("pack_types", pack_typesv);
+  // statistics
+  boost::json::array statisticsdimensionsv;
+  for (const StatsDimensionP& stat : game->statistics_dimensions) {
+    statisticsdimensionsv.emplace_back(stat->name);
+  }
+  if (!statisticsdimensionsv.empty()) gamev.emplace("statistics_dimensions", statisticsdimensionsv);
+  // done
+  return gamev;
+}
+
 boost::json::object mse_to_json(const IndexMap<FieldP, ValueP>& map) {
   boost::json::object indexmapv;
-  indexmapv.emplace("mse_object_type", "index_map");
+  indexmapv.emplace("mse_object_type", "value_index_map");
   for (auto it = map.begin(); it != map.end(); ++it) {
     write(indexmapv, (*it)->fieldP->name, *it);
+  }
+  return indexmapv;
+}
+
+boost::json::object mse_to_json(const IndexMap<FieldP, StyleP>& map) {
+  boost::json::object indexmapv;
+  indexmapv.emplace("mse_object_type", "style_index_map");
+  for (auto it = map.begin(); it != map.end(); ++it) {
+    indexmapv.emplace((*it)->fieldP->name.ToStdString(), mse_to_json(*it));
   }
   return indexmapv;
 }
@@ -881,7 +1022,11 @@ boost::json::value mse_to_json(const ScriptValueP& sv, Set* set, bool suppress_w
   if (ScriptObject<CardP>*                o = dynamic_cast<ScriptObject<CardP>*>               (sv.get())) return mse_to_json( o->getValue(), set);
   if (ScriptObject<SetP>*                 o = dynamic_cast<ScriptObject<SetP>*>                (sv.get())) return mse_to_json( o->getValue().get());
   if (ScriptObject<Set*>*                 o = dynamic_cast<ScriptObject<Set*>*>                (sv.get())) return mse_to_json( o->getValue());
+  if (ScriptObject<StyleSheetP>*          o = dynamic_cast<ScriptObject<StyleSheetP>*>         (sv.get())) return mse_to_json( o->getValue());
+  if (ScriptObject<GameP>*                o = dynamic_cast<ScriptObject<GameP>*>               (sv.get())) return mse_to_json( o->getValue().get());
+  if (ScriptObject<Game*>*                o = dynamic_cast<ScriptObject<Game*>*>               (sv.get())) return mse_to_json( o->getValue());
   if (ScriptMap<IndexMap<FieldP,ValueP>>* o = dynamic_cast<ScriptMap<IndexMap<FieldP,ValueP>>*>(sv.get())) return mse_to_json(*o->value);
+  if (ScriptMap<IndexMap<FieldP,StyleP>>* o = dynamic_cast<ScriptMap<IndexMap<FieldP,StyleP>>*>(sv.get())) return mse_to_json(*o->value);
 
   // primitive types
   ScriptType type = sv->type();
