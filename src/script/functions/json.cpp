@@ -33,7 +33,7 @@
 
 // ----------------------------------------------------------------------------- : JSON to String
 
-void pretty_print(std::ostream& os, const boost::json::value& jv, std::string* indent)
+void pretty_print(std::ostringstream& os, const boost::json::value& jv, std::string* indent)
 {
   std::string indent_;
   if(! indent)
@@ -94,9 +94,23 @@ void pretty_print(std::ostream& os, const boost::json::value& jv, std::string* i
 
   case boost::json::kind::uint64:
   case boost::json::kind::int64:
-  case boost::json::kind::double_:
     os << jv;
     break;
+
+  case boost::json::kind::double_: {
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision(10) << jv.as_double();
+    std::string str = oss.str();
+    // remove trailing zeros
+    if (str.find('.') != std::string::npos) {
+      str.erase(str.find_last_not_of('0') + 1);
+      if (str.back() == '.') {
+        str.pop_back();
+      }
+    }
+    os << str;
+    break;
+  }
 
   case boost::json::kind::bool_:
     if(jv.get_bool())
