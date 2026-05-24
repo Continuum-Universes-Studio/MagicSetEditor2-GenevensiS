@@ -20,7 +20,7 @@
 // ----------------------------------------------------------------------------- : ExportCardSelectionChoice
 
 CardLinkWindow::CardLinkWindow(Window* parent, const SetP& set, const CardP& selected_card, bool sizer)
-  : wxDialog(parent, wxID_ANY, _TITLE_("link cards"), wxPoint(400,-1), wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
+  : wxDialog(parent, wxID_ANY, _TITLE_("link cards"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
   , set(set), parent(parent), selected_card(selected_card)
 {
   // init controls

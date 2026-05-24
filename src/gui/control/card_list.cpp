@@ -534,6 +534,7 @@ bool CardListBase::canLink() const {
 }
 bool CardListBase::doLink() {
   CardLinkWindow wnd(this, set, getCard());
+  wnd.CentreOnParent();
   if (wnd.ShowModal() == wxID_OK) {
     // The actual linking is done in this window's onOk function
     return true;
