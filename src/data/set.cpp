@@ -203,10 +203,10 @@ void Set::validate(Version file_app_version) {
 
   // we want at least one card
   if (cards.empty()) cards.push_back(make_intrusive<Card>(*game));
-  // update scripts
-  script_manager->updateAll();
   // build uid map
   buildUIDMap();
+  // update scripts
+  script_manager->updateAll();
   // update_cards_scripts
   // first apply all the stylesheet scripts that are older than the first game script
   // then apply the first game script
