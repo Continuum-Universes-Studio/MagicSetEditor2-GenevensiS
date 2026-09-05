@@ -129,3 +129,11 @@ bool ImageValueEditor::onChar(wxKeyEvent& ev) {
       return false;
   }
 }
+
+// ----------------------------------------------------------------------------- : Resetting
+
+void ImageValueEditor::doDefaultReset() {
+  if (!valueP()) return;
+  unique_ptr<ResetValueAction<ImageValue, false>> action = make_unique<ResetValueAction<ImageValue, false>>(valueP());
+  addAction(std::move(action));
+}

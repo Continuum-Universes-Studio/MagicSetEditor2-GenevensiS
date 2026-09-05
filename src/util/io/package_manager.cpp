@@ -19,6 +19,7 @@
 #include <data/installer.hpp>
 #include <wx/stdpaths.h>
 #include <wx/wfstream.h>
+#include <wx/dir.h>
 
 // ----------------------------------------------------------------------------- : PackageManager : in memory
 
@@ -32,6 +33,8 @@ void PackageManager::init() {
     throw Error(_("The MSE data files can not be found, there should be a directory called 'data' with these files. ")
                 _("The expected place to find it in was either ") + wxStandardPaths::Get().GetDataDir() + _(" or ") +
                 wxStandardPaths::Get().GetUserDataDir());
+  local.deleteEmptyFolders();
+  global.deleteEmptyFolders();
 }
 void PackageManager::destroy() {
   loaded_packages.clear();
@@ -40,12 +43,20 @@ void PackageManager::reset() {
   loaded_packages.clear();
 }
 
-PackagedP PackageManager::openAny(const String& name_, bool just_header) {
+void PackageManager::evictFromCache(const String& name_) {
+  String filename = normalizeFilename(cleanFilename(name_));
+  loaded_packages.erase(filename);
+}
+
+String PackageManager::cleanFilename(const String& name_) {
   String name = trim(name_);
-  if (starts_with(name,_("/"))) name = name.substr(1);
-  if (starts_with(name,_(":NO-WARN-DEP:"))) name = name.substr(13);
-  // Attempt to load local data first.
+  while (starts_with(name,_("/"))) name = name.substr(1);
+  while (starts_with(name,_(":NO-WARN-DEP:"))) name = name.substr(13);
+  return name;
+}
+String PackageManager::normalizeFilename(const String& name) {
   String filename;
+  // Attempt to load local data first.
   if (wxFileName(name).IsRelative()) {
     // local data dir?
     filename = normalize_filename(local.name(name));
@@ -56,7 +67,12 @@ PackagedP PackageManager::openAny(const String& name_, bool just_header) {
   } else { // Absolute filename
     filename = normalize_filename(name);
   }
+  return filename;
+}
 
+PackagedP PackageManager::openAny(const String& name_, bool just_header) {
+  String name = cleanFilename(name_);
+  String filename = normalizeFilename(name);
   // Is this package already loaded?
   PackagedP& p = loaded_packages[filename];
   if (!p) {
@@ -85,15 +101,19 @@ void PackageManager::findMatching(const String& pattern, vector<PackagedP>& out)
   // first find local packages
   String file = local.findFirstMatching(pattern);
   while (!file.empty()) {
-    out.push_back(openAny(file, true));
+    if (local.checkForPackageFile(file)) {
+      out.push_back(openAny(file, true));
+    }
     file = wxFindNextFile();
   }
   // then global packages not already in the list
   file = global.findFirstMatching(pattern);
   while (!file.empty()) {
-    PackagedP p = openAny(file, true);
-    if (find(out.begin(), out.end(), p) == out.end()) {
-      out.push_back(p);
+    if (global.checkForPackageFile(file)) {
+      PackagedP p = openAny(file, true);
+      if (find(out.begin(), out.end(), p) == out.end()) {
+        out.push_back(p);
+      }
     }
     file = wxFindNextFile();
   }
@@ -247,9 +267,20 @@ void PackageDirectory::init(const String& dir) {
     directory.clear();
 }
 
+void PackageDirectory::deleteEmptyFolders() {
+  for (String file = findFirstMatching(_("*.mse-*")) ; !file.empty() ; file = wxFindNextFile()) {
+    if (!wxDir::Exists(file)) continue;
+    wxDir outerDir(file);
+    if (!outerDir.HasFiles() && !outerDir.HasSubDirs()) {
+      wxRmdir(file);
+    }
+  }
+}
+
 String PackageDirectory::name(const String& name) const {
   return directory + _("/") + name;
 }
+
 bool PackageDirectory::exists(const String& filename) const {
   String fn = name(filename);
   return wxFileExists(fn) || wxDirExists(fn);
@@ -264,6 +295,21 @@ bool compare_name(const PackageVersionP& a, const PackageVersionP& b) {
   return a->name < b->name;
 }
 
+bool PackageDirectory::checkForPackageFile(const String& folder_name) {
+  size_t package_pos = folder_name.rfind(_(".mse-"));
+  if (package_pos == String::npos) {
+    queue_message(MESSAGE_WARNING, _ERROR_1_("package name parse error", folder_name));
+    return false;
+  }
+  String package_name = folder_name.substr(package_pos+5);
+  String package_file = folder_name + wxFileName::GetPathSeparator() + package_name;
+  if (!wxFileExists(package_file) && !wxFileExists(directory + wxFileName::GetPathSeparator() + package_file)) {
+    queue_message(MESSAGE_WARNING, _ERROR_2_("file not found package like init", package_name, folder_name));
+    return false;
+  }
+  return true;
+}
+
 void PackageDirectory::installedPackages(vector<InstallablePackageP>& packages_out) {
   loadDatabase();
   // find all package files
@@ -272,7 +318,9 @@ void PackageDirectory::installedPackages(vector<InstallablePackageP>& packages_o
     size_t pos = s.find_last_of(_("/\\"));
     if (pos != String::npos) s = s.substr(pos+1);
     // TODO : check for valid package names
-    in_dir.push_back(s);
+    if (checkForPackageFile(s)) {
+      in_dir.push_back(s);
+    }
   }
   sort(in_dir.begin(), in_dir.end());
   // merge with package database
@@ -382,12 +430,13 @@ bool PackageDirectory::install(const InstallablePackage& package) {
     if (!remove_file_or_dir(n + _(".new"))) return false;
     bool ok = actual_install(package, n + _(".new"));
     if (!ok) return false;
-    move_ignored_files(n, n + _(".new")); // copy over files from the old installed version to the new one
+    move_ignored_files(n, n + _(".new"), package.description->read_only_files); // copy over files from the old installed version to the new one
     if (!remove_file_or_dir(n)) return false;
     if (!rename_file_or_dir(n + _(".new"), n)) return false;
     bless(package.description->name);
   }
   saveDatabase();
+  package_manager.evictFromCache(package.description->name);
   return true;
 }
 

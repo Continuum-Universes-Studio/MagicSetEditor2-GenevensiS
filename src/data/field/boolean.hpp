@@ -48,8 +48,9 @@ class BooleanValue : public ChoiceValue {
 public:
   inline BooleanValue(const ChoiceFieldP& field) : ChoiceValue(field) {}
   DECLARE_HAS_FIELD(Boolean);
+
   ValueP clone() const override;
-  
+
   // no extra data
   
 private:

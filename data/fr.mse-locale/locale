@@ -1,8 +1,10 @@
-﻿mse version: 2.5.8
-installer group: Magic Set Editor/translations/french
-full name: Français (French)
-version: 2026-02-28
-icon: fr.png
+mse version:		2.6.0
+full name:			Français (French)
+icon:				fr.png
+position hint:		01
+installer group:	Magic Set Editor/translations/french
+version:			2026-02-28
+
 
 #By GenevensiS
 ############################################################## Menu items
@@ -21,7 +23,7 @@ menu:
 	export images:						Toutes les I&mages de Carte...
 	export apprentice:					&Apprentice...
 	export mws:							Magic &Workstation...
-	check updates:						Vérifier les Mises à Jo&ur...
+	check updates:						Mises à Jo&ur / Nouveaux Styles...
 	print preview:						Aperçu d'&Impression...
 	print:								&Imprimer...	Ctrl+P
 	reload data:						Recharger les Données	Ctrl+F5
@@ -42,6 +44,7 @@ menu:
 	paste card:							Co&ller une Carte	Ctrl+V
 	paste keyword:						Co&ller un Mot-Clef	Ctrl+V
 	select all:							Sélectionner Tout	Ctrl+A
+	default reset:						Rétablir le défaut
 	find:								&Rechercher	Ctrl+F
 	find next:							Rechercher le &Suivant	F3
 	replace:							R&emplacer	Ctrl+H
@@ -186,6 +189,7 @@ help:
 	paste card:							Insérer la Carte depuis le presse-papier
 	paste keyword:						Insérer le mot_clef depuis le presse-papier
 	select all:							Sélectionner tout le texte
+	default reset:						Rétablir la valeur par défaut du champ sélectionné
 	find:								Rechercher un bout de texte dans les Cartes
 	find next:							Rechercher l'occurrence suivante
 	replace:							Remplacer l'occurrence
@@ -370,10 +374,13 @@ tool:
 
 	# cards toolbar
 	search cards:						Rechercher des Cartes (Ctrl+K)
-	stats card counts 1:				%s Au total
-	stats card counts 2:				%s Dans le filtre, %s Au total
-	card counts 2:						%s Dans la sélection, %s Au total
-	card counts 3:						%s Dans la sélection, %s Dans le filtre, %s Au total
+	card counts selected:				1 Sélectionnée
+	card counts selecteds:				%s Sélectionnées
+	card counts hidden:					1 Masquée
+	card counts hiddens:				%s Masquées
+	card counts back:					(dont 1 Verso)
+	card counts backs:					(dont %s Versos)
+	card counts total:					%s Au Total
 
 	# edit toolbar
 	undo:								Annuler
@@ -548,7 +555,7 @@ label:
 	linked cards relation:				Choisissez le type de relation entre la Carte sélectionnée ('%s') et les Cartes liées:
 	selected card:						Carte sélectionnée:
 	linked cards:						Cartes liées:
-	select linked cards:				Choisissez jusqu’à 4 Cartes liées:
+	select linked cards:				Choisissez jusqu’à 32 Cartes liées:
 
 	# bulk modification dialog
 	bulk modify selection:				Quelles Cartes doivent être modifiées:
@@ -582,7 +589,17 @@ label:
 	# stylesheet not found dialog
 	stylesheet not found:
 		Le Set que vous essayez d'ouvrir utilise le Style "%s".
-		Ce Style n'a pas été trouvé sur votre ordinateur. Selectionnez une alternative.
+		Ce Style n'a pas été trouvé sur votre ordinateur.
+		Selectionnez une alternative, ou cherchez en ligne.
+	stylesheet dep not found:
+		Le Set que vous essayez d'ouvrir utilise le Style "%s".
+		Ce style a été trouvé, mais l'une de ses dépendances, "%s",
+		est introuvable. Selectionnez une alternative, ou cherchez en ligne.
+	searching online:					Recherche en ligne...
+	searching online fail:				Introuvable en ligne
+	found online downloading:			Trouvé en ligne! Téléchargement...
+	found online installing:			Trouvé en ligne! Installation...
+	found online fail:					Échec de l’installation
 
 	# preferences dialog
 	language:							Langue
@@ -593,9 +610,11 @@ label:
 	dark mode yes:						Mode sombre
 	app language:						Langue de l'interface utilisateur (App Language)
 	card display:						Affichage des Cartes
+	card list display:					Affichage de la liste des Cartes
 	zoom:								&Zoom:
 	import:								Import
 	export:								&Export
+	clipboard:							Presse-papiers
 	scale:								&Taille interne:
 	use export scale:					Utiliser la taille d'export
 	export around 300:					Autour de 300 DPI
@@ -607,6 +626,7 @@ label:
 	apprentice exe:						Executable Apprentice
 	export desc:						Lors de l'exportation de Cartes en images:
 	import desc:						Lors de l'importation d'images pour les illustrations:
+	clipboard desc:						Lors de la copie d'images de Cartes dans le presse-papiers:
 	internal scale desc:
 		Taille à laquelle stocker les images en interne.
 		Changer cette valeur peut modifer l'apparence des images utilisant le filtre de netteté.
@@ -645,6 +665,7 @@ label:
 	add card csv comma:					Virgule
 	add card csv semicolon:				Deux-Points
 	add card csv file:					Chemin du fichier CSV ou TSV:
+	importing cards:					Import de la carte %s / %s
 
 	# JSON import dialog
 	add card json type:					Type de fichier JSON:
@@ -693,7 +714,7 @@ label:
 	package name:						Package
 	package status:						État
 	package action:						Action
-	awaiting package list:				(En attente de la liste des paquets depuis Internet)
+	awaiting package list:				(En attente de la liste des packages depuis Internet)
 
 	package conflicts:					modifications en conflit
 	package modified:					modifications locales
@@ -706,7 +727,7 @@ label:
 	remove package:						supprimer
 	updates found:
 		Des mises à jour ont été trouvées.
-		Souhaitez-vous ouvrir le gestionnaire de paquets?
+		Souhaitez-vous ouvrir le gestionnaire de packages?
 
 	installed version:					Version installée:
 	installable version:				Dernière version:
@@ -779,11 +800,25 @@ button:
 	notes export:
 		Exporter les notes de la Carte à
 		l'intérieur des Métadonnées de l'image
+	metaimage export:
+		Autoriser le stockage des images à
+		l'intérieur des Métadonnées de l'image
+	dfc export:
+		Fusionner les faces avant et
+		arrière en une seule image
+	dfc copy:
+		Toujours copier les deux
+		faces d'une carte ensemble
 	spellcheck enabled:					Afficher les fautes d'orthographe sur les Cartes
+	hide back faces:
+		Masquer les versos des
+		cartes de la liste
 	check now:							&Vérifier maintenant
 	always:								Toujours
 	every 5 startups:					Tous les 5 démarrages
 	every 10 startups:					Tous les 10 démarrages
+	every 7 days:						Tous les 7 jours
+	every 30 days:						Tous les 30 jours
 	if internet connection exists:		Si il y a une connexion internet
 	never:								Jamais
 	check app:							Application uniquement
@@ -835,6 +870,11 @@ button:
 	install group:						&Installer/Mettre à jour le groupe
 	upgrade group:						&Mettre à jour le groupe
 	remove group:						&Supprimer le groupe
+	uninstall anyway:					Désinstaller quand même
+	abort:								Annuler
+
+	# stylesheet not found dialog
+	find package online:				Chercher En Ligne
 
 ############################################################## Titles in the GUI
 title:
@@ -896,6 +936,7 @@ title:
 	add card csv file:					Ouvrir un fichier CSV ou TSV
 	add card json:						Ajouter des Cartes depuis un fichier JSON
 	add card json file:					Ouvrir un fichier JSON
+	importing cards:					Import de Cartes
 
 	# auto replace
 	auto replaces:						Remplacement automatique
@@ -946,6 +987,7 @@ action:
 
 	# choice/color editors
 	change:								Changer %s
+	reset:								Réinitialiser %s
 
 	# symbol actions
 	move:								Déplacer %s
@@ -984,12 +1026,23 @@ error:
 	file not found package like:
 		Fichier non trouvé: '%s' dans le package '%s'
 		Si vous essayez d'ouvrir un fichier d'un autre package, utilisez "/package/fichier"
+	file not found package like init:
+		Fichier non trouvé: '%s' dans le package '%s'
+		Si ce dossier est vide ou inutilisé, supprimez-le.
+	package name parse error:			Impossible d'analyser le nom du package '%s'.
 	file parse error:
 		Erreur lors de la lecture du fichier: '%s'
 		%s
 	package not found:					Package non trouvé: '%s'
 	package out of date:				Le package '%s' (version %s) est expiré, la version %s est requise.
 	package too new:					Le package '%s' (version %s) n'est pas compatible avec la version %s, requise par '%s'
+	write to read only:					Tentative d'écriture dans un fichier déclaré en lecture seule : '%s'
+	uninstall read only:
+		Le package '%s' contient les fichiers en lecture seule suivants:
+		%s
+		Ces fichiers contiennent généralement des extensions personnalisées
+		écrites par les utilisateurs. Si vous avez modifié ces fichiers,
+		il est conseillé de les sauvegarder avant de désinstaller ce package.
 	unable to open output file:			Erreur lors de la sauvegarde, Impossible d'ouvrir le fichier de sortie
 	unable to store file:				Erreur lors de la sauvegarde, Impossible de stocker le fichier
 	nested folder:
@@ -999,7 +1052,7 @@ error:
 		Le package '%s' utilise des fichiers du package '%s', mais il ne liste pas les dépendances.
 		Pour résoudre ça, ajoutez:
 		  depends on: %s %s
-	icon too large:						L'icône du paquet '%s' est trop grande. Elle ne doit pas dépasser 105 x 105 pixels.
+	icon too large:						L'icône du package '%s' est trop grande. Elle ne doit pas dépasser 105 x 105 pixels.
 
 	# image import
 	import not found:					Fichier non trouvé: '%s'
@@ -1016,7 +1069,7 @@ error:
 	no field with name:					Impossible de trouver le champ de %s nommé '%s'
 	styling data not map:				La valeur donnée pour « %s_data » n'est pas un dictionnaire
 	styling data without stylesheet:	Valeur donnée pour « %s_data » avant la définition d'un Style
-	cant set value:						Impossible de définir la valeur de la Carte '%s', son type est incorrect
+	cant set value:						Impossible de définir la valeur de %s '%s', son type est incorrect
 	cant set image value:				On ne peut définir la valeur d'une image qu'avec un nom de fichier relatif depuis le package, ou avec les fonctions import_image/download_image (dans le champ '%s')
 	cant set symbol value:				On ne peut définir la valeur d'un symbol qu'avec un nom de fichier relatif depuis le package (dans le champ '%s')
 	add card csv file not found:		Impossible de trouver ou charger le fichier CSV ou TSV spécifié
@@ -1031,6 +1084,7 @@ error:
 	json cant parse:					Échec de l'analyse du fichier JSON
 	json cant convert:					Le paramètre doit être du texte pour importer du JSON
 	json cant concat:					Impossible de fusionner un dictionnaire avec une liste
+	mse map duplicate key:				Le dictionnaire de script MSE contient une clé en double: '%s'. L’une d’elles sera supprimée lors de la conversion en JSON.
 	import empty file:					Le fichier %s est vide
 	import missing fields:
 		Le fichier %s contient les entrées suivantes qui n'ont pas pu être importées,
@@ -1050,6 +1104,8 @@ error:
 	in keyword reminder:
 		%s
 		  dans le texte de rappel du mot-clef '%s'
+	more keys than values:				Plus de clés que de valeurs données dans la fonction make_map! (Clés: %s)
+	more values than keys:				Plus de valeurs que de clés données dans la fonction make_map! (Clés: %s)
 
 	# image stuff
 	coordinates for blending overlap:	Les coordonnées pour le mélange sont superposées. Espacez-les.
@@ -1091,17 +1147,18 @@ error:
 	no updates:							Il n'y a pas de mises à jour disponibles.
 
 	# card linking
-	not enough free links:				La Carte '%s' n'a pas assez de liens disponibles. Vous pouvez former au maximum 4 liens par Carte.
-	not enough free links for copy:		La Carte '%s' n'a pas assez de liens disponibles pour copier. Vous pouvez former au maximum 4 liens par Carte.
-	could not link:						Les Cartes suivantes n'ont pas pu être liées, elles ont déjà 4 liens:
+	not enough free links:				La Carte '%s' n'a pas assez de liens disponibles. Vous pouvez former au maximum 32 liens par Carte.
+	not enough free links for copy:		La Carte '%s' n'a pas assez de liens disponibles pour copier. Vous pouvez former au maximum 32 liens par Carte.
+	could not link:						Les Cartes suivantes n'ont pas pu être liées, elles ont déjà 32 liens:
 	missing free links:					La Carte ne contient que %s liens libres. Sélectionnez moins de Cartes.
 	link duplicate:						Nom de lien localisé dupliqué. '%s' correspond à la fois à '%s' et à '%s'.
 	multiple front faces:				La Carte '%s' contient plusieurs Cartes liées comme face avant.
 	multiple back faces:				La Carte '%s' contient plusieurs Cartes liées comme face arrière.
 	cant link to self:					Impossible de lier une Carte à elle-même. (Cet assignation sera ignorée.)
-	no cards selected:					Aucune Carte sélectionnée. Sélectionnez jusqu'à 4 Cartes à lier.
+	no cards selected:					Aucune Carte sélectionnée. Sélectionnez jusqu'à 32 Cartes à lier.
 	could not find input:				Carte d'input introuvable.
 	could not find linked:				Carte liée (linked_card) introuvable.
+	result not card or nil:				Le résultat de %s n'est ni une Carte ni nil.
 
 	# bulk modification
 	bulk modify value type unknown:		Le type du champ sélectionné (%s) n'est pas pris en charge. Veuillez sélectionner un autre champ.

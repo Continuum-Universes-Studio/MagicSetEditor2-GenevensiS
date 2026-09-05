@@ -30,7 +30,12 @@ public:
   bool doDelete() override;
   
   bool onChar(wxKeyEvent&) override;
-  
+
+  // --------------------------------------------------- : Resetting
+
+  bool canDefaultReset() const override { return true; }
+  void doDefaultReset() override;
+
 private:
   // Open the image slice window showing the given image
   void sliceImage(const Image&, const String& filename, const String& cardname);

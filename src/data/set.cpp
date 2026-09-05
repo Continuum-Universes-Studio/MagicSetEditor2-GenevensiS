@@ -15,12 +15,10 @@
 #include <data/pack.hpp>
 #include <data/field.hpp>
 #include <data/update_cards_script.hpp>
-#include <data/field/text.hpp>    // for 0.2.7 fix
 #include <data/field/information.hpp>
 #include <data/field/image.hpp>
 #include <data/field/symbol.hpp>
 #include <data/action/value.hpp>
-#include <util/tagged_string.hpp> // for 0.2.7 fix
 #include <util/order_cache.hpp>
 #include <util/delayed_index_maps.hpp>
 #include <util/uid.hpp>
@@ -68,6 +66,9 @@ void Set::updateStyles(const CardP& card, bool only_content_dependent) {
 }
 void Set::updateDelayed() {
   script_manager->updateDelayed();
+}
+void Set::updateLinkScripts(const CardP& card) {
+  script_manager->updateLinkScripts(card);
 }
 void Set::buildUIDMap() {
   card_uids.clear();
@@ -161,16 +162,6 @@ String Set::identification() const {
 String Set::typeName() const { return _("set"); }
 Version Set::fileVersion() const { return file_version_set; }
 
-// fix values for versions < 0.2.7
-void fix_value_207(const ValueP& value) {
-  if (TextValue* v = dynamic_cast<TextValue*>(value.get())) {
-    // text value -> fix it
-    v->value.assignDontChangeDefault(  // don't change defaultness
-      fix_old_tags(v->value()) // remove tags
-    );
-  }
-}
-
 void Set::validate(Version file_app_version) {
   Packaged::validate(file_app_version);
   // are the game and stylesheet defined?
@@ -185,28 +176,15 @@ void Set::validate(Version file_app_version) {
     throw Error(_ERROR_("stylesheet and set refer to different game"));
   }
 
-  // We can probably retire this
-  /*
-  // This is our chance to fix version incompatabilities
-  if (file_app_version < 207) {
-    // Since 0.2.7 we use </tag> style close tags, in older versions it was </>
-    // Walk over all fields and fix...
-    FOR_EACH(c, cards) {
-      FOR_EACH(v, c->data) fix_value_207(v);
-    }
-    FOR_EACH(v, data) fix_value_207(v);
-    FOR_EACH(s, styleData) {
-      FOR_EACH(v, s.second->data) fix_value_207(v);
-    }
-  }
-  */
-
+  bool empty = cards.empty();
   // we want at least one card
-  if (cards.empty()) cards.push_back(make_intrusive<Card>(*game));
-  // update scripts
-  script_manager->updateAll();
+  if (empty) cards.push_back(make_intrusive<Card>(*game));
   // build uid map
   buildUIDMap();
+  // update scripts
+  script_manager->updateAll();
+  // don't run update_cards_scripts if the only card in the set was just created
+  if (empty) return;
   // update_cards_scripts
   // first apply all the stylesheet scripts that are older than the first game script
   // then apply the first game script
@@ -222,7 +200,7 @@ void Set::validate(Version file_app_version) {
     // Apply stylesheet scripts that are older than the current game script
     for (size_t i = 0; i < cards.size(); ++i) {
       CardP& card = cards[i];
-      StyleSheetP stylesheet = card->stylesheet ? card->stylesheet : stylesheetForP(card);
+      StyleSheetP stylesheet = stylesheetForP(card);
       Version stylesheet_version = card->stylesheet_version.isZero() ? this->stylesheet_version : card->stylesheet_version;
       for (size_t j = 0; j < stylesheet->update_cards_scripts.size(); ++j) {
         UpdateCardsScriptP& script = stylesheet->update_cards_scripts[j];
@@ -297,7 +275,8 @@ IMPLEMENT_REFLECTION(Set) {
       REFLECT_N("styling", styling_data);
     }
     // Experimental: save each card to a different file
-    reflect_cards(handler);
+    //reflect_cards(handler); // people seem to not like this, so move back to normal REFLECT
+    REFLECT(cards);
     REFLECT(keywords);
     REFLECT(pack_types);
   }

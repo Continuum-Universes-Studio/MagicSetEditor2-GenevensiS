@@ -30,4 +30,5 @@ void FilteredCardList::getItems(vector<VoidP>& out) const {
   if (filter) {
     filter->getItems(set->cards,out);
   }
+  filterOutBackFaces(out);
 }

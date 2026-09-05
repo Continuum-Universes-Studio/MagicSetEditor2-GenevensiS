@@ -9,21 +9,28 @@
 // ----------------------------------------------------------------------------- : Includes
 
 #include <random>
-#include <sstream>
+#include <array>
 
 // ----------------------------------------------------------------------------- : UID
 
-static std::random_device              rd;                                              // Get true random number generator
-static std::mt19937_64                 gen((static_cast<uint64_t>(rd()) << 32) ^ rd()); // Bitwise XOR two outputs to seed pseudo random number generator
-static std::uniform_int_distribution<> dis(0, 9);
+// Initialize RNG
+inline std::mt19937_64& get_generator() {
+  static std::mt19937_64 gen = [] {
+    std::random_device rd;
+    std::seed_seq seed{rd(), rd(), rd(), rd()};
+    return std::mt19937_64(seed);
+  }();
+  return gen;
+}
 
 // Generate a string consisting of 32 uniformly random digits.
 static String generate_uid() {
-  std::stringstream ss;
-  int i;
-  ss << std::hex;
-  for (i = 0; i < 32; i++) {
-    ss << dis(gen);
-  };
-  return String(ss.str());
+  std::mt19937_64& gen = get_generator();
+  static std::uniform_int_distribution<int> dis(0, 9);
+
+  std::array<char, 32> buf;
+  for (auto& c : buf) {
+    c = '0' + dis(gen);
+  }
+  return String(buf.data(), buf.size());
 }

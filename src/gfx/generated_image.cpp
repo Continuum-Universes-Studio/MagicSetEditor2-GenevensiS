@@ -163,6 +163,21 @@ bool SetMaskImage::operator == (const GeneratedImage& that) const {
     && *mask  == *that2->mask;
 }
 
+// ----------------------------------------------------------------------------- : VisibilityMaskImage
+
+Image VisibilityMaskImage::generate(const Options& opt) {
+  Image img = image->generate(opt);
+  return make_visibility_mask(img, threshold, radius);
+}
+bool VisibilityMaskImage::operator == (const GeneratedImage& that) const {
+  const VisibilityMaskImage* that2 = dynamic_cast<const VisibilityMaskImage*>(&that);
+  return that2 && *image == *that2->image
+    && threshold == that2->threshold
+    && radius    == that2->radius;
+}
+
+// ----------------------------------------------------------------------------- : SetAlphaImage
+
 Image SetAlphaImage::generate(const Options& opt) {
   Image img = image->generate(opt);
   set_alpha(img, alpha);
@@ -352,6 +367,22 @@ bool ResizeImage::operator == (const GeneratedImage& that) const {
     && height == that2->height;
 }
 
+// ----------------------------------------------------------------------------- : NineSliceImage
+
+Image NineSliceImage::generate(const Options& opt) {
+  Image img_in = image->generate(opt);
+  Image img_out(width, height, false);
+  resample_nine_slice(img_in, img_out, left, right, top, bottom);
+  return img_out;
+}
+bool NineSliceImage::operator == (const GeneratedImage& that) const {
+  const NineSliceImage* that2 = dynamic_cast<const NineSliceImage*>(&that);
+  return that2 && *image == *that2->image
+    && width  == that2->width  && height == that2->height
+    && left   == that2->left   && right  == that2->right
+    && top    == that2->top    && bottom == that2->bottom;
+}
+
 // ----------------------------------------------------------------------------- : StrokeImage
 
 Image StrokeImage::generate(const Options& opt) {
@@ -487,14 +518,27 @@ bool BleedEdgedImage::operator == (const GeneratedImage& that) const {
 Image InsertedImage::generate(const Options& opt) {
   Image base_img =     base_image->generate(opt);
   Image inserted_img = inserted_image->generate(opt);
-  int base_x =     offset_x < 0 ? -offset_x : 0;
-  int base_y =     offset_y < 0 ? -offset_y : 0;
-  int inserted_x = offset_x < 0 ? 0         : offset_x;
-  int inserted_y = offset_y < 0 ? 0         : offset_y;
-  int width =  max(base_x + base_img.GetWidth(),  inserted_x + inserted_img.GetWidth());
-  int height = max(base_y + base_img.GetHeight(), inserted_y + inserted_img.GetHeight());
-  if (width <= 0) throw ScriptError(_ERROR_1_("negative image width", "insert_image"));
+
+  int width, height, base_x, base_y, inserted_x, inserted_y;
+  if (widen) {
+    base_x =     offset_x < 0 ? -offset_x : 0;
+    base_y =     offset_y < 0 ? -offset_y : 0;
+    inserted_x = offset_x < 0 ? 0         : offset_x;
+    inserted_y = offset_y < 0 ? 0         : offset_y;
+    width  = max(base_x + base_img.GetWidth(),  inserted_x + inserted_img.GetWidth());
+    height = max(base_y + base_img.GetHeight(), inserted_y + inserted_img.GetHeight());
+  } else {
+    base_x = 0;
+    base_y = 0;
+    width  = base_img.GetWidth();
+    height = base_img.GetHeight();
+    inserted_x = offset_x;
+    inserted_y = offset_y;
+  }
+
+  if (width <= 0)  throw ScriptError(_ERROR_1_("negative image width", "insert_image"));
   if (height <= 0) throw ScriptError(_ERROR_1_("negative image height", "insert_image"));
+
   UInt size = width * height;
   Image img = wxImage(width, height, false);
   img.InitAlpha();
@@ -512,8 +556,10 @@ Image InsertedImage::generate(const Options& opt) {
     alpha[0] = a;
     alpha += 1;
   }
+
   img.Paste(base_img, base_x, base_y, wxIMAGE_ALPHA_BLEND_COMPOSE);
   img.Paste(inserted_img, inserted_x, inserted_y, wxIMAGE_ALPHA_BLEND_COMPOSE);
+
   // transfer metadata
   img.SetOption(wxIMAGE_OPTION_PNG_DESCRIPTION, metadata_merge(base_img, inserted_img, base_x, base_y, inserted_x, inserted_y));
   return img;
@@ -528,7 +574,8 @@ bool InsertedImage::operator == (const GeneratedImage& that) const {
     && *base_image == *that2->base_image
     && *inserted_image == *that2->inserted_image
     && offset_x == that2->offset_x
-    && offset_y == that2->offset_y;
+    && offset_y == that2->offset_y
+    && widen == that2->widen;
 }
 
 // ----------------------------------------------------------------------------- : CropImage
@@ -537,29 +584,7 @@ Image CropImage::generate(const Options& opt) {
   if (width <= 0) throw ScriptError(_ERROR_1_("negative image width", "crop_image"));
   if (height <= 0) throw ScriptError(_ERROR_1_("negative image height", "crop_image"));
   Image base_img = image->generate(opt);
-  Image img = base_img.Size(wxSize((int)width, (int)height), wxPoint(-(int)offset_x, -(int)offset_y)); //Image img = base_img.Size(wxSize((int)width, (int)height), wxPoint(-(int)offset_x, -(int)offset_y), background_color.Red(), background_color.Green(), background_color.Blue());
-  // transfer metadata
-  if (base_img.HasOption(wxIMAGE_OPTION_PNG_DESCRIPTION)) {
-    String metadata = transformAllEncodedRects(base_img.GetOption(wxIMAGE_OPTION_PNG_DESCRIPTION), RealRect::translate, -offset_x, -offset_y);
-    // prune out of bounds cards
-    boost::json::array cardsv = metadata_to_json(metadata);
-    boost::json::array inbounds_cardsv;
-    for (size_t i = 0; i < cardsv.size(); i++) {
-      boost::json::object cardv = cardsv[i].as_object();
-      if (cardv.contains("bounds")) {
-        String bounds = String(cardv["bounds"].as_string().c_str());
-        RealRect rect(0.0, 0.0, 0.0, 0.0);
-        int degrees = 0;
-        if (decodeRectFromString(bounds, rect, degrees)) {
-          rect = rect.intersect(RealRect(0.0, 0.0, width, height));
-          if (rect.width <= 0.0 || rect.height <= 0.0 ) continue;
-        }
-      }
-      inbounds_cardsv.emplace_back(cardv);
-    }
-    metadata = "<mse-card-data>" + json_ugly_print(inbounds_cardsv) + "</mse-card-data>";
-    img.SetOption(wxIMAGE_OPTION_PNG_DESCRIPTION, metadata);
-  }
+  Image img = crop(base_img, (int)width, (int)height, (int)offset_x, (int)offset_y, background_color);
   return img;
 }
 bool CropImage::operator == (const GeneratedImage& that) const {
@@ -816,11 +841,12 @@ ImportedImage::ImportedImage(Set* set, const String& filepath) {
   // determine save name
   loadpath = filepath;
   savename = normalize_internal_filename(loadpath);
-  savename.Replace(":",  "-");
-  savename.Replace("/",  "-");
+  savename.Replace(_(":"),  _("-"));
+  savename.Replace(_("/"),  _("-"));
+  savename.Replace(_("\\"), _("-"));
 
   // does the file pointed to by filepath exist?
-  if (!wxFileName(loadpath, wxPATH_UNIX).FileExists()) {
+  if (!wxFileName(loadpath, wxPATH_NATIVE).FileExists()) {
     if (set->contains(savename)) return;
     else throw ScriptError(_ERROR_1_("import not found", loadpath));
   }

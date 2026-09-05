@@ -25,10 +25,13 @@ struct TextViewer::Line {
   double         margin_left_before_bullet; ///< Left margin including the margin tag but just before the bullet point
   double         margin_right;              ///< Right margin
   bool           bullet;                    ///< Does this line start with a bullet point?
+  double         mask_left;                 ///< Leftmost x the mask allows on this line's row (before margins)
+  double         mask_right;                ///< Rightmost x the mask allows on this line's row (before margins)
   
   Line()
     : start(0), end_or_soft(0), top(0), line_height(0)
     , break_after(LineBreak::NO), justifying(false), bullet(false)
+    , mask_left(0), mask_right(0)
   {}
   
   /// The position (just beyond) the bottom of this line
@@ -418,12 +421,7 @@ TextLayoutP TextViewer::extractLayoutInfo() const {
   return layout;
 }
 
-void TextViewer::prepareLines(RotatedDC& dc, const String& text, TextStyle& style, Context& ctx) {
-  vector<CharInfo> chars;
-  prepareLinesTryScales(dc, text, style, chars);
-  assert(!lines.empty());
-  
-  // no text, find a dummy height for the single line we have
+void fix_empty_line_height(vector<TextViewer::Line>& lines, RotatedDC& dc, const TextStyle& style, double scale) {
   if (lines.size() == 1 && lines[0].width() < 0.0001) {
     if (style.always_symbol && style.symbol_font.valid()) {
       lines[0].line_height = style.symbol_font.font->defaultSymbolSize(style.symbol_font.size).height;
@@ -432,14 +430,71 @@ void TextViewer::prepareLines(RotatedDC& dc, const String& text, TextStyle& styl
       lines[0].line_height = dc.GetCharHeight();
     }
   }
+}
+
+// Height spanned by lines [start_line,end_line), don't count trailing empty lines
+double lines_content_height(const vector<TextViewer::Line>& lines, size_t start_line, size_t end_line) {
+  double height = 0;
+  for (size_t li = end_line - 1 ; li + 1 > start_line ; --li) {
+    const TextViewer::Line& l = lines[li];
+    height = l.top + l.line_height;
+    if (l.line_height) break; // not an empty line
+  }
+  return height - lines[start_line].top;
+}
+
+void TextViewer::prepareLines(RotatedDC& dc, const String& text, TextStyle& style, Context& ctx) {
+  vector<CharInfo> chars;
+  prepareLinesTryScales(dc, text, style, chars);
+  assert(!lines.empty());
   
-  // store information about the content/layout, allow this to change alignment
-  if (style.alignment.isScripted()) {
-    style.layout = extractLayoutInfo();
-    style.alignment.update(ctx); // allow this to affect the alignment
+  // no text, find a dummy height for the single line we have
+  fix_empty_line_height(lines, dc, style, scale);
+  
+  RealSize s = add_diagonal(
+          dc.getInternalSize(),
+          -RealSize(style.padding_left+style.padding_right, style.padding_top + style.padding_bottom));
+  
+  // Resolve alignment and vertical position together; they can depend on each other:
+  //  - a scripted alignment can look at content_lines (via style.layout), which depends
+  //    on how the text ends up wrapped and positioned;
+  //  - with a mask, how the text wraps depends on the vertical offset alignment applies,
+  //    which depends on the (possibly scripted) alignment itself.
+  // So: iterate, refreshing style. layout each pass so a scripted alignment always sees
+  // the line count that's actually about to be used, and re-run line breaking with the
+  // resulting offset baked in (see prepareLinesAtScale's top_offset) so the mask gets
+  // sampled at the right rows. A line that barely fits can flip the line count back and
+  // forth forever (2 lines <-> 3 lines) without ever truly converging -- if we detect
+  // we're revisiting an offset we've already tried, stop there.
+  double offset = 0;
+  vector<double> seen_offsets;
+  const int max_iterations = 6;
+  for (int iteration = 0 ; iteration < max_iterations ; ++iteration) {
+    if (style.alignment.isScripted()) {
+      style.layout = extractLayoutInfo();
+      style.alignment.update(ctx); // allow this to affect the alignment
+    }
+    if (!(style.paragraph_height <= 0 && (style.alignment & (ALIGN_MIDDLE | ALIGN_BOTTOM)))) {
+      break; // no vertical shift to account for; one pass is enough
+    }
+    double height = lines_content_height(lines, 0, lines.size());
+    double new_offset = align_delta_y(style.alignment, s.height, height);
+    if (fabs(new_offset - offset) < 0.5) break; // converged (within half a pixel)
+    bool seen_before = false;
+    for (double o : seen_offsets) {
+      if (fabs(o - new_offset) < 0.5) { seen_before = true; break; }
+    }
+    if (seen_before) break; // oscillating: stop instead of flip-flopping forever
+    seen_offsets.push_back(new_offset);
+    offset = new_offset;
+    vector<Line> lines_try;
+    prepareLinesAtScale(dc, chars, style, false, lines_try, offset);
+    if (lines_try.empty()) break; // shouldn't happen, but don't clobber a good layout
+    fix_empty_line_height(lines_try, dc, style, scale);
+    lines.swap(lines_try);
   }
   
-  // align
+  // align (mostly horizontal at this point; any leftover vertical delta is a small correction)
   alignLines(dc, chars, style);
   
   // HACK : fix empty first line before <line>, do this after align, so layout is not affected
@@ -575,16 +630,30 @@ void TextViewer::prepareLinesTryScales(RotatedDC& dc, const String& text, const 
 // Try to fit a blank line in the masked image, move down until it fits
 RealSize TextViewer::fitLineWidth(Line& line, RotatedDC& dc, const TextStyle& style) const {
   double margin_left = line.bullet ? line.margin_left_before_bullet : line.margin_left_after_bullet;
-  RealSize line_size(margin_left + lineLeft(dc, style, line.top), 0);
-  while (line.top < dc.getHeight() && line_size.width + 1 >= dc.getWidth() - style.padding_right - line.margin_right) {
+  // Snap to a whole pixel here, once, so every later use agrees regardless of rounding convention
+  // (mask queries below, the rect handed to draw(), the next line's starting point)
+  line.top = floor(line.top + 0.5);
+  double left  = lineLeft (dc, style, line.top);
+  double right = lineRight(dc, style, line.top);
+  RealSize line_size(margin_left + left, 0);
+  while (line.top < dc.getHeight() &&
+         (right <= left || // the mask leaves no usable window at all on this row
+          line_size.width + 1 >= dc.getWidth() - style.padding_right - line.margin_right)) {
     // nothing fits on this line, move down one pixel
     line.top += 1;
-    line_size.width = margin_left + lineLeft(dc, style, line.top);
+    left  = lineLeft (dc, style, line.top);
+    right = lineRight(dc, style, line.top);
+    line_size.width = margin_left + left;
   }
+  // remember the raw (margin-free) mask bounds for this row, so alignHorizontal() can
+  // center/right-align against the true field bounds while still clamping into what
+  // the mask allows here, instead of only ever seeing the already-mask-shifted position.
+  line.mask_left  = left;
+  line.mask_right = right;
   return line_size;
 }
 
-bool TextViewer::prepareLinesAtScale(RotatedDC& dc, const vector<CharInfo>& chars, const TextStyle& style, bool stop_if_too_long, vector<Line>& lines) const {
+bool TextViewer::prepareLinesAtScale(RotatedDC& dc, const vector<CharInfo>& chars, const TextStyle& style, bool stop_if_too_long, vector<Line>& lines, double top_offset) const {
   // Try to layout the text at the current scale
   lines.clear();
 
@@ -597,8 +666,12 @@ bool TextViewer::prepareLinesAtScale(RotatedDC& dc, const vector<CharInfo>& char
   assert(elements.paragraphs.size() > 0);
 
   // first line
+  // top_offset lets a caller seed the layout with the (estimated) offset that vertical
+  // alignment will end up applying, so that fitLineWidth()/lineLeft()/lineRight() sample
+  // the mask at the rows the text will actually be drawn on, not always row 0. See the
+  // vertical alignment pre-pass in prepareLines().
   Line line;
-  line.top = style.padding_top + elements.clauses[0].margin_top;
+  line.top = style.padding_top + elements.clauses[0].margin_top + top_offset;
   line.margin_left_after_bullet = elements.clauses[0].margin_left;
   line.margin_left_before_bullet = elements.clauses[0].margin_left;
   line.margin_right = elements.clauses[0].margin_right;
@@ -782,7 +855,7 @@ bool TextViewer::prepareLinesAtScale(RotatedDC& dc, const vector<CharInfo>& char
     // per paragraph alignment
     size_t start = 0;
     for (size_t last = 0 ; last < lines.size() ; ++last) {
-      if (lines[last].break_after != LineBreak::SOFT || last == lines.size()) {
+      if (lines[last].break_after >= LineBreak::HARD || last+1 == lines.size()) {
         max_height = max(max_height, lines[last].bottom() - lines[start].top);
         start = last + 1;
       }
@@ -810,15 +883,30 @@ void TextViewer::alignLines(RotatedDC& dc, const vector<CharInfo>& chars, const 
   if (style.paragraph_height <= 0) {
     // whole text box alignment
     assert(!lines.empty());
-    double top = lines[0].top;
+    // Note: this is deliberately the *natural* top-aligned position, not lines[0].top.
+    // prepareLines() may already have nudged lines[0].top down/up so that line breaking
+    // sampled the mask at (approximately) the right rows (see the pre-pass there). Using
+    // lines[0].top here would make alignParagraph() shift everything a second time.
+    double top;
+    if (style.alignment & (ALIGN_MIDDLE | ALIGN_BOTTOM)) {
+      // prepareLines()'s vertical pre-pass only runs (and only nudges lines[0].top) for
+      // MIDDLE/BOTTOM alignment. Anchor to the natural top-aligned position here so
+      // alignParagraph() doesn't shift everything a second time on top of that nudge.
+      top = style.padding_top + elements.clauses[0].margin_top;
+    } else {
+      top = lines[0].top;
+    }
     alignParagraph(0, lines.size(), chars, style, RealRect(RealPoint(0,top),s));
   } else {
     // per paragraph alignment
     size_t start = 0;
     int n = 0;
     for (size_t last = 0 ; last < lines.size() ; ++last) {
-      if (lines[last].break_after != LineBreak::SOFT || last+1 == lines.size()) {
-        alignParagraph(start, last + 1, chars, style, RealRect(0, style.padding_top+n*style.paragraph_height, s.width, style.paragraph_height));
+      if (lines[last].break_after >= LineBreak::HARD || last+1 == lines.size()) {
+        double y = (style.alignment & (ALIGN_MIDDLE | ALIGN_BOTTOM)) ?
+                    style.padding_top + n*style.paragraph_height :
+                    lines[start].top;
+        alignParagraph(start, last + 1, chars, style, RealRect(0, y, s.width, style.paragraph_height));
         start = last + 1;
         ++n;
       }
@@ -830,13 +918,7 @@ void TextViewer::alignParagraph(size_t start_line, size_t end_line, const vector
   if (start_line >= end_line) return;
   
   // Find height of the text, don't count the last lines if they are empty
-  double height = 0;
-  for (size_t li = end_line - 1 ; li + 1 > start_line ; --li) {
-    Line& l = lines[li];
-    height = l.top + l.line_height;
-    if (l.line_height) break; // not an empty line
-  }
-  height -= lines[start_line].top;
+  double height = lines_content_height(lines, start_line, end_line);
   
   // stretch lines by increasing the space between them
   if (height < s.height) {
@@ -888,7 +970,10 @@ void TextViewer::alignParagraph(size_t start_line, size_t end_line, const vector
     // amount to shift all characters horizontally
     l.alignHorizontal(chars, style, s);
   }
-  // TODO : work well with mask
+  // NOTE: unlike the alignment shift below (made mask-aware by the pre-pass in
+  // prepareLines()), this stretch-spacing still moves lines to positions that were
+  // never sampled in the mask -- fixing that would mean threading a per-line offset
+  // through prepareLinesAtScale, not just a single starting top. Not handled yet.
 }
 
 void TextViewer::Line::alignHorizontal(const vector<CharInfo>& chars, const TextStyle& style, const RealRect& s) {
@@ -928,7 +1013,19 @@ void TextViewer::Line::alignHorizontal(const vector<CharInfo>& chars, const Text
   } else {
     // simple alignment
     justifying = false;
+    // hug whatever the mask allows on this row
     double hdelta = s.x + align_delta_x(alignment, target_width, width);
+    if (alignment & (ALIGN_CENTER | ALIGN_RIGHT)) {
+      double min_left = mask_left + margin_bullet;
+      double max_left = mask_right - margin_right - width;
+      if (max_left >= min_left) {
+        // everything fits within the mask and margins, align according to alignment
+        double desired_left = margin_bullet + s.x + align_delta_x(alignment, target_width, width);
+        desired_left = max(min_left, min(max_left, desired_left));
+        hdelta = desired_left - positions.front();
+      }
+      // else: doesn't fit, let it overflow past the edges
+    }
     for (auto& c : positions) {
       c += hdelta;
     }

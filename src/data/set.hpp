@@ -76,6 +76,8 @@ public:
   void updateStyles(const CardP& card, bool only_content_dependent);
   /// Update scripts that were delayed
   void updateDelayed();
+  /// Update scripts that depend on card links
+  void updateLinkScripts(const CardP& card);
   /// Update uid map
   void buildUIDMap();
   /// A context for performing scripts

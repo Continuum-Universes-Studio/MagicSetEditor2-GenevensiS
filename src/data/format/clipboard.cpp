@@ -160,17 +160,42 @@ KeywordP KeywordDataObject::getKeyword(const SetP& set) {
 
 // ----------------------------------------------------------------------------- : Card on clipboard
 
-CardsOnClipboard::CardsOnClipboard(const SetP& set, const String id, const vector<CardP>& cards) {
+CardsOnClipboard::CardsOnClipboard(const SetP& set, const String id, vector<CardP> cards) {
   wxBusyCursor busy;
+  // Add other faces if necessary
+  if (settings.card_dfc_copy) {
+    for (size_t i = 0; i < cards.size(); ++i) {
+      CardP card = cards[i]; // copy, not reference, since insert() can reallocate the vector
+      CardP other_face = card->getBackFaceCard(*set);
+      if (other_face) {
+        if (find(cards.begin(), cards.end(), other_face) == cards.end()) {
+          // back face goes right after the card
+          cards.insert(cards.begin() + i + 1, other_face);
+          ++i;
+        }
+        continue;
+      }
+      other_face = card->getFrontFaceCard(*set);
+      if (other_face) {
+        if (find(cards.begin(), cards.end(), other_face) == cards.end()) {
+          // front face goes right before the card
+          cards.insert(cards.begin() + i, other_face);
+          ++i;
+        }
+        continue;
+      }
+    }
+  }
   // Conversion to image file
   if (cards.size() < 6) {
     Bitmap bmp;
     Image img;
     if (cards.size() == 1) {
-      img = export_image(set, cards[0], true, 1.0, 0.0, 0.0, &bmp);
+      Settings::ExportSettings card_settings = settings.clipboardSettingsFor(set->stylesheetFor(cards[0]));
+      img = export_image(set, cards[0], true, card_settings.zoom, card_settings.angle_radians, card_settings.bleed_pixels, &bmp);
     }
     else {
-      img = export_image(set, cards);
+      img = export_image(set, cards, 2, ExportImageMode::CLIPBOARD);
       bmp = Bitmap(img);
     }
     //wxFileDataObject* fileData = new wxFileDataObject(); // needed for pasting on desktop, but slow

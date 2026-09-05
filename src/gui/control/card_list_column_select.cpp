@@ -34,8 +34,8 @@ CardListColumnSelectDialog::CardListColumnSelectDialog(Window* parent, const Gam
       s2->Add(s3,   0, wxEXPAND | (wxALL & ~wxTOP),  4);
     s->Add(s2                                                                           , 1, wxEXPAND | wxALL, 4);
     s->Add(CreateButtonSizer(wxOK | wxCANCEL)                                           , 0, wxEXPAND | wxALL, 8);
-  s->SetSizeHints(this);
   SetSizer(s);
+  s->SetSizeHints(this);
   // Set default size
   SetSize(350, 450);
   // Initialize order list

@@ -1,8 +1,10 @@
-﻿mse version: 2.5.8
-installer group: Magic Set Editor/translations/danish
-full name: Dansk (Danish)
-version: 2026-02-28
-icon: dk.png
+mse version:		2.6.0
+full name:			Dansk (Danish)
+icon:				dk.png
+position hint:		01
+installer group:	Magic Set Editor/translations/danish
+version:			2026-02-28
+
 
 #By lord_joakim
 ############################################################## Menu items
@@ -43,6 +45,8 @@ menu:
 	paste keyword:						&Sæt ind	Ctrl+V
 	#TODO: Localize
 	select all:							Select &All	Ctrl+A
+	#TODO: Localize
+	default reset:						Reset to Default
 	#TODO: Localize
 	find:								&Find	Ctrl+F
 	find next:							Find &Næste	F3
@@ -205,6 +209,8 @@ help:
 	paste card:							Indsætter kortet fra udklipsholderen
 	paste keyword:						Indsætter nøgleordet fra udklipsholderen
 	select all:							Vælg al tekst
+	#TODO: Localize
+	default reset:						Revert the selected field to its default value
 	find:								Søger kortenes tekster
 	find next:							Finder det næste tilsvarende ord
 	replace:							Erstatter kortenes tekster
@@ -398,16 +404,15 @@ tool:
 	console tab:						Konsol
 
 	# cards toolbar
-	#TODO: Localize
+	#TODO: Localize Section
 	search cards:						Search cards (Ctrl+K)
-	#TODO: Localize
-	stats card counts 1:				%s Total
-	#TODO: Localize
-	stats card counts 2:				%s Filtered, %s Total
-	#TODO: Localize
-	card counts 2:						%s Selected, %s Total
-	#TODO: Localize
-	card counts 3:						%s Selected, %s Filtered, %s Total
+	card counts selected:				1 Selected
+	card counts selecteds:				%s Selected
+	card counts hidden:					1 Hidden
+	card counts hiddens:				%s Hidden
+	card counts back:					(of which 1 is a Back Face)
+	card counts backs:					(of which %s are Back Faces)
+	card counts total:					%s Total
 
 	# edit toolbar
 	undo:								Fortryd
@@ -593,7 +598,7 @@ label:
 	linked cards relation:				Choose the type of relation between the selected card ('%s') and the linked cards:
 	selected card:						Selected Card:
 	linked cards:						Linked Cards:
-	select linked cards:				Choose up to 4 cards to link:
+	select linked cards:				Choose up to 32 cards to link:
 
 	# bulk modification dialog
 	#TODO: Localize Section
@@ -630,6 +635,21 @@ label:
 	stylesheet not found:
 		Sættet du har åbner bruger stilen "%s".
 		Denne stil er ikke i dit system, vælg venligst et alternativ.
+	#TODO: Localize
+	stylesheet dep not found:
+		The set you are trying to open uses the stylesheet "%s".
+		This stylesheet was found, but one of its dependencies "%s"
+		was not. Please select an alternative, or look for it online.
+	#TODO: Localize
+	searching online:					Searching online...
+	#TODO: Localize
+	searching online fail:				Not found online
+	#TODO: Localize
+	found online downloading:			Found online! Downloading...
+	#TODO: Localize
+	found online installing:			Found online! Installing...
+	#TODO: Localize
+	found online fail:					Installation failed
 
 	# preferences dialog
 	language:							Sprog
@@ -644,10 +664,14 @@ label:
 	dark mode yes:						Dark mode
 	app language:						Sprog (App Language)
 	card display:						Kortdisplay
+	#TODO: Localize
+	card list display:					Card List Display
 	zoom:								Zoom
 	#TODO: Localize
 	import:								Import
 	export:								&Eksportér
+	#TODO: Localize
+	clipboard:							Clipboard
 	scale:								Intern skala
 	#TODO: Localize Section
 	use export scale:					Use Export Scale
@@ -663,6 +687,8 @@ label:
 	export desc:						When exporting cards to images:
 	#TODO: Localize
 	import desc:						When importing images for illustrations:
+	#TODO: Localize
+	clipboard desc:						When copying card images to the clipboard:
 	internal scale desc:
 		Skaler til internt at gemme kortbilleder på.
 		Ændring af dette kan påvirke, hvordan Sharpening ser ud.
@@ -705,6 +731,8 @@ label:
 	add card csv comma:					Comma
 	add card csv semicolon:				Semicolon
 	add card csv file:					CSV or TSV file path:
+	#TODO: Localize
+	importing cards:					Importing Card %s / %s
 
 	# JSON import dialog
 	#TODO: Localize Section
@@ -856,13 +884,33 @@ button:
 	notes export:
 		Export card notes inside
 		image meta data
+	#TODO: Localize
+	metaimage export:
+		Allow storing images in
+		the image metadata.
+	#TODO: Localize
+	dfc export:
+		Merge front and back faces
+		into a single image.
+	#TODO: Localize
+	dfc copy:
+		Always copy both faces
+		of a card together.
 	spellcheck enabled:					Vis stavefejl på kort
+	#TODO: Localize
+	hide back faces:
+		Hide back faces
+		from the card list
 	check now:							Tjek &Nu!
 	always:								Altid
 	#TODO: Localize
 	every 5 startups:					Every 5 startups
 	#TODO: Localize
 	every 10 startups:					Every 10 startups
+	#TODO: Localize
+	every 7 days:						Every 7 days
+	#TODO: Localize
+	every 30 days:						Every 30 days
 	if internet connection exists:		Hvis internetforbindelse findes
 	never:								Aldrig
 	#TODO: Localize
@@ -919,6 +967,14 @@ button:
 	install group:						&Installér Alt
 	upgrade group:						&Opgradér Alt
 	remove group:						&Fjern Alt
+	#TODO: Localize
+	uninstall anyway:					Uninstall anyway
+	#TODO: Localize
+	abort:								Abort
+
+	# stylesheet not found dialog
+	#TODO: Localize
+	find package online:				Search Online
 
 ############################################################## Titles in the GUI
 title:
@@ -989,6 +1045,8 @@ title:
 	add card csv file:					Open CSV or TSV file
 	add card json:						Add Cards from JSON file
 	add card json file:					Open JSON file
+	#TODO: Localize
+	importing cards:					Importing Cards
 
 	# auto replace
 	auto replaces:						Autoerstat
@@ -1047,6 +1105,8 @@ action:
 
 	# choice/color editors
 	change:								Ændr %s
+	#TODO: Localize
+	reset:								Reset %s
 
 	# symbol actions
 	move:								Flyt %s
@@ -1086,12 +1146,27 @@ error:
 	file not found package like:
 		File not found: '%s' in package '%s'
 		If you are trying to open a file from another package, use "/package/filename"
+	#TODO: Localize
+	file not found package like init:
+		File not found: '%s' in package '%s'
+		If this folder is empty or unused, delete it.
+	#TODO: Localize
+	package name parse error:			Unable to parse package name '%s'
 	file parse error:
 		Error while parsing file: '%s'
 		%s
 	package not found:					Package not found: '%s'
 	package out of date:				The package '%s' (version %s) is out of date, version %s is required.
 	package too new:					The package '%s' (version %s) is not compatible with version %s, required by '%s'
+	#TODO: Localize
+	write to read only:					Trying to write to file that has been declared read only: '%s'
+	#TODO: Localize
+	uninstall read only:
+		The package '%s' contains the following read only files:
+		%s
+		These files usually hold custom addons written by users.
+		If you have modified these files, you may want to
+		back them up before uninstalling this package.
 	unable to open output file:			Error while saving, unable to open output file
 	unable to store file:				Error while saving, unable to store file
 	#TODO: Localize
@@ -1126,7 +1201,7 @@ error:
 	no field with name:					Could not find %s field named '%s'
 	styling data not map:				Given value for '%s_data' is not a map
 	styling data without stylesheet:	Given value for '%s_data' before a stylesheet was set
-	cant set value:						Can not set card value '%s', it is not of the right type
+	cant set value:						Can not set %s value '%s', it is not of the right type
 	cant set image value:				Can only set image value with a relative filename from within the package, or with the import_image/download_image functions, in field named '%s'
 	cant set symbol value:				Can only set symbol value with a relative filename from within the package, in field named '%s'
 	add card csv file not found:		Could not find or load the CSV or TSV file
@@ -1141,6 +1216,8 @@ error:
 	json cant parse:					Failed to parse JSON file
 	json cant convert:					Input must be a string when importing from JSON
 	json cant concat:					Can't merge map with array
+	#TODO: Localize
+	mse map duplicate key:				MSE script map contains duplicate key: '%s'. One of those will be dropped in the conversion to JSON
 	import empty file:					%s file is empty
 	import missing fields:
 		The %s file contains the following entries that could not
@@ -1161,6 +1238,10 @@ error:
 	in keyword reminder:
 		%s
 		  in reminder text of keyword '%s'
+	#TODO: Localize
+	more keys than values:				More keys than values given in function make_map! (Keys: %s)
+	#TODO: Localize
+	more values than keys:				More values than keys given in function make_map! (Keys: %s)
 
 	# image stuff
 	#TODO: Localize
@@ -1216,9 +1297,9 @@ error:
 
 	# card linking
 	#TODO: Localize Section
-	not enough free links:				Card '%s' does not have enough free links available. Can only link up to 4 cards.
-	not enough free links for copy:		Card '%s' does not have enough free links available for copy. Can only link up to 4 cards.
-	could not link:						The following cards could not be linked, as they already have 4 links:
+	not enough free links:				Card '%s' does not have enough free links available. Can only link up to 32 cards.
+	not enough free links for copy:		Card '%s' does not have enough free links available for copy. Can only link up to 32 cards.
+	could not link:						The following cards could not be linked, as they already have 32 links:
 	#TODO: Localize
 	missing free links:					Card only has %s free links available. Select less cards.
 	link duplicate:						Duplicate localized link name. '%s' maps both to '%s' and to '%s'.
@@ -1227,9 +1308,11 @@ error:
 	#TODO: Localize
 	cant link to self:					Cannot link a card to itself. (This assignment will be ignored.)
 	#TODO: Localize
-	no cards selected:					No cards selected. Select up to 4 cards to link.
+	no cards selected:					No cards selected. Select up to 32 cards to link.
 	could not find input:				Could not find input card.
 	could not find linked:				Could not find linked card.
+	#TODO: Localize
+	result not card or nil:				Result of %s is not a card or nil.
 
 	# bulk modification
 	#TODO: Localize Section

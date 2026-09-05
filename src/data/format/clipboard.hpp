@@ -57,6 +57,6 @@ public:
 /// A DataObject for putting one or more cards on the clipboard, in multiple formats
 class CardsOnClipboard : public wxDataObjectComposite {
 public:
-  CardsOnClipboard(const SetP& set, const String id, const vector<CardP>& cards);
+  CardsOnClipboard(const SetP& set, const String id, vector<CardP> cards);
 };
 

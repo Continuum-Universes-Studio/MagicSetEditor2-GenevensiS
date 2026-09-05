@@ -88,6 +88,8 @@ SetWindow::SetWindow(Window* parent, const SetP& set)
     menuEdit->AppendSeparator();
     add_menu_item_tr(menuEdit, ID_EDIT_SELECT_ALL, nullptr, "select_all");
     menuEdit->AppendSeparator();
+    add_menu_item_tr(menuEdit, ID_EDIT_DEFAULT_RESET, settings.darkModePrefix() + "default_reset", "default_reset");
+    menuEdit->AppendSeparator();
     add_menu_item_tr(menuEdit, ID_EDIT_FIND,         settings.darkModePrefix() + "find", "find");
     add_menu_item_tr(menuEdit, ID_EDIT_FIND_NEXT,    settings.darkModePrefix() + "find", "find_next");
     add_menu_item_tr(menuEdit, ID_EDIT_REPLACE,      settings.darkModePrefix() + "find", "replace");
@@ -157,10 +159,6 @@ SetWindow::SetWindow(Window* parent, const SetP& set)
   
   // loose ends
   tabBar->Realize();
-  SetSize(settings.set_window_width, settings.set_window_height);
-  if (settings.set_window_maximized) {
-    Maximize();
-  }
   set_windows.push_back(this); // register this window
   // don't send update ui events to children
   // note: this still sends events for menu and toolbar items!
@@ -179,6 +177,11 @@ SetWindow::SetWindow(Window* parent, const SetP& set)
     throw;
   }
   current_panel->Layout();
+
+  SetSize(settings.set_window_width, settings.set_window_height);
+  if (settings.set_window_maximized) {
+    Maximize();
+  }
 }
 
 wxMenu* SetWindow::makeExportMenu() {
@@ -367,6 +370,7 @@ void SetWindow::onSizeChange(wxCommandEvent&) {
   FOR_EACH(p, panels) {
     p->Layout();
   }
+  if (current_panel && current_panel->isUpdating()) return;
   fixMinWindowSize();
 }
 
@@ -523,13 +527,14 @@ void SetWindow::onUpdateUI(wxUpdateUIEvent& ev) {
       break;
     }
     // copy & paste & find
-    case ID_EDIT_CUT       : ev.Enable(current_panel->canCut());  break;
-    case ID_EDIT_COPY      : ev.Enable(current_panel->canCopy());  break;
-    case ID_EDIT_PASTE     : ev.Enable(current_panel->canPaste());  break;
-    case ID_EDIT_SELECT_ALL: ev.Enable(current_panel->canSelectAll()); break;
-    case ID_EDIT_FIND      : ev.Enable(current_panel->canFind());  break;
-    case ID_EDIT_FIND_NEXT : ev.Enable(current_panel->canFind());  break;
-    case ID_EDIT_REPLACE   : ev.Enable(current_panel->canReplace());break;
+    case ID_EDIT_CUT          : ev.Enable(current_panel->canCut());  break;
+    case ID_EDIT_COPY         : ev.Enable(current_panel->canCopy());  break;
+    case ID_EDIT_PASTE        : ev.Enable(current_panel->canPaste());  break;
+    case ID_EDIT_SELECT_ALL   : ev.Enable(current_panel->canSelectAll()); break;
+    case ID_EDIT_DEFAULT_RESET: ev.Enable(current_panel->canDefaultReset()); break;
+    case ID_EDIT_FIND         : ev.Enable(current_panel->canFind());  break;
+    case ID_EDIT_FIND_NEXT    : ev.Enable(current_panel->canFind());  break;
+    case ID_EDIT_REPLACE      : ev.Enable(current_panel->canReplace());break;
     // windows
     case ID_WINDOW_KEYWORDS: ev.Enable(set->game->has_keywords);  break;
     case ID_WINDOW_RANDOM_PACK: ev.Enable(!set->game->pack_types.empty());  break;
@@ -769,6 +774,10 @@ void SetWindow::onEditSelectAll(wxCommandEvent&) {
   current_panel->doSelectAll();
 }
 
+void SetWindow::onEditDefaultReset(wxCommandEvent&) {
+  current_panel->doDefaultReset();
+}
+
 void SetWindow::onEditFind(wxCommandEvent&) {
   find_dialog = make_unique<wxFindReplaceDialog>(this, &find_data, _("Find"));
   find_dialog->Show();
@@ -803,8 +812,10 @@ void SetWindow::onEditAutoReplace(wxCommandEvent&) {
 void SetWindow::onEditPreferences(wxCommandEvent&) {
   PreferencesWindow wnd(this);
   if (wnd.ShowModal() == wxID_OK) {
-    // render settings may have changed, notify all windows
-    set->actions.tellListeners(DisplayChangeAction(),true);
+    // render settings may have changed, notify all windows since some settings are global
+    FOR_EACH(w, set_windows) {
+      w->set->actions.tellListeners(GlobalDisplayChangeAction(), true);
+    }
   }
 }
 
@@ -858,6 +869,12 @@ void SetWindow::onIdle(wxIdleEvent& ev) {
   downloadable_installers.show_update_dialog(this);
 }
 
+void SetWindow::onPackageListChange(wxCommandEvent&) {
+  FOR_EACH(p, panels) {
+    p->onPackageListChange();
+  }
+}
+
 // ----------------------------------------------------------------------------- : Event table
 
 BEGIN_EVENT_TABLE(SetWindow, wxFrame)
@@ -888,6 +905,7 @@ BEGIN_EVENT_TABLE(SetWindow, wxFrame)
   EVT_MENU      (ID_EDIT_COPY,      SetWindow::onEditCopy)
   EVT_MENU      (ID_EDIT_PASTE,      SetWindow::onEditPaste)
   EVT_MENU      (ID_EDIT_SELECT_ALL, SetWindow::onEditSelectAll)
+  EVT_MENU      (ID_EDIT_DEFAULT_RESET, SetWindow::onEditDefaultReset)
   EVT_MENU      (ID_EDIT_FIND,      SetWindow::onEditFind)
   EVT_MENU      (ID_EDIT_FIND_NEXT,    SetWindow::onEditFindNext)
   EVT_MENU      (ID_EDIT_REPLACE,    SetWindow::onEditReplace)
@@ -917,4 +935,5 @@ BEGIN_EVENT_TABLE(SetWindow, wxFrame)
   EVT_CARD_SELECT    (wxID_ANY,        SetWindow::onCardSelect)
   EVT_CARD_ACTIVATE  (wxID_ANY,        SetWindow::onCardActivate)
   EVT_SIZE_CHANGE    (wxID_ANY,        SetWindow::onSizeChange)
+  EVT_COMMAND        (wxID_ANY, EVENT_PACKAGE_LIST_CHANGED, SetWindow::onPackageListChange)
 END_EVENT_TABLE  ()

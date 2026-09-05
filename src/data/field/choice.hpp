@@ -197,10 +197,14 @@ public:
    */
   ChoiceValue(const ChoiceFieldP& field, bool initial_first_choice = true);
   DECLARE_VALUE_TYPE(Choice, Defaultable<String>);
-  
+
+  void copyDataFrom(const Value& other) override;
+
   ValueType value;  /// The name of the selected choice
 
   bool isDefault() override;
+
+  void makeDefault(bool d = true) override;
 
   bool update(Context&) override;
 };

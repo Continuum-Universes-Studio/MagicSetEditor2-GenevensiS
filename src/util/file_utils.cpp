@@ -36,6 +36,32 @@ bool ignore_file(const String& name) {
   return name == _("Thumbs.db"); // winXP explorer thumbnails
 }
 
+bool match_filename_wildcard(const String& text, const String& pattern) {
+  size_t text_index = 0, pattern_index = 0;
+  // if a '*' is hit but the rest of the pattern doesn't match, we backtrack here:
+  // retry with the '*' consuming one more character of text than last time.
+  size_t star_pattern_index = String::npos, star_text_index = 0;
+  while (text_index < text.size()) {
+    if (pattern_index < pattern.size() && (pattern[pattern_index] == _('?') || pattern[pattern_index] == text[text_index])) {
+      // literal character (or '?') matches the current text character
+      ++text_index; ++pattern_index;
+    } else if (pattern_index < pattern.size() && pattern[pattern_index] == _('*')) {
+      // remember this '*' in case we need to backtrack to it
+      star_pattern_index = pattern_index++;
+      star_text_index = text_index;
+    } else if (star_pattern_index != String::npos) {
+      // mismatch, but we saw a '*' earlier: let it consume one more character and retry
+      pattern_index = star_pattern_index + 1;
+      text_index = ++star_text_index;
+    } else {
+      return false;
+    }
+  }
+  // skip any trailing '*'s, they can match zero characters
+  while (pattern_index < pattern.size() && pattern[pattern_index] == _('*')) ++pattern_index;
+  return pattern_index == pattern.size();
+}
+
 String add_extension(const String& filename, String const& extension) {
   if (extension.size() <= filename.size() && is_substr(filename, filename.size() - extension.size(), extension)) {
     return filename;
@@ -207,8 +233,8 @@ bool rename_file_or_dir(const String& from, const String& to) {
 
 class IgnoredMover : public wxDirTraverser {
 public:
-  IgnoredMover(const String& from, const String& to)
-    : from(from), to(to)
+  IgnoredMover(const String& from, const String& to, const vector<String>& ignore_patterns)
+    : from(from), to(to), ignore_patterns(ignore_patterns)
   {}
   wxDirTraverseResult OnFile(const String& filename) override {
     tryMove(filename);
@@ -219,21 +245,37 @@ public:
   }
 private:
   String from, to;
+  const vector<String>& ignore_patterns;
+  bool isIgnored(const String& from_path) const {
+    // path relative to 'from', in normalized (package-internal) form
+    String rel = normalize_internal_filename(from_path.substr(from.size()));
+    while (!rel.empty() && rel[0] == _('/')) rel = rel.substr(1);
+    for (const String& pattern : ignore_patterns) {
+      if (match_filename_wildcard(rel, normalize_internal_filename(pattern))) return true;
+    }
+    return false;
+  }
   bool tryMove(const String& from_path) {
-    if (is_substr(from_path,0,from)) {
-      String to_path = to + from_path.substr(from.size());
-      return rename_file_or_dir(from_path, to_path);
-    } else {
+    if (!is_substr(normalize_internal_filename(from_path),0,normalize_internal_filename(from))) {
       // This shouldn't happen
       return false;
     }
+    if (!isIgnored(normalize_internal_filename(from_path))) {
+      // Not one of the package's read_only_files files/patterns: this is content
+      // managed by the package itself, so leave it for the fresh install to provide.
+      return false;
+    }
+    String to_path = to + from_path.substr(from.size());
+    remove_file_or_dir(to_path);
+    return rename_file_or_dir(from_path, to_path);
   }
 };
 
-void move_ignored_files(const String& from_dir, const String& to_dir) {
+void move_ignored_files(const String& from_dir, const String& to_dir, const vector<String>& ignore_patterns) {
+  if (ignore_patterns.empty()) return;
   if (wxDirExists(from_dir) && wxDirExists(to_dir)) {
     wxDir dir(from_dir);
-    IgnoredMover im(from_dir, to_dir);
+    IgnoredMover im(from_dir, to_dir, ignore_patterns);
     dir.Traverse(im);
   }
 }

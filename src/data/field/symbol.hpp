@@ -67,10 +67,15 @@ class SymbolValue : public Value {
 public:
   inline SymbolValue(const SymbolFieldP& field) : Value(field) {}
   DECLARE_VALUE_TYPE(Symbol, LocalFileName);
-  
+
+  void copyDataFrom(const Value& other) override;
+
   ValueType filename;    ///< Filename of the symbol (in the current package)
   Age       last_update; ///< When was the symbol last changed?
 
   bool isDefault() override;
+
+  void makeDefault(bool d = true) override;
+
 };
 

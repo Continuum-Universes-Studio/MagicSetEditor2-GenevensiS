@@ -28,9 +28,8 @@ DECLARE_POINTER_TYPE(AutoReplace);
 
 /// When to check for updates?
 enum CheckUpdates
-{  CHECK_ALWAYS
-,  CHECK_5
-,  CHECK_10
+{  CHECK_7_DAYS
+,  CHECK_30_DAYS
 ,  CHECK_NEVER
 };
 
@@ -113,7 +112,10 @@ public:
   Defaultable<bool>    card_normal_export;
   Defaultable<bool>    card_bleed_export;
   Defaultable<bool>    card_notes_export;
+  Defaultable<bool>    card_metaimage_export;
+  Defaultable<bool>    card_dfc_export;
   Defaultable<bool>    card_spellcheck_enabled;
+  Defaultable<double>  list_hide_back_faces;
   
   /// Where the settings are the default, use the value from ss
   void useDefault(const StyleSheetSettings& ss);
@@ -195,9 +197,11 @@ public:
   StyleSheetSettings& stylesheetSettingsFor    (const StyleSheet& stylesheet);
   double              exportScaleSettingsFor   (const StyleSheet& stylesheet);
   double              importScaleSettingsFor   (const StyleSheet& stylesheet);
+  double              clipboardScaleSettingsFor(const StyleSheet& stylesheet);
   double              adaptiveScaleSettingsFor (const StyleSheet& stylesheet, double target_dpi, double leeway_dpi);
   ExportSettings      exportSettingsFor        (const StyleSheet& stylesheet);
-
+  ExportSettings      clipboardSettingsFor     (const StyleSheet& stylesheet);
+  
   static const vector<int> scale_choices;
 
 private:
@@ -237,14 +241,16 @@ public:
   // --------------------------------------------------- : Internal settings
 
   int import_scale_selection;
+  int clipboard_scale_selection;
+  bool card_dfc_copy;
   bool allow_image_download;
 
   // --------------------------------------------------- : Update checking
 
-  String installer_list_url;   ///< available installers
+  String installer_list_url;    ///< available installers
   CheckUpdatesTargets check_updates_what;
   CheckUpdates check_updates_when;
-  int check_updates_counter;
+  int check_updates_last_check; ///< date of the last successful update check, as an integer in YYYYMMDD form (0 = never checked).
 
   // --------------------------------------------------- : Help links
 

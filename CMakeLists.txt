@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(magicseteditor VERSION 2.6.0 LANGUAGES CXX)
+project(magicseteditor VERSION 2.6.1 LANGUAGES CXX)
 # ------------------------------------------------------------------------------
 # CPack RPM packaging
 # ------------------------------------------------------------------------------
@@ -50,6 +50,10 @@ endif()
 # ------------------------------------------------------------------------------
 # Dependencies
 # ------------------------------------------------------------------------------
+
+# You will most likely get a message about being unable to open hunspell-1.7.lib because pkgconf forgets to add the actual path to HUNSPELL_LIBRARIES.
+# If so, uncomment the below line and point it to the correct vcpkg root folder/library. (For debug builds, add "debug\\" just before "lib\\")
+#set(HUNSPELL_LIBRARIES "C:\\PATH\\TO\\ROOT\\vcpkg\\installed\\${VCPKG_TARGET_TRIPLET}\\lib\\hunspell-1.7.lib")
 
 find_package(wxWidgets 3.3.1 REQUIRED COMPONENTS core base net html)
 include(${wxWidgets_USE_FILE})
@@ -369,4 +373,6 @@ endif()
 # Test suite
 # ------------------------------------------------------------------------------
 
+# Debug Message
+message("-- Does this have a full path? If not, and it's just a file name, it's broken: ${HUNSPELL_LIBRARIES}")
 include(test/tests.cmake)

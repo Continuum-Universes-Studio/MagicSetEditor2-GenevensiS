@@ -87,12 +87,14 @@ These functions are built into the program, other [[type:function]]s can be defi
 | [[fun:set_mask]]		Set the transparancy mask of an image.
 | [[fun:set_alpha]]		Change the transparency of an image.
 | [[fun:set_combine]]		Change how the image should be combined with the background.
+| [[fun:visibility_mask]]		Determine what pixels of an image can be seen through.
 | [[fun:fill_image]]		Fill an image with a single color.
 | [[fun:saturate_image]]		Saturate/desaturate an image.
 | [[fun:brighten_image]]		Brighten/darken an image.
 | [[fun:invert_image]]		Invert the colors of an image.
 | [[fun:recolor_image]]		Change the colors of an image to match the font color.
 | [[fun:resize_image]]		Stretch or squeeze an image to a given height and width.
+| [[fun:nine_slice_image]]		Stretch or squeeze an image to a given height and width, but leaving the edges untouched.
 | [[fun:enlarge_image]]		Enlarge an image by putting a border around it.
 | [[fun:crop_image]]		Crop an image, giving only a small subset of it.
 | [[fun:insert_image]]		Insert an image inside another.
@@ -116,6 +118,7 @@ These functions are built into the program, other [[type:function]]s can be defi
 | [[fun:get_card_export_settings]]	Get the zoom, angle and bleed size at which the card will be exported.
 | [[fun:get_card_from_uid]]		Find the [[type:card]] with the given uid.
 | [[fun:get_cards_from_link]]		Find all [[type:card]]s that have the given link type to the given [[type:card]].
+| [[fun:get_link_from_cards]]		Find the relation type of the link between two cards.
 | [[fun:get_front_face]]		Find a [[type:card]] that has the link type "Front Face" to the given [[type:card]].
 | [[fun:get_back_face]]		Find a [[type:card]] that has the link type "Back Face" to the given [[type:card]].
 | [[fun:has_link]]		Determine if the given [[type:card]] has a link of the given type.

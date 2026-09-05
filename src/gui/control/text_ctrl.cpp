@@ -59,6 +59,7 @@ void TextCtrl::updateSize() {
   viewer.bounding_box.width  = cs.GetWidth()  - 2;
   viewer.bounding_box.height = cs.GetHeight() - 2;
   viewers.front()->getEditor()->determineSize(true);
+  InvalidateBestSize();
 }
 
 void TextCtrl::setValue(String* value, bool untagged) {
@@ -93,7 +94,7 @@ void TextCtrl::onChangeSet() {
     setStyles(set->stylesheet, styles);
     setData(values);
     updateSize();
-    onChange();
+    onChange(true);
   } else {
     setValue(nullptr);
   }
@@ -114,7 +115,7 @@ void TextCtrl::onInit() {
 void TextCtrl::onSize(wxSizeEvent&) {
   if (!viewers.empty()) {
     updateSize();
-    onChange();
+    onChange(true);
   }
 }
 wxSize TextCtrl::DoGetBestSize() const {

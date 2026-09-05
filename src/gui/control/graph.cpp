@@ -1198,6 +1198,10 @@ void GraphControl::onMotion(wxMouseEvent& ev) {
     }
     UInt count = data.count(hovered_item);
     tip += String::Format(_("\n%d "), count) + (count == 1 ? _TYPE_("card") : _TYPE_("cards"));
+    if (!data.axes.empty() && data.axes[0]->total > 0) {
+      double percent = 100.0 * count / data.axes[0]->total;
+      tip += String::Format(_("   (%.1f%%)"), percent);
+    }
     tip.Replace(_(" "),_("\xA0"));
     // set tooltip
     SetToolTip(tip);

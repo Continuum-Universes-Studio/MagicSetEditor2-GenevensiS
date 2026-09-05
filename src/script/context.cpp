@@ -35,7 +35,7 @@ void instrQuaternary(QuaternaryInstructionType i, ScriptValueP& a, const ScriptV
 
 
 ScriptValueP Context::eval(const Script& script, bool useScope) {
-  if (level > 500) {
+  if (level > 400) {
     throw ScriptError(_("Stack overflow"));
   }
   

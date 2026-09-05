@@ -46,32 +46,37 @@ Card::Card(Game& game)
 
 Card::Card(Set* set, const CardP& card)
   : game(card->game)
-  , time_created (wxDateTime::Now())
-  , time_modified(wxDateTime::Now())
+  , time_created(card->time_created)
+  , time_modified(card->time_modified)
   , notes(card->notes)
-  , uid(generate_uid())
-  , linked_card_1(card->linked_card_1)
-  , linked_card_2(card->linked_card_2)
-  , linked_card_3(card->linked_card_3)
-  , linked_card_4(card->linked_card_4)
-  , linked_relation_1(card->linked_relation_1)
-  , linked_relation_2(card->linked_relation_2)
-  , linked_relation_3(card->linked_relation_3)
-  , linked_relation_4(card->linked_relation_4)
+  , uid(card->uid)
   , has_styling(card->has_styling)
   , stylesheet_version(card->stylesheet_version)
   , stylesheet(card->stylesheet)
 {
+  // copy all the link slots
+  LINK_PAIRS(dst_links, this);
+  LINK_PAIRS(src_links, card);
+  for (int i = 0; i < (int)dst_links.size(); ++i) {
+    dst_links[i].first.get()  = src_links[i].first.get();
+    dst_links[i].second.get() = src_links[i].second.get();
+  }
   if (!stylesheet && set) {
     stylesheet = set->stylesheetForP(card);
   }
   if (has_styling) {
-    styling_data.cloneFrom(card->styling_data);
+    if (stylesheet) {
+      styling_data.init(stylesheet->styling_fields);
+      styling_data.copyDataFrom(card->styling_data);
+    } else {
+      has_styling = false; // no stylesheet resolved, nothing to safely carry over
+    }
   }
   else {
     if (stylesheet && set) styling_data.cloneFrom(set->stylingDataFor(*stylesheet));
   }
-  data.cloneFrom(card->data);
+  data.init(game->card_fields);
+  data.copyDataFrom(card->data);
   extra_data.cloneFrom(card->extra_data);
 }
 
@@ -100,7 +105,8 @@ bool Card::contains(QuickFilterPart const& query) const {
 
 vector<int> Card::findFreeLinks(vector<String>& linked_uids, const unordered_map<String, CardP>& all_existing_uids) {
   vector<int> freeIndexes;
-  int count = min(4, (int)linked_uids.size());
+  int count = (int)linked_uids.size();
+  if (count > Card::MAX_LINKS) count = Card::MAX_LINKS; // avoid binding a reference to the static constant, just read its value
   LINK_PAIRS(linked_pairs, this);
 
   for (int i = 0; i < count; ++i) {
@@ -146,39 +152,54 @@ int Card::findFreeLink(const String& linked_uid, const unordered_map<String, Car
 }
 
 int Card::findUIDLink(const String& linked_uid) {
-  if (linked_card_1 == linked_uid) return 0;
-  if (linked_card_2 == linked_uid) return 1;
-  if (linked_card_3 == linked_uid) return 2;
-  if (linked_card_4 == linked_uid) return 3;
+  LINK_PAIRS(linked_pairs, this);
+  for (int i = 0; i < (int)linked_pairs.size(); ++i) {
+    if (linked_pairs[i].first.get() == linked_uid) return i;
+  }
   return -1;
 }
 
 vector<int> Card::findRelationLinks(const String& linked_relation) {
   vector<int> indexes;
-  if (linked_relation_1 == linked_relation) indexes.push_back(0);
-  if (linked_relation_2 == linked_relation) indexes.push_back(1);
-  if (linked_relation_3 == linked_relation) indexes.push_back(2);
-  if (linked_relation_4 == linked_relation) indexes.push_back(3);
+  LINK_PAIRS(linked_pairs, this);
+  for (int i = 0; i < (int)linked_pairs.size(); ++i) {
+    if (linked_pairs[i].second.get() == linked_relation) indexes.push_back(i);
+  }
   return indexes;
 }
 
 String& Card::getLinkedUID(int index) {
-  switch (index) {
-  case 0:  return linked_card_1;
-  case 1:  return linked_card_2;
-  case 2:  return linked_card_3;
-  case 3:  return linked_card_4;
-  default: throw ScriptError(_("getLinkedUID called with invalid index"));
+  LINK_PAIRS(linked_pairs, this);
+  if (index < 0 || index >= (int)linked_pairs.size()) {
+    throw ScriptError(String("getLinkedUID called with invalid index: ") << index);
   }
+  return linked_pairs[index].first.get();
 }
 String& Card::getLinkedRelation(int index) {
-  switch (index) {
-  case 0:  return linked_relation_1;
-  case 1:  return linked_relation_2;
-  case 2:  return linked_relation_3;
-  case 3:  return linked_relation_4;
-  default: throw ScriptError(_("getLinkedRelation called with invalid index"));
+  LINK_PAIRS(linked_pairs, this);
+  if (index < 0 || index >= (int)linked_pairs.size()) {
+    throw ScriptError(String("getLinkedRelation called with invalid index: ") << index);
   }
+  return linked_pairs[index].second.get();
+}
+
+int Card::indexedFieldIndex(const String& key_name, const String& base_name, int max_count) {
+  if (key_name == base_name) return 0;
+  String prefix = base_name + _("_");
+  if (!key_name.starts_with(prefix)) return -1;
+  long n = 0;
+  if (!key_name.substr(prefix.size()).ToLong(&n) || n < 1 || n > max_count) return -1;
+  return (int)n - 1;
+}
+
+int Card::linkedCardFieldIndex(const String& key_name) {
+  return indexedFieldIndex(key_name, _("linked_card"), MAX_LINKS);
+}
+int Card::linkedRelationFieldIndex(const String& key_name) {
+  return indexedFieldIndex(key_name, _("linked_relation"), MAX_LINKS);
+}
+bool Card::isLinkFieldName(const String& name) {
+  return linkedCardFieldIndex(name) >= 0 || linkedRelationFieldIndex(name) >= 0;
 }
 
 void Card::updateLinkedUID(const String& old_uid, const String& new_uid) {
@@ -186,100 +207,76 @@ void Card::updateLinkedUID(const String& old_uid, const String& new_uid) {
   if (index >= 0) getLinkedUID(index) = new_uid;
 }
 
-//vector<CardP> Card::getLinkedRelationCards(const vector<CardP>& cards, const String& linked_relation, bool erase_if_no_card) {
-//  vector<CardP> other_cards;
-//  vector<int> indexes = findRelationLinks(linked_relation);
-//  for (size_t i = 0; i < indexes.size(); ++i) {
-//    String& linked_uid = getLinkedUID(indexes[i]);
-//    CardP other_card = getUIDCard(cards, linked_uid);
-//    if (other_card) other_cards.push_back(other_card);
-//    else if (erase_if_no_card) {
-//      linked_uid = _("");
-//      getLinkedRelation(indexes[i]) = _("");
-//    }
-//  }
-//  return other_cards;
-//}
-vector<CardP> Card::getLinkedRelationCards(const Set& set, const String& linked_relation, bool erase_if_no_card) {
+vector<CardP> Card::getLinkedRelationCards(const Set& set, const String& linked_relation) {
   vector<CardP> other_cards;
   vector<int> indexes = findRelationLinks(linked_relation);
   for (size_t i = 0; i < indexes.size(); ++i) {
     String& linked_uid = getLinkedUID(indexes[i]);
     CardP other_card = getUIDCard(set, linked_uid);
     if (other_card) other_cards.push_back(other_card);
-    else if (erase_if_no_card) {
-      linked_uid = _("");
-      getLinkedRelation(indexes[i]) = _("");
-    }
   }
   return other_cards;
 }
 
-//vector<pair<CardP, String>> Card::getLinkedCards(const vector<CardP>& cards) {
-//  unordered_map<String, String> links{
-//    { linked_card_1, linked_relation_1 },
-//    { linked_card_2, linked_relation_2 },
-//    { linked_card_3, linked_relation_3 },
-//    { linked_card_4, linked_relation_4 }
-//  };
-//  vector<pair<CardP, String>> linked_cards;
-//  FOR_EACH(other_card, cards) {
-//    if (links.find(other_card->uid) != links.end()) {
-//      linked_cards.push_back(make_pair(other_card, links.at(other_card->uid)));
-//    }
-//  }
-//  return linked_cards;
-//}
 vector<pair<CardP, String>> Card::getLinkedCards(const Set& set) {
   vector<pair<CardP, String>> linked_cards;
-  CardP other_card_1 = getUIDCard(set, linked_card_1);
-  if (other_card_1) {
-    linked_cards.push_back(make_pair(other_card_1, linked_relation_1));
-  }
-  CardP other_card_2 = getUIDCard(set, linked_card_2);
-  if (other_card_2) {
-    linked_cards.push_back(make_pair(other_card_2, linked_relation_2));
-  }
-  CardP other_card_3 = getUIDCard(set, linked_card_3);
-  if (other_card_3) {
-    linked_cards.push_back(make_pair(other_card_3, linked_relation_3));
-  }
-  CardP other_card_4 = getUIDCard(set, linked_card_4);
-  if (other_card_4) {
-    linked_cards.push_back(make_pair(other_card_4, linked_relation_4));
+  LINK_PAIRS(linked_pairs, this);
+  for (int i = 0; i < (int)linked_pairs.size(); ++i) {
+    CardP other_card = getUIDCard(set, linked_pairs[i].first.get());
+    if (other_card) {
+      linked_cards.push_back(make_pair(other_card, linked_pairs[i].second.get()));
+    }
   }
   return linked_cards;
 }
 
-//CardP Card::getLinkedOtherFaceCard(const vector<CardP>& cards) {
-//  unordered_set<String> faces;
-//  if (linked_relation_1 == _("Front Face") || linked_relation_1 == _("Back Face")) faces.emplace(linked_card_1);
-//  if (linked_relation_2 == _("Front Face") || linked_relation_2 == _("Back Face")) faces.emplace(linked_card_2);
-//  if (linked_relation_3 == _("Front Face") || linked_relation_3 == _("Back Face")) faces.emplace(linked_card_3);
-//  if (linked_relation_4 == _("Front Face") || linked_relation_4 == _("Back Face")) faces.emplace(linked_card_4);
-//  FOR_EACH(other_card, cards) {
-//    if (faces.find(other_card->uid) != faces.end()) return other_card;
-//  }
-//  return nullptr;
-//}
-CardP Card::getLinkedOtherFaceCard(const Set& set) {
-  if (linked_relation_1 == _("Front Face") || linked_relation_1 == _("Back Face")) {
-    CardP other_card_1 = getUIDCard(set, linked_card_1);
-    if (other_card_1) return other_card_1;
+CardP Card::getFrontFaceCard(Set& set) {
+  // use game script logic if defined
+  if (set.game->get_front_face_script) {
+    const CardP& this_card = CardP(this);
+    Context& ctx = set.getContext(this_card);
+    ctx.setVariable(SCRIPT_VAR_input, to_script(this_card));
+    ScriptValueP result = set.game->get_front_face_script.invoke(ctx);
+    if (result == script_nil) return CardP();
+    if (ScriptObject<CardP>* ic = dynamic_cast<ScriptObject<CardP>*>(result.get())) {
+      return ic->getValue();
+    }
+    queue_message(MESSAGE_ERROR, _ERROR_1_("result not card or nil", "get_front_face_script"));
+    return CardP();
   }
-  if (linked_relation_2 == _("Front Face") || linked_relation_2 == _("Back Face")) {
-    CardP other_card_2 = getUIDCard(set, linked_card_2);
-    if (other_card_2) return other_card_2;
+  // fallback on regular Front Face/Back Face logic
+  vector<CardP> other_cards = getLinkedRelationCards(set, "Front Face");
+  if (other_cards.size() == 0) return CardP();
+  return other_cards[0];
+}
+
+CardP Card::getBackFaceCard(Set& set) {
+  // use game script logic if defined
+  if (set.game->get_back_face_script) {
+    const CardP& this_card = CardP(this);
+    Context& ctx = set.getContext(this_card);
+    ctx.setVariable(SCRIPT_VAR_input, to_script(this_card));
+    ScriptValueP result = set.game->get_back_face_script.invoke(ctx);
+    if (result == script_nil) return CardP();
+    if (ScriptObject<CardP>* ic = dynamic_cast<ScriptObject<CardP>*>(result.get())) {
+      return ic->getValue();
+    }
+    queue_message(MESSAGE_ERROR, _ERROR_1_("result not card or nil", "get_back_face_script"));
+    return CardP();
   }
-  if (linked_relation_3 == _("Front Face") || linked_relation_3 == _("Back Face")) {
-    CardP other_card_3 = getUIDCard(set, linked_card_3);
-    if (other_card_3) return other_card_3;
-  }
-  if (linked_relation_4 == _("Front Face") || linked_relation_4 == _("Back Face")) {
-    CardP other_card_4 = getUIDCard(set, linked_card_4);
-    if (other_card_4) return other_card_4;
-  }
-  return nullptr;
+  // fallback on regular Front Face/Back Face logic
+  vector<CardP> other_cards = getLinkedRelationCards(set, "Back Face");
+  if (other_cards.size() == 0) return CardP();
+  return other_cards[0];
+}
+
+// Find the other face, keep track of which is the front
+pair<CardP, CardP> Card::getFrontFaceBackFacePair(Set& set) {
+  const CardP& back = getBackFaceCard(set);
+  if (back) return make_pair(CardP(this), back);
+  const CardP& front = getFrontFaceCard(set);
+  if (front) return make_pair(front, CardP(this));
+  return make_pair(CardP(), CardP());
 }
 
 void Card::addLink(const Set& set, CardP& linked_card, const String& selected_relation, const String& linked_relation) {
@@ -350,16 +347,7 @@ void mark_dependency_member(const Card& card, const String& name, const Dependen
     return;
   }
   // is it a link?
-  if (
-    name == _("linked_card_1") ||
-    name == _("linked_card_2") ||
-    name == _("linked_card_3") ||
-    name == _("linked_card_4") ||
-    name == _("linked_relation_1") ||
-    name == _("linked_relation_2") ||
-    name == _("linked_relation_3") ||
-    name == _("linked_relation_4")
-  ) {
+  if (Card::isLinkFieldName(name)) {
     if (card.game) {
       card.game->dependent_scripts_links.add(dep);
     }
@@ -399,10 +387,66 @@ IMPLEMENT_REFLECTION(Card) {
   REFLECT(linked_card_2);
   REFLECT(linked_card_3);
   REFLECT(linked_card_4);
+  REFLECT(linked_card_5);
+  REFLECT(linked_card_6);
+  REFLECT(linked_card_7);
+  REFLECT(linked_card_8);
+  REFLECT(linked_card_9);
+  REFLECT(linked_card_10);
+  REFLECT(linked_card_11);
+  REFLECT(linked_card_12);
+  REFLECT(linked_card_13);
+  REFLECT(linked_card_14);
+  REFLECT(linked_card_15);
+  REFLECT(linked_card_16);
+  REFLECT(linked_card_17);
+  REFLECT(linked_card_18);
+  REFLECT(linked_card_19);
+  REFLECT(linked_card_20);
+  REFLECT(linked_card_21);
+  REFLECT(linked_card_22);
+  REFLECT(linked_card_23);
+  REFLECT(linked_card_24);
+  REFLECT(linked_card_25);
+  REFLECT(linked_card_26);
+  REFLECT(linked_card_27);
+  REFLECT(linked_card_28);
+  REFLECT(linked_card_29);
+  REFLECT(linked_card_30);
+  REFLECT(linked_card_31);
+  REFLECT(linked_card_32);
   REFLECT(linked_relation_1);
   REFLECT(linked_relation_2);
   REFLECT(linked_relation_3);
   REFLECT(linked_relation_4);
+  REFLECT(linked_relation_5);
+  REFLECT(linked_relation_6);
+  REFLECT(linked_relation_7);
+  REFLECT(linked_relation_8);
+  REFLECT(linked_relation_9);
+  REFLECT(linked_relation_10);
+  REFLECT(linked_relation_11);
+  REFLECT(linked_relation_12);
+  REFLECT(linked_relation_13);
+  REFLECT(linked_relation_14);
+  REFLECT(linked_relation_15);
+  REFLECT(linked_relation_16);
+  REFLECT(linked_relation_17);
+  REFLECT(linked_relation_18);
+  REFLECT(linked_relation_19);
+  REFLECT(linked_relation_20);
+  REFLECT(linked_relation_21);
+  REFLECT(linked_relation_22);
+  REFLECT(linked_relation_23);
+  REFLECT(linked_relation_24);
+  REFLECT(linked_relation_25);
+  REFLECT(linked_relation_26);
+  REFLECT(linked_relation_27);
+  REFLECT(linked_relation_28);
+  REFLECT(linked_relation_29);
+  REFLECT(linked_relation_30);
+  REFLECT(linked_relation_31);
+  REFLECT(linked_relation_32);
   REFLECT(time_created);
   REFLECT(time_modified);
   REFLECT(extra_data); // don't allow scripts to depend on style specific data

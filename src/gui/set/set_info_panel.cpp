@@ -22,8 +22,8 @@ SetInfoPanel::SetInfoPanel(Window* parent, int id)
   // init sizer
   wxSizer* s = new wxBoxSizer(wxVERTICAL);
   s->Add(editor, 1, wxEXPAND, 2);
-  s->SetSizeHints(this);
   SetSizer(s);
+  s->SetSizeHints(this);
 }
 
 void SetInfoPanel::onChangeSet() {

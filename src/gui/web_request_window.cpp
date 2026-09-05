@@ -27,8 +27,8 @@ WebRequestWindow::WebRequestWindow(const String& url, bool sizer)
       s->Add(address, 0, (wxALL & ~wxTOP), 4);
       s->Add(gauge, 0, wxEXPAND | wxALL, 8);
       s->Add(CreateButtonSizer(wxCANCEL), 1, wxEXPAND, 8);
-    s->SetSizeHints(this);
     SetSizer(s);
+    s->SetSizeHints(this);
   }
 
   // create web request
@@ -121,8 +121,10 @@ void WebRequestWindow::onComplete(wxWebRequestEvent& evt) {
 
 void WebRequestWindow::onFail(const String& message) {
   content_type.Clear();
-  info->SetLabel(_ERROR_("web request failed"));
-  address->SetLabel(message);
+  queue_message(MESSAGE_ERROR, message);
+  // onFail can be called from the constructor. EndModal() at that
+  // point would have no effect, so defer the close to the next idle event.
+  CallAfter([this]{ EndModal(wxID_CANCEL); });
 }
 
 void WebRequestWindow::onCancel(wxCommandEvent&) {

@@ -53,20 +53,28 @@ SCRIPT_FUNCTION(to_card_image) {
 SCRIPT_FUNCTION(import_image) {
   SCRIPT_PARAM(Set*, set);
   SCRIPT_PARAM_C(ScriptValueP, input);
-  if (input->type() == SCRIPT_IMAGE) {
-    return make_intrusive<ScriptedImage>(set, input->toImage());
+  try {
+    if (input->type() == SCRIPT_IMAGE) {
+      return make_intrusive<ScriptedImage>(set, input->toImage());
+    }
+    else if (input->type() == SCRIPT_STRING) {
+      return make_intrusive<ImportedImage>(set, input->toString());
+    }
+    throw ScriptErrorConversion(input->typeName(), _TYPE_("image"));
+  } catch (const ScriptError& e) {
+    return delay_error(e);
   }
-  else if (input->type() == SCRIPT_STRING) {
-    return make_intrusive<ImportedImage>(set, input->toString());
-  }
-  throw ScriptErrorConversion(input->typeName(), _TYPE_("image"));
 }
 
 SCRIPT_FUNCTION(download_image) {
   if (!settings.allow_image_download) return script_nil;
   SCRIPT_PARAM(Set*, set);
   SCRIPT_PARAM(String, input);
-  return make_intrusive<DownloadedImage>(set, input);
+  try {
+    return make_intrusive<DownloadedImage>(set, input);
+  } catch (const ScriptError& e) {
+    return delay_error(e);
+  }
 }
 
 // ----------------------------------------------------------------------------- : Image functions
@@ -114,8 +122,9 @@ SCRIPT_FUNCTION(insert_image) {
   SCRIPT_PARAM(GeneratedImageP, inserted_image);
   SCRIPT_PARAM(int, offset_x);
   SCRIPT_PARAM(int, offset_y);
+  SCRIPT_PARAM_DEFAULT(bool, widen, true);
   SCRIPT_OPTIONAL_PARAM_(Color, background_color);
-  return make_intrusive<InsertedImage>(base_image, inserted_image, offset_x, offset_y, background_color);
+  return make_intrusive<InsertedImage>(base_image, inserted_image, offset_x, offset_y, widen, background_color);
 }
 
 SCRIPT_FUNCTION(linear_blend) {
@@ -146,6 +155,13 @@ SCRIPT_FUNCTION(set_mask) {
   SCRIPT_PARAM(GeneratedImageP, image);
   SCRIPT_PARAM(GeneratedImageP, mask);
   return make_intrusive<SetMaskImage>(image, mask);
+}
+
+SCRIPT_FUNCTION(visibility_mask) {
+  SCRIPT_PARAM_C(GeneratedImageP, input);
+  SCRIPT_PARAM_DEFAULT(int, threshold, 254);
+  SCRIPT_PARAM_DEFAULT(int, radius, 1);
+  return make_intrusive<VisibilityMaskImage>(input, threshold, radius);
 }
 
 SCRIPT_FUNCTION(set_alpha) {
@@ -228,13 +244,24 @@ SCRIPT_FUNCTION(resize_image) {
   return make_intrusive<ResizeImage>(input, width, height);
 }
 
+SCRIPT_FUNCTION(nine_slice_image) {
+  SCRIPT_PARAM_C(GeneratedImageP, input);
+  SCRIPT_PARAM(int, width);
+  SCRIPT_PARAM(int, height);
+  SCRIPT_PARAM_DEFAULT(int, left, 0);
+  SCRIPT_PARAM_DEFAULT(int, right, 0);
+  SCRIPT_PARAM_DEFAULT(int, top, 0);
+  SCRIPT_PARAM_DEFAULT(int, bottom, 0);
+  return make_intrusive<NineSliceImage>(input, width, height, left, right, top, bottom);
+}
+
 SCRIPT_FUNCTION(crop) {
   SCRIPT_PARAM_C(GeneratedImageP, input);
   SCRIPT_PARAM(int, width);
   SCRIPT_PARAM(int, height);
   SCRIPT_PARAM(double, offset_x);
   SCRIPT_PARAM(double, offset_y);
-  SCRIPT_OPTIONAL_PARAM_(Color, background_color);
+  SCRIPT_PARAM_DEFAULT(Color, background_color, Color(0,0,0,0));
   return make_intrusive<CropImage>(input, width, height, offset_x, offset_y, background_color);
 }
 
@@ -353,6 +380,7 @@ void init_script_image_functions(Context& ctx) {
   ctx.setVariable(_("combine_blend"),    script_combine_blend);
   ctx.setVariable(_("insert_image"),     script_insert_image);
   ctx.setVariable(_("set_mask"),         script_set_mask);
+  ctx.setVariable(_("visibility_mask"),  script_visibility_mask);
   ctx.setVariable(_("set_alpha"),        script_set_alpha);
   ctx.setVariable(_("set_combine"),      script_set_combine);
   ctx.setVariable(_("fill_image"),       script_fill_image);
@@ -366,6 +394,7 @@ void init_script_image_functions(Context& ctx) {
   ctx.setVariable(_("add_stroke_effect"),script_add_stroke_effect);
   ctx.setVariable(_("add_bleed_edge"),   script_add_bleed_edge);
   ctx.setVariable(_("resize_image"),     script_resize_image);
+  ctx.setVariable(_("nine_slice_image"), script_nine_slice_image);
   ctx.setVariable(_("crop"),             script_crop);
   ctx.setVariable(_("crop_image"),       script_crop);
   ctx.setVariable(_("flip_horizontal"),  script_flip_horizontal);

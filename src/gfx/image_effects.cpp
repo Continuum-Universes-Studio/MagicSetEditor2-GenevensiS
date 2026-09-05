@@ -99,6 +99,43 @@ void invert(Image& img) {
   }
 }
 
+// ----------------------------------------------------------------------------- : Image mask
+
+Image make_visibility_mask(Image& img, int threshold, int radius) {
+  int w = img.GetWidth(), h = img.GetHeight();
+  Image mask(w, h);
+  assert(mask.Ok());
+  Byte* out = mask.GetData();
+  if (!img.HasAlpha()) {
+    // No alpha channel at all: every pixel is fully opaque, so the mask is all black
+    memset(out, 0, 3 * w * h);
+    return mask;
+  }
+  radius = max(0, radius);
+  Byte* alpha = img.GetAlpha();
+  for (int y = 0 ; y < h ; ++y) {
+    for (int x = 0 ; x < w ; ++x) {
+      bool white = false;
+      // check this pixel and its neighbors (within radius) for alpha <= threshold
+      for (int dy = -radius ; dy <= radius && !white ; ++dy) {
+        int ny = y + dy;
+        if (ny < 0 || ny >= h) continue;
+        for (int dx = -radius ; dx <= radius && !white ; ++dx) {
+          int nx = x + dx;
+          if (nx < 0 || nx >= w) continue;
+          if (alpha[ny * w + nx] <= threshold) {
+            white = true;
+          }
+        }
+      }
+      Byte value = white ? 255 : 0;
+      int i = (y * w + x) * 3;
+      out[i] = out[i+1] = out[i+2] = value;
+    }
+  }
+  return mask;
+}
+
 // ----------------------------------------------------------------------------- : Blurring
 
 Byte blur_pixel_alpha(Byte* in, int x, int y, int width, int height, int center_weight) {

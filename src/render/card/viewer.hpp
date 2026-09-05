@@ -53,7 +53,7 @@ public:
   /// The card we are viewing, can be null
   inline const CardP& getCard() const { return card; }
   /// Invalidate and redraw (the area of) a single value viewer
-  virtual void redraw(const ValueViewer&) {}
+  virtual void redraw(const ValueViewer&, bool force = false) {}
   
   /// The package containing style stuff like images
   virtual Package& getStylePackage() const;
@@ -72,11 +72,12 @@ public:
   void onChangeSet() override;
   
   // --------------------------------------------------- : The viewers
+  
+  /// Update style scripts
+  void updateStyles(bool only_content_dependent);
 private:
   /// Create some viewers for the given styles
   void addStyles(IndexMap<FieldP,StyleP>& styles);
-  /// Update style scripts
-  void updateStyles(bool only_content_dependent);
 protected:
   /// Set the styles for the data to be shown, recreating the viewers
   void setStyles(const StyleSheetP& stylesheet, IndexMap<FieldP,StyleP>& styles, IndexMap<FieldP,StyleP>* extra_styles = nullptr);
@@ -91,7 +92,7 @@ protected:
   void onAction(const Action&, bool undone) override;
   
   /// Notification that the total image has changed
-  virtual void onChange() {}
+  virtual void onChange(bool force = false) {}
   /// Notification that the viewers are initialized
   virtual void onInit() {}
   /// Notification that the size of the viewer may have changed

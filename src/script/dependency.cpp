@@ -107,6 +107,9 @@ struct Context::JumpOrder {
 // ----------------------------------------------------------------------------- : Dependency analysis
 
 ScriptValueP Context::dependencies(const Dependency& dep, const Script& script) {
+  if (level > 400) {
+    throw ScriptError(_("Stack overflow during dependency analysis"));
+  }
   // Dependency analysis proceeds in the same way as normal evaluation.
   // Operator calls will be replaced by "push dummy", we don't care about values.
   // Only the operators left are:
@@ -132,6 +135,20 @@ ScriptValueP Context::dependencies(const Dependency& dep, const Script& script) 
   //                    we can then no longer hope to unify with that jump record.
   //                    Instead we create a new jump record, and follow the jump record with the lowest target address.
   //                    This story doesn't hold for backwards jumps, we can safely follow those (see I_LOOP above)
+  //   - recursion:     A script may call itself, directly or indirectly (through other scripts).
+  //                    Because I_JUMP_IF_NOT analyzes both branches regardless of what the
+  //                    condition would actually evaluate to at runtime, a call that is only
+  //                    conditionally reached (e.g. the recursive call in a script that recurses
+  //                    a bounded number of times before hitting a base case) still looks
+  //                    unconditional to the analysis. Re-analyzing such a script's body would
+  //                    reach the same call again, forever. To avoid this, we keep track of the
+  //                    scripts we are currently in the middle of analyzing; if we're asked to
+  //                    analyze one of them again, we stop and use a dummy value instead of
+  //                    recursing.
+
+  if (!scripts_being_analyzed.insert(&script).second) {
+    return dependency_dummy;
+  }
   
   // Scope for evaluating this script.
   size_t stack_size = stack.size();
@@ -373,6 +390,7 @@ ScriptValueP Context::dependencies(const Dependency& dep, const Script& script) 
     stack.pop_back();
     assert(stack.size() == stack_size); // we end up with the same stack
     assert(jumps.empty());              // no open jump records
+    scripts_being_analyzed.erase(&script);
     return result;
     
   } catch (...) {
@@ -385,6 +403,7 @@ ScriptValueP Context::dependencies(const Dependency& dep, const Script& script) 
       delete jumps.top();
       jumps.pop();
     }
+    scripts_being_analyzed.erase(&script);
     throw; // rethrow
   }
 }

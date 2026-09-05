@@ -88,9 +88,16 @@ FileFormatP mtg_editor_file_format();
 
 // ----------------------------------------------------------------------------- : Other ways to export
 
+/// The settings to use when rendering an image for multiple cards
+enum class ExportImageMode {
+  EXPORT,
+  CLIPBOARD,
+  DEFAULT,
+};
+
 /// Generate a wxImage of one or more cards
 Image export_image(const SetP& set, const CardP& card, bool write_metadata = true, double zoom = 1.0, Radians angle_radians = 0.0, double bleed_pixels = 0.0, Bitmap* out_bitmap = nullptr);
-Image export_image(const SetP& set, const vector<CardP>& cards, int padding = 2, double global_zoom = 1.0, bool use_zoom_setting = true, bool use_rotation_setting = true, bool use_bleed_setting = false);
+Image export_image(const SetP& set, const vector<CardP>& cards, int padding = 2, ExportImageMode mode = ExportImageMode::EXPORT);
 
 /// Export the image of one or more cards to a given filename, using the app's zoom, rotation and bleed settings, and including metadata
 void export_image(const SetP& set, const CardP& card, const String& filename);

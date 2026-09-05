@@ -43,8 +43,8 @@ ImagesExportWindow::ImagesExportWindow(Window* parent, const SetP& set, const Ex
     wxSizer* s3 = ExportWindowBase::Create();
     s->Add(s3, 1, wxEXPAND | (wxALL & ~wxTOP), 8);
     s->Add(CreateButtonSizer(wxOK | wxCANCEL), 0, wxEXPAND | (wxALL & ~wxTOP), 8);
-  s->SetSizeHints(this);
   SetSizer(s);
+  s->SetSizeHints(this);
   SetSize(500,-1);
 }
 

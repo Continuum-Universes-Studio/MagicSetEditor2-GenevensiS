@@ -118,8 +118,7 @@ void PackageList::clear() {
 void PackageList::select(const String& name, bool send_event) {
   for (vector<PackageDataP>::const_iterator it = filtered_packages.begin() ; it != filtered_packages.end() ; ++it) {
     if (it->get()->package->name() == name) {
-      subcolumns[0].selection = it - filtered_packages.begin();
-      update();
+      GalleryList::select(it - filtered_packages.begin(), 0, false);
       if (send_event) {
         sendEvent(EVENT_GALLERY_SELECT);
       }

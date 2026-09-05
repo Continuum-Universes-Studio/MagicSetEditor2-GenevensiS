@@ -25,6 +25,11 @@ void PackageUpdateList::TreeItem::add(const InstallablePackageP& package, const 
     position_type = new_type;
     position_hint = new_hint;
   }
+  // tally the best (lowest) position_hint found anywhere in this node's subtree,
+  // so groups/folders can be ordered by the best hint of any package they contain
+  if (new_hint < group_hint) {
+    group_hint = new_hint;
+  }
   // end of the path?
   if (path.empty()) {
     assert(!this->package);
@@ -60,6 +65,7 @@ void PackageUpdateList::TreeItem::add(const InstallablePackageP& package, const 
 }
 
 bool compare_pos_hint(const PackageUpdateList::TreeItemP& a, const PackageUpdateList::TreeItemP& b) {
+  if (a->group_hint != b->group_hint) return a->group_hint < b->group_hint;
   if (a->position_type < b->position_type) return true;
   if (a->position_type > b->position_type) return false;
   if (a->position_hint < b->position_hint) return true;

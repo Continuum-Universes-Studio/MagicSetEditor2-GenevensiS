@@ -340,6 +340,12 @@ bool TextValueEditor::onLeftDown(const RealPoint& pos, wxMouseEvent& ev) {
   } else {
     // no, select text
     selecting = true;
+    if (!v.prepared()) {
+      auto dcP = editor().overdrawDC();
+      RotatedDC& dc = *dcP;
+      Rotater r(dc, getRotation());
+      v.prepare(dc, value().value(), style(), getContext());
+    }
     moveSelection(TYPE_INDEX, v.indexAt(pos), !ev.ShiftDown(), MOVE_MID);
   }
   return true;
@@ -353,6 +359,12 @@ bool TextValueEditor::onLeftUp(const RealPoint& pos, wxMouseEvent&) {
 bool TextValueEditor::onMotion(const RealPoint& pos, wxMouseEvent& ev) {
   if (dropDownShown()) return false;
   if (ev.LeftIsDown() && selecting) {
+    if (!v.prepared()) {
+      auto dcP = editor().overdrawDC();
+      RotatedDC& dc = *dcP;
+      Rotater r(dc, getRotation());
+      v.prepare(dc, value().value(), style(), getContext());
+    }
     size_t index = v.indexAt(pos);
     if (select_words) {
       // on the left, swap start and end
@@ -480,7 +492,7 @@ bool TextValueEditor::onChar(wxKeyEvent& ev) {
         String suffix;
         if (is_in_tag(value().value(), _("<li"), selection_start_i, selection_end_i)) {
           prefix = _("</li>");
-          suffix = wxString::FromUTF8("<li><bullet>• </bullet>");
+          suffix = _("<li><bullet>\u2022 </bullet>"); // \u2022 is the bullet point character
         }
         if (ev.ShiftDown()) {
           // soft line break
@@ -671,6 +683,7 @@ void TextValueEditor::redrawSelection(size_t old_selection_start_i, size_t old_s
     wxCaret* caret = editor().GetCaret();
     if (caret->IsVisible()) caret->Hide();
   }
+#ifdef __WXMSW__
   // Destroy the clientDC before reshowing the caret, prevent flicker on MSW
   {
     // Move selection
@@ -702,6 +715,13 @@ void TextValueEditor::redrawSelection(size_t old_selection_start_i, size_t old_s
       drawWordListIndicators(dc, true);
     }
   }
+#else
+  scroll_with_cursor = true;
+  if (ensureCaretVisible()) {
+    updateScrollbar();
+  }
+  redraw();
+#endif
   if (isCurrent()) {
     showCaret();
   }
@@ -1134,6 +1154,7 @@ void TextValueEditor::tryAutoReplace() {
 }
 
 void TextValueEditor::moveSelection(IndexType t, size_t new_end, bool also_move_start, Movement dir) {
+  if (!v.prepared()) return;
   size_t old_start = selection_start_i;
   size_t old_end   = selection_end_i;
   moveSelectionNoRedraw(t, new_end, also_move_start, dir);
@@ -1269,6 +1290,14 @@ size_t TextValueEditor::move(size_t pos, size_t start, size_t end, Movement dir)
   else                        return start;
 }
 
+// ----------------------------------------------------------------------------- : Resetting
+
+void TextValueEditor::doDefaultReset() {
+  if (!valueP()) return;
+  unique_ptr<ResetValueAction<TextValue, false>> action = make_unique<ResetValueAction<TextValue, false>>(valueP());
+  addAction(std::move(action));
+}
+
 // ----------------------------------------------------------------------------- : Search / replace
 
 bool is_word_end(const String& s, size_t pos) {
@@ -1313,16 +1342,17 @@ bool TextValueEditor::search(FindInfo& find, bool from_start) {
   size_t selection_min = index_to_untagged(value().value(), min(selection_start_i, selection_end_i));
   size_t selection_max = index_to_untagged(value().value(), max(selection_start_i, selection_end_i));
   if (find.forward()) {
-    size_t start = min(v.size(), find.searchSelection() ? selection_min : selection_max);
+    size_t start = from_start ? 0 : min(v.size(), find.searchSelection() ? selection_min : selection_max);
     for (size_t i = start ; i + find.findString().size() <= v.size() ; ++i) {
       if (matchSubstr(v, i, find)) return true;
     }
   } else {
-    size_t start = 0;
-    int end      = (int)(find.searchSelection() ? selection_max : selection_min) - (int)find.findString().size();
+    int end = from_start ?
+      (int)v.size() - (int)find.findString().size() :
+      (int)(find.searchSelection() ? selection_max : selection_min) - (int)find.findString().size();
     if (end < 0) return false;
-    for (size_t i = end ; (int)i >= (int)start ; --i) {
-      if (matchSubstr(v, i, find)) return true;
+    for (int i = end ; i >= 0 ; --i) {
+      if (matchSubstr(v, (size_t)i, find)) return true;
     }
   }
   return false;

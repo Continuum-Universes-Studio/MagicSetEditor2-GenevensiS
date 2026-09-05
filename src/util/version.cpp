@@ -91,12 +91,12 @@ const Char* version_suffix = _(" (ascii build)");
  *     2.0.2 : store game and stylesheet version numbers
  */
 const Version file_version_locale          = Version(2u, 0u, 2u);
-const Version file_version_set             = Version(2u, 0u, 2u);
-const Version file_version_game            = Version(0u, 3u, 8u);
-const Version file_version_stylesheet      = Version(0u, 3u, 8u);
+const Version file_version_set             = Version(2u, 6u, 0u);
+const Version file_version_game            = Version(2u, 6u, 0u);
+const Version file_version_stylesheet      = Version(2u, 6u, 0u);
 const Version file_version_symbol_font     = Version(0u, 3u, 6u);
 const Version file_version_export_template = Version(0u, 3u, 7u);
-const Version file_version_installer       = Version(0u, 3u, 7u);
+const Version file_version_installer       = Version(2u, 6u, 0u);
 const Version file_version_symbol          = Version(0u, 3u, 5u);
 const Version file_version_clipboard       = Version(2u, 6u, 0u);
-const Version file_version_script          = Version(0u, 3u, 7u);
+const Version file_version_script          = Version(2u, 6u, 0u);

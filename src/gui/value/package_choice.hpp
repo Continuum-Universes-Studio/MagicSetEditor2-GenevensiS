@@ -26,7 +26,12 @@ public:
   bool onLeftDown(const RealPoint& pos, wxMouseEvent& ev) override;
   bool onChar(wxKeyEvent& ev) override;
   void onLoseFocus() override;
-  
+
+  // --------------------------------------------------- : Resetting
+
+  bool canDefaultReset() const override { return true; }
+  void doDefaultReset() override;
+
 private:
   DropDownListP drop_down;
   friend class DropDownPackageChoiceList;

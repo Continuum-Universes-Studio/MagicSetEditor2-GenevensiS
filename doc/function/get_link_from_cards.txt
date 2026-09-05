@@ -1,0 +1,14 @@
+Function: get_link_from_cards
+
+--Usage--
+> get_link_from_cards(input: card, linked_card: other_card)
+
+Returns an array containing two elements.
+The first is the relation type of the input card, or nil if the linked_card has no link to it.
+The second is the relation type of the linked_card, or nil if the input card has no link to it.
+
+--Parameters--
+! Parameter	Type				Description
+| @input@	[[type:card]]		The first card.
+| @linked_card@	[[type:card]]		The second card.
+| @set@		[[type:set]]		The set in which to look. This can be omitted since 'set' is a predefined variable.

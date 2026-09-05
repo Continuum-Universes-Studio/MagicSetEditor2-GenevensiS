@@ -24,8 +24,9 @@ class SetWindowPanel : public wxPanel, public SetView {
 public:
   SetWindowPanel(Window* parent, int id, bool autoTabbing = true);
   
-  /// We will probably want to respond to set changes
+  /// We will probably want to respond to set changes or package list changes
   virtual void onSetChange() {}
+  virtual void onPackageListChange() {}
   
 //  // --------------------------------------------------- : Meta information
 //  
@@ -66,6 +67,10 @@ public:
   virtual bool canSelectAll() const { return false; }
   virtual void doSelectAll() {}
 
+  // --------------------------------------------------- : Resetting
+  virtual bool canDefaultReset() const { return false; }
+  virtual void doDefaultReset() {}
+
   // --------------------------------------------------- : Searching (find/replace)
   virtual bool canFind()    const { return false; }        ///< Is finding possible?
   virtual bool canReplace() const { return false; }        ///< Is replacing possible?
@@ -80,6 +85,8 @@ public:
   virtual void  selectionChoices(ExportCardSelectionChoices& out) {} ///< Card subsets that can be exported from this panel
  
   virtual void getCardLists(vector<CardListBase*>& out) {}
+
+  virtual bool isUpdating() const { return false; }
 
 protected:
   /// Have any controls been created?

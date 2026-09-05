@@ -54,17 +54,32 @@ private:
 
 // ----------------------------------------------------------------------------- : Simple
 
+/// Set the value in a Value object to a new one
+inline void set_value(ColorValue&          a, ColorValue         ::ValueType& b) { a.value        = b; }
+inline void set_value(ChoiceValue&         a, ChoiceValue        ::ValueType& b) { a.value        = b; }
+inline void set_value(PackageChoiceValue&  a, PackageChoiceValue ::ValueType& b) { a.package_name = b; }
+inline void set_value(MultipleChoiceValue& a, MultipleChoiceValue::ValueType& b) { a.value        = b.value; a.last_change = b.last_change; }
+inline void set_value(ImageValue&          a, ImageValue         ::ValueType& b) { a.filename     = b;       a.last_update.update(); }
+inline void set_value(SymbolValue&         a, SymbolValue        ::ValueType& b) { a.filename     = b;       a.last_update.update(); }
+inline void set_value(TextValue&           a, TextValue          ::ValueType& b) { a.value        = b;       a.last_update.update(); }
+
+/// Get the value in a Value object
+inline void get_value(ColorValue&          a, ColorValue         ::ValueType& b) { b       = a.value; }
+inline void get_value(ChoiceValue&         a, ChoiceValue        ::ValueType& b) { b       = a.value; }
+inline void get_value(PackageChoiceValue&  a, PackageChoiceValue ::ValueType& b) { b       = a.package_name; }
+inline void get_value(MultipleChoiceValue& a, MultipleChoiceValue::ValueType& b) { b.value = a.value;        b.last_change = a.last_change; }
+inline void get_value(ImageValue&          a, ImageValue         ::ValueType& b) { b       = a.filename; }
+inline void get_value(SymbolValue&         a, SymbolValue        ::ValueType& b) { b       = a.filename; }
+inline void get_value(TextValue&           a, TextValue          ::ValueType& b) { b       = a.value; }
+
 /// Swap the value in a Value object with a new one
-inline void swap_value(ChoiceValue&         a, ChoiceValue        ::ValueType& b) { swap(a.value,    b); }
-inline void swap_value(ColorValue&          a, ColorValue         ::ValueType& b) { swap(a.value,    b); }
-inline void swap_value(ImageValue&          a, ImageValue         ::ValueType& b) { swap(a.filename, b); a.last_update.update(); }
-inline void swap_value(SymbolValue&         a, SymbolValue        ::ValueType& b) { swap(a.filename, b); a.last_update.update(); }
-inline void swap_value(TextValue&           a, TextValue          ::ValueType& b) { swap(a.value,    b); a.last_update.update(); }
+inline void swap_value(ColorValue&          a, ColorValue         ::ValueType& b) { swap(a.value,        b); }
+inline void swap_value(ChoiceValue&         a, ChoiceValue        ::ValueType& b) { swap(a.value,        b); }
 inline void swap_value(PackageChoiceValue&  a, PackageChoiceValue ::ValueType& b) { swap(a.package_name, b); }
-inline void swap_value(MultipleChoiceValue& a, MultipleChoiceValue::ValueType& b) {
-  swap(a.value,       b.value);
-  swap(a.last_change, b.last_change);
-}
+inline void swap_value(MultipleChoiceValue& a, MultipleChoiceValue::ValueType& b) { swap(a.value,        b.value); swap(a.last_change, b.last_change); }
+inline void swap_value(ImageValue&          a, ImageValue         ::ValueType& b) { swap(a.filename,     b);       a.last_update.update(); }
+inline void swap_value(SymbolValue&         a, SymbolValue        ::ValueType& b) { swap(a.filename,     b);       a.last_update.update(); }
+inline void swap_value(TextValue&           a, TextValue          ::ValueType& b) { swap(a.value,        b);       a.last_update.update(); }
 
 /// Action that updates a Value to a new value
 unique_ptr<ValueAction> value_action(const TextValueP&           value, const Defaultable<String>& new_value);
@@ -102,6 +117,34 @@ public:
   }
 
   typename T::ValueType new_value;
+};
+
+/// A ValueAction that resets a value to its default state
+template <typename T, bool ALLOW_MERGE>
+class ResetValueAction : public ValueAction {
+public:
+  inline ResetValueAction(const intrusive_ptr<T>& value)
+    : ValueAction(value)
+  {
+    get_value(*value, old_value);
+  }
+
+  String getName(bool to_undo) const override {
+    return _ACTION_1_("reset", valueP->fieldP->name);
+  }
+
+  void perform(bool to_undo) override {
+    ValueAction::perform(to_undo);
+    set_value(static_cast<T&>(*valueP), old_value);
+    valueP->makeDefault(!to_undo);
+    valueP->onAction(*this, to_undo); // notify value
+  }
+
+  bool merge(const Action& action) override {
+    return false;
+  }
+
+  typename T::ValueType old_value;
 };
 
 // ----------------------------------------------------------------------------- : Text

@@ -62,6 +62,16 @@ extern const int text_scaling;
 // img_in must be text_scaling times as large as img_out
 void downsample_to_alpha(Bitmap& bmp_in, Image& img_out);
 
+/// Resize an image, but keep a border of unchanged pixels along
+/// each edge (9-slice scaling): the corners are copied verbatim, the top/bottom
+/// edges are stretched only horizontally, the left/right edges are stretched only
+/// vertically, and only the remaining center is stretched in both directions.
+void resample_nine_slice(const Image& img_in, Image& img_out, int left, int right, int top, int bottom);
+
+// ----------------------------------------------------------------------------- : Crop
+
+Image crop(const Image& base_img, int width, int height, int offset_x, int offset_y, const Color& background_color);
+
 // ----------------------------------------------------------------------------- : Image rotation
 
 /// Rotates an image counter clockwise
@@ -86,7 +96,7 @@ void linear_blend(Image& img1, const Image& img2, double x1,double y1, double x2
  *  mask is used as a mask, white pixels are taken from img1, black pixels from img2
  *  color channels are blended separatly
  */
-void mask_blend(Image& img1, const Image& img2, const Image& mask);
+void mask_blend(Image& light, const Image& dark, const Image& mask);
 
 // ----------------------------------------------------------------------------- : Effects
 
@@ -113,6 +123,9 @@ void thicken_image_alpha(Image& img, int radius);
 
 // Create a stroke effect that goes around an image
 Image make_stroke_image(Image& img, Color stroke_color, int stroke_radius, int blur_radius = 0);
+
+// Create a mask that encodes which pixels are or neighbor transparent pixels
+Image make_visibility_mask(Image& img, int threshold, int radius);
 
 // ----------------------------------------------------------------------------- : Combining
 

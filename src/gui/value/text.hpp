@@ -79,7 +79,12 @@ public:
   size_t selectionEnd()   const override { return selection_end; }
   
   void insert(const String& text, const String& action_name) override;
-  
+
+  // --------------------------------------------------- : Resetting
+
+  bool canDefaultReset() const override { return true; }
+  void doDefaultReset() override;
+
   // --------------------------------------------------- : Search/replace
   
   bool search(FindInfo& find, bool from_start) override;

@@ -162,7 +162,7 @@ SCRIPT_FUNCTION_DEPENDENCIES(combined_editor) {
     SCRIPT_PARAM_C(StyleSheetP, stylesheet);
     target_field = stylesheet->extra_card_fields[dep.index];
   }
-  else                                 throw InternalError(_("Finding dependencies of combined error for non card/set field"));
+  else throw InternalError(_("Found dependencies on non card/set field in combined_editor"));
   // Add dependencies, from target_field on field#
   // For card fields
   size_t j = 0;

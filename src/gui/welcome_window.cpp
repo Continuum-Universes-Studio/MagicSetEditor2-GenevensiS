@@ -125,7 +125,8 @@ void WelcomeWindow::onOpenSet(wxCommandEvent&) {
     try {
       close(import_set(dlg->GetPath()));
     } catch (Error& e) {
-      handle_error(_("Error loading set: ") + e.what());
+      wxMessageDialog dial = wxMessageDialog(this, _("Error loading set: ") + e.what(), _(""), wxOK|wxCENTRE|wxICON_ERROR);
+      dial.ShowModal();
     }
   }
 }
@@ -140,7 +141,8 @@ void WelcomeWindow::onOpenLast(wxCommandEvent&) {
   try {
     close( open_package<Set>(settings.recent_sets.front()) );
   } catch (PackageNotFoundError& e) {
-    handle_error(_("Cannot find set ") + e.what() + _(" to open."));
+    wxMessageDialog dial = wxMessageDialog(this, _("Cannot find set ") + e.what() + _(" to open."), _(""), wxOK|wxCENTRE|wxICON_ERROR);
+    dial.ShowModal();
     // remove this package from the recent sets, so we don't get this error again
     settings.recent_sets.erase(settings.recent_sets.begin());
   }

@@ -35,12 +35,23 @@ int ImageStyle::update(Context& ctx) {
 
 // ----------------------------------------------------------------------------- : ImageValue
 
+void ImageValue::copyDataFrom(const Value& other) {
+  if (const ImageValue* o = dynamic_cast<const ImageValue*>(&other)) {
+    filename = o->filename;
+  }
+}
+
 String ImageValue::toString() const {
   return filename.empty() ? _("") : _("<image>");
 }
 
 bool ImageValue::isDefault() {
   return filename.empty();
+}
+
+void ImageValue::makeDefault(bool d) {
+  if (!d) return;
+  filename.makeEmpty();
 }
 
 // custom reflection: convert to ScriptImageP for scripting

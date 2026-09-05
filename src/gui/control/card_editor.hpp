@@ -71,6 +71,11 @@ public:
   bool canSelectAll() const;
   void doSelectAll();
 
+  // --------------------------------------------------- : Resetting
+
+  bool canDefaultReset() const;
+  void doDefaultReset();
+
   // --------------------------------------------------- : Search/replace
     
   /// Do a search or replace action for the given FindInfo
@@ -111,7 +116,6 @@ private:
   void onRightDown (wxMouseEvent&);
   void onMotion    (wxMouseEvent&);
   void onMouseWheel(wxMouseEvent&);
-  void onMouseEnter(wxMouseEvent&);
   void onMouseLeave(wxMouseEvent&);
   void onLoseCapture(wxMouseCaptureLostEvent&);
   

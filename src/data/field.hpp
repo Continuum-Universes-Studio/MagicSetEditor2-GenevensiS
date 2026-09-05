@@ -253,11 +253,15 @@ public:
 
   /// Get a copy of this value
   virtual ValueP clone() const = 0;
+  /// Copy this value's data (not its field!) from another value if it has a compatible type, otherwise do nothing
+  virtual void copyDataFrom(const Value& other) {}
 
   /// Convert this value to a string for use in tables
   virtual String toString() const = 0;
   /// Check if this value is in the default state
   virtual bool isDefault();
+  /// Put this value back in the default state
+  virtual void makeDefault(bool d = true);
   /// Apply scripts to this value, return true if the value has changed
   virtual bool update(Context& ctx);
   /// This value has been updated by an action

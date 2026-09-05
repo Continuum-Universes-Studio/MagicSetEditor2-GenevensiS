@@ -152,20 +152,22 @@ void DropDownList::show(bool in_place, wxPoint pos, RealRect* rect) {
   RealSize virtual_size = size;
   SetVirtualSize(virtual_size);
   item_size.width = virtual_size.width - marginW * 2;
-  // is there enough room for all items, or do we need a scrollbar?
-#if !defined(__WXGTK__)
-  // Note: wxGTK doesn't support scrollbars on popup windows
-  // For now we disable them to not make MSE crash
+  // Is there enough room for all items, or do we need scrolling?
   int room_below = wxGetDisplaySize().y - border_size.height - pos.y - parent_height - 50;
   int max_height = max(300, room_below);
   if (size.height > max_height) {
     size.height = max_height;
-    size.width += wxSystemSettings::GetMetric(wxSYS_VSCROLL_ARROW_X); // width of scrollbar
+#if !defined(__WXGTK__)
+    // wxGTK popup windows don't support native scrollbars reliably.
+    // GTK still uses MSE's internal scrolling via visible_start.
+    size.width += wxSystemSettings::GetMetric(wxSYS_VSCROLL_ARROW_X);
     SetScrollbar(wxVERTICAL, 0, size.height, virtual_size.height, false);
-  } else {
-    SetScrollbar(wxVERTICAL,0,0,0,false);
-  }
 #endif
+  } else {
+#if !defined(__WXGTK__)
+    SetScrollbar(wxVERTICAL, 0, 0, 0, false);
+#endif
+  }
   // move & resize
   SetSize(add_diagonal(size, border_size));
   Position(pos, wxSize(0, parent_height));

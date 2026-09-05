@@ -54,6 +54,7 @@ enum MenuID {
   ID_EDIT_REPLACE = wxID_REPLACE,
   ID_EDIT_AUTO_REPLACE = 104,
   ID_EDIT_PREFERENCES = 105,
+  ID_EDIT_DEFAULT_RESET = 106,
 
   // Window menu (MainWindow)
   ID_WINDOW_NEW = 201,
@@ -318,6 +319,7 @@ enum ControlID {
   ID_SHARPEN_AMOUNT,
   // Internal window
   ID_IMPORT_ZOOM,
+  ID_CLIPBOARD_ZOOM,
   // Updates window
   ID_PACKAGE_LIST,
   ID_KEEP,
@@ -336,5 +338,14 @@ enum ControlID {
   ID_CARD_LINK_RELATION_2,
   ID_CARD_LINK_RELATION_3,
   ID_CARD_LINK_RELATION_4,
+  // Select stylesheet window
+  ID_DOWNLOAD_STYLESHEET,
+  // Select stylesheet window
+  ID_REDRAW_TIMER,
 };
+
+// ----------------------------------------------------------------------------- : Custom Events
+
+DECLARE_EVENT_TYPE(EVENT_PACKAGE_LIST_CHANGED, <not used>);
+
 

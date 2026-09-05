@@ -50,8 +50,9 @@ class SliderValue : public ChoiceValue {
 public:
   inline SliderValue(const ChoiceFieldP& field) : ChoiceValue(field) {}
   DECLARE_HAS_FIELD(Slider);
+
   ValueP clone() const override;
-  
+
   // no extra data
   
 private:

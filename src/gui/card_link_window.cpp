@@ -20,7 +20,7 @@
 // ----------------------------------------------------------------------------- : ExportCardSelectionChoice
 
 CardLinkWindow::CardLinkWindow(Window* parent, const SetP& set, const CardP& selected_card, bool sizer)
-  : wxDialog(parent, wxID_ANY, _TITLE_("link cards"), wxPoint(400,-1), wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
+  : wxDialog(parent, wxID_ANY, _TITLE_("link cards"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
   , set(set), parent(parent), selected_card(selected_card)
 {
   // init controls
@@ -35,6 +35,7 @@ CardLinkWindow::CardLinkWindow(Window* parent, const SetP& set, const CardP& sel
   relation_type->SetSelection(0);
   setRelationType();
   list = new SelectCardList(this, wxID_ANY);
+  list->allow_back_face_hidding = false;
   list->setSet(set);
   list->selectNone();
   sel_none = new wxButton(this, ID_SELECT_NONE, _BUTTON_("select none"));
@@ -53,8 +54,8 @@ CardLinkWindow::CardLinkWindow(Window* parent, const SetP& set, const CardP& sel
     s2->Add(sel_none, 0, wxEXPAND | wxRIGHT, 8);
     s2->Add(CreateButtonSizer(wxOK | wxCANCEL), 1, wxEXPAND, 8);
     s->Add(s2, 0, wxEXPAND | (wxALL & ~wxTOP), 8);
-    s->SetSizeHints(this);
     SetSizer(s);
+    s->SetSizeHints(this);
     SetSize(600,500);
   }
 }
@@ -166,7 +167,7 @@ void CardLinkWindow::onOk(wxCommandEvent&) {
   }
   // Add action to set
   set->actions.addAction(make_unique<BulkAction>(actions, set, card_list_window, false), false);
-  set->actions.tellListeners(DisplayChangeAction(),true);
+  set->actions.tellListeners(GlobalDisplayChangeAction(),true);
   // Done
   EndModal(wxID_OK);
 }

@@ -8,6 +8,7 @@
 
 #include <util/prec.hpp>
 #include <gfx/gfx.hpp>
+#include <script/functions/json.hpp>
 #include <data/format/image_encoding.hpp>
 #include <util/error.hpp>
 
@@ -199,6 +200,180 @@ Image resample_preserve_aspect(const Image& img_in, int width, int height) {
     resample_preserve_aspect(img_in, img_out);
     return img_out;
   }
+}
+
+// ----------------------------------------------------------------------------- : Nine slice resizing
+
+void resample_nine_slice(const Image& img_in, Image& img_out, int left, int right, int top, int bottom) {
+  int src_w = img_in.GetWidth(),  src_h = img_in.GetHeight();
+  int width = img_out.GetWidth(), height = img_out.GetHeight();
+  // clamp border sizes to the size of the source image, so the unchanged borders never overlap
+  int l = min(left,   src_w);
+  int t = min(top,    src_h);
+  int r = min(right,  src_w - l);
+  int b = min(bottom, src_h - t);
+  // ensure there is at least one pixel in the middle
+  if (l + r >= src_w && width - l - r > 0 && src_w > 0) {
+    if (l >= r && l > 0) l -= 1;
+    else if (r > 0)      r -= 1;
+  }
+  if (t + b >= src_h && height - t - b > 0 && src_h > 0) {
+    if (t >= b && t > 0) t -= 1;
+    else if (b > 0)      b -= 1;
+  }
+
+  if (img_in.HasAlpha() || img_in.HasMask()) img_out.InitAlpha();
+  
+  int mid_src_w = src_w - l - r, mid_w = width  - l - r;
+  int mid_src_h = src_h - t - b, mid_h = height - t - b;
+  
+  // corners: copied unchanged
+  if (l > 0 && t > 0) img_out.Paste(img_in.GetSubImage(wxRect(0,       0,       l, t)), 0,       0);
+  if (r > 0 && t > 0) img_out.Paste(img_in.GetSubImage(wxRect(src_w-r, 0,       r, t)), width-r, 0);
+  if (l > 0 && b > 0) img_out.Paste(img_in.GetSubImage(wxRect(0,       src_h-b, l, b)), 0,       height-b);
+  if (r > 0 && b > 0) img_out.Paste(img_in.GetSubImage(wxRect(src_w-r, src_h-b, r, b)), width-r, height-b);
+  
+  // top/bottom edges: stretched horizontally only
+  if (mid_src_w > 0 && mid_w > 0) {
+    if (t > 0) {
+      Image edge(mid_w, t, false);
+      resample_and_clip(img_in, edge, wxRect(l, 0, mid_src_w, t));
+      img_out.Paste(edge, l, 0);
+    }
+    if (b > 0) {
+      Image edge(mid_w, b, false);
+      resample_and_clip(img_in, edge, wxRect(l, src_h-b, mid_src_w, b));
+      img_out.Paste(edge, l, height-b);
+    }
+  }
+  // left/right edges: stretched vertically only
+  if (mid_src_h > 0 && mid_h > 0) {
+    if (l > 0) {
+      Image edge(l, mid_h, false);
+      resample_and_clip(img_in, edge, wxRect(0, t, l, mid_src_h));
+      img_out.Paste(edge, 0, t);
+    }
+    if (r > 0) {
+      Image edge(r, mid_h, false);
+      resample_and_clip(img_in, edge, wxRect(src_w-r, t, r, mid_src_h));
+      img_out.Paste(edge, width-r, t);
+    }
+  }
+  // center: stretched in both directions
+  if (mid_src_w > 0 && mid_src_h > 0 && mid_w > 0 && mid_h > 0) {
+    Image center(mid_w, mid_h, false);
+    resample_and_clip(img_in, center, wxRect(l, t, mid_src_w, mid_src_h));
+    img_out.Paste(center, l, t);
+  }
+  // transfer metadata
+  if (img_in.HasOption(wxIMAGE_OPTION_PNG_DESCRIPTION)) {
+    // Map a single coordinate along one axis through the nine-slice's piecewise mapping:
+    //  - inside the lo-side border [0, lo)                : unchanged (copied verbatim)
+    //  - inside the hi-side border [src_size-hi, src_size]: shifted by the change in total size
+    //  - inside the middle         [lo, src_size-hi)      : scaled by mid_dst / mid_src
+    auto map_axis = [](double v, int lo, int src_size, int hi, int dst_size) {
+      if (v <= lo)            return v;
+      if (v >= src_size - hi) return v - src_size + dst_size;
+      int mid_src = src_size - lo - hi;
+      int mid_dst = dst_size - lo - hi;
+      return lo + (v - lo) * (double)mid_dst / mid_src;
+    };
+    RectTransform nine_slice_transform =
+      [=](RealRect& rect, int&, double, double, int) {
+        double x0 = map_axis(rect.x,               l, src_w, r, width);
+        double x1 = map_axis(rect.x + rect.width,  l, src_w, r, width);
+        double y0 = map_axis(rect.y,               t, src_h, b, height);
+        double y1 = map_axis(rect.y + rect.height, t, src_h, b, height);
+        rect = RealRect(x0, y0, x1 - x0, y1 - y0);
+      };
+    String metadata = transformAllEncodedRects(img_in.GetOption(wxIMAGE_OPTION_PNG_DESCRIPTION), nine_slice_transform, 0, 0);
+    img_out.SetOption(wxIMAGE_OPTION_PNG_DESCRIPTION, metadata);
+  }
+}
+
+// ----------------------------------------------------------------------------- : Cropping
+
+Image crop(const Image& base_img, int width, int height, int offset_x, int offset_y, const Color& background_color) {
+  int pos_x = -offset_x;
+  int pos_y = -offset_y;
+  int src_w = base_img.GetWidth();
+  int src_h = base_img.GetHeight();
+
+  int dst_x0 = std::max(0, pos_x);
+  int dst_y0 = std::max(0, pos_y);
+  int dst_x1 = std::min(width,  pos_x + src_w);
+  int dst_y1 = std::min(height, pos_y + src_h);
+  bool has_overlap = (dst_x1 > dst_x0 && dst_y1 > dst_y0);
+  bool fully_covered = has_overlap && dst_x0 == 0 && dst_y0 == 0 && dst_x1 == width && dst_y1 == height;
+
+  bool src_has_alpha = base_img.HasAlpha();
+  bool need_alpha = src_has_alpha || (!fully_covered && background_color.Alpha() != 255);
+
+  Image img(width, height, false);
+  if (need_alpha) img.InitAlpha();
+  unsigned char* dst_rgb = img.GetData();
+  unsigned char* dst_alpha = need_alpha ? img.GetAlpha() : nullptr;
+
+  // background fill: only needed if the source won't fully cover the canvas.
+  if (!fully_covered) {
+    std::vector<unsigned char> row(width * 3);
+    for (int x = 0; x < width; ++x) {
+      row[x * 3 + 0] = background_color.Red();
+      row[x * 3 + 1] = background_color.Green();
+      row[x * 3 + 2] = background_color.Blue();
+    }
+    for (int y = 0; y < height; ++y) {
+      memcpy(dst_rgb + y * width * 3, row.data(), width * 3);
+    }
+    if (need_alpha) memset(dst_alpha, background_color.Alpha(), width * height);
+  }
+
+  // add base_image in
+  if (has_overlap) {
+    int src_x0 = dst_x0 - pos_x;
+    int src_y0 = dst_y0 - pos_y;
+    int copy_w = dst_x1 - dst_x0;
+    int copy_h = dst_y1 - dst_y0;
+    const unsigned char* src_rgb = base_img.GetData();
+    const unsigned char* src_alpha = src_has_alpha ? base_img.GetAlpha() : nullptr;
+
+    for (int row = 0; row < copy_h; ++row) {
+      int sy = src_y0 + row;
+      int dy = dst_y0 + row;
+      memcpy(dst_rgb + (dy * width + dst_x0) * 3, src_rgb + (sy * src_w + src_x0) * 3, copy_w * 3);
+      if (need_alpha) {
+        unsigned char* dst_row_alpha = dst_alpha + dy * width + dst_x0;
+        if (src_has_alpha)
+          memcpy(dst_row_alpha, src_alpha + sy * src_w + src_x0, copy_w);
+        else
+          memset(dst_row_alpha, 255, copy_w);
+      }
+    }
+  }
+
+  // recrop metadata
+  if (base_img.HasOption(wxIMAGE_OPTION_PNG_DESCRIPTION)) {
+    String metadata = transformAllEncodedRects(base_img.GetOption(wxIMAGE_OPTION_PNG_DESCRIPTION), RealRect::translate, -offset_x, -offset_y);
+    // prune out of bounds cards
+    boost::json::array cardsv = metadata_to_json(metadata);
+    boost::json::array inbounds_cardsv;
+    for (size_t i = 0; i < cardsv.size(); i++) {
+      boost::json::object cardv = cardsv[i].as_object();
+      if (cardv.contains("bounds")) {
+        String bounds = String(cardv["bounds"].as_string().c_str());
+        RealRect rect(0.0, 0.0, 0.0, 0.0);
+        int degrees = 0;
+        if (decodeRectFromString(bounds, rect, degrees)) {
+          rect = rect.intersect(RealRect(0.0, 0.0, width, height));
+          if (rect.width <= 0.0 || rect.height <= 0.0 ) continue;
+        }
+      }
+      inbounds_cardsv.emplace_back(cardv);
+    }
+    metadata = "<mse-card-data>" + json_ugly_print(inbounds_cardsv) + "</mse-card-data>";
+    img.SetOption(wxIMAGE_OPTION_PNG_DESCRIPTION, metadata);
+  }
+  return img;
 }
 
 // ----------------------------------------------------------------------------- : Sharpening

@@ -229,8 +229,8 @@ ImageSliceWindow::ImageSliceWindow(Window* parent, const Image& source, const St
       s5->AddStretchSpacer(1);
     s->Add(s5, 0, wxEXPAND);
     s->Add(CreateButtonSizer(wxOK | wxCANCEL), 0, wxEXPAND | wxALL, 8);
-  s->SetSizeHints(this);
   SetSizer(s);
+  s->SetSizeHints(this);
   // Only now do we allow events to be processed.
   initialized = true;
   updateControls();

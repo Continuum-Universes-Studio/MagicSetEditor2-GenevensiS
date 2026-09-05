@@ -72,7 +72,7 @@ protected:
   
   // --------------------------------------------------- : Protected interface
   /// Return the card at the given position in the sorted list
-  inline const VoidP& getItem(long pos) const { return sorted_list[pos]; }
+  inline const VoidP& getItem(long pos) const { if (pos < 0 || pos >= sorted_list.size()) throw InternalError(_("Trying to access out of bounds item")); return sorted_list[pos]; }
   /// Sort by the given column
   virtual void sortBy(long column, bool ascending);
   /// Refresh the card list (resort, refresh and reselect current item)

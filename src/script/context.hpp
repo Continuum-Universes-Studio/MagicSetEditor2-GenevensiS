@@ -9,6 +9,7 @@
 // ----------------------------------------------------------------------------- : Includes
 
 #include <script/script.hpp>
+#include <set>
 
 class Dependency;
 
@@ -114,6 +115,9 @@ private:
   // utility types for dependency analysis
   struct Jump;
   struct JumpOrder;
+
+  /// Scripts for which dependency analysis is currently in progress somewhere up the call stack.
+  set<const Script*> scripts_being_analyzed;
   
   /// Return the bindings in the current scope
   void getBindings(size_t scope, vector<Binding>&);

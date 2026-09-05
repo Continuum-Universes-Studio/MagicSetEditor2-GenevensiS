@@ -31,7 +31,7 @@ const Radians rad360 = 2.0*M_PI;
 
 /// Are two floating point numbers equal up to a small epsilon?
 inline bool almost_equal(double x, double y) {
-  return fabs(x-y) < 1e-5;
+  return fabs(x-y) < 1e-8;
 }
 inline bool is_rad0(double x) {
   return almost_equal(x,0) || almost_equal(x,rad360);

@@ -34,8 +34,6 @@ void StylePanel::initControls() {
   preview       = new CardViewer   (this, wxID_ANY);
   list          = new PackageList  (this, wxID_ANY);
   use_for_all   = new wxButton     (this, ID_STYLE_USE_FOR_ALL, _BUTTON_("use for all cards"));
-  use_custom_options = new wxCheckBox(this, ID_STYLE_USE_CUSTOM, _BUTTON_("use custom styling options"));
-  editor        = new StylingEditor(this, ID_EDITOR, wxNO_BORDER);
 
   stylesheet_filter = new FilterCtrl(this, ID_STYLESHEET_FILTER, _LABEL_("search stylesheet list"), _HELP_("search stylesheet list control"));
   stylesheet_filter->setFilter(stylesheet_filter_value);
@@ -50,13 +48,17 @@ void StylePanel::initControls() {
         s3->AddStretchSpacer();
         s3->Add(use_for_all, 0, wxBOTTOM | wxRIGHT, 4);
       s2->Add(s3, wxSizerFlags().Expand().Border(wxALL, 6));
-      wxSizer* s4 = new wxStaticBoxSizer(wxVERTICAL, this, _LABEL_("styling options"));
+      wxStaticBoxSizer* s4 = new wxStaticBoxSizer(wxVERTICAL, this, _LABEL_("styling options"));
+        wxStaticBox* styling_box = s4->GetStaticBox();
+        // use_custom_options and editor are created as children of the wxStaticBoxSizer otherwise they may be drawn underneath it
+        use_custom_options = new wxCheckBox(styling_box, ID_STYLE_USE_CUSTOM, _BUTTON_("use custom styling options"));
+        editor             = new StylingEditor(styling_box, ID_EDITOR, wxNO_BORDER);
         s4->Add(use_custom_options, 0, wxEXPAND | wxALL, 4);
         s4->Add(editor,             2, wxEXPAND, 0);
       s2->Add(s4, 1, wxEXPAND | wxALL, 2);
     s->Add(s2,      1, wxEXPAND, 8);
-  s->SetSizeHints(this);
   SetSizer(s);
+  s->SetSizeHints(this);
 }
 
 void StylePanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
@@ -95,12 +97,30 @@ bool StylePanel::Layout() {
 
 void StylePanel::onChangeSet() {
   if (!isInitialized()) return;
-  list->showData<StyleSheet>(set->game->name() + _("-*"));
+  list->showData<StyleSheet>(set->game->name() + _("*"));
   list->select(set->stylesheet->name(), false);
   editor->setSet(set);
   preview->setSet(set);
   card = CardP();
   use_for_all->Enable(false);
+}
+
+void StylePanel::onPackageListChange() {
+  if (!isInitialized()) return;
+  if (!list) return;
+  list->showData<StyleSheet>(set->game->name() + _("*"));
+  onFilterChange();
+}
+
+void StylePanel::onFilterChange() {
+  if (list->hasSelection()) {
+    StyleSheetP existingStylesheetSelection = list->getSelection<StyleSheet>(false);
+    list->setFilter(stylesheet_filter->getFilter<PackageData>());
+    list->select(existingStylesheetSelection->name());
+  }
+  else {
+    list->setFilter(stylesheet_filter->getFilter<PackageData>());
+  }
 }
 
 void StylePanel::onAction(const Action& action, bool undone) {
@@ -139,17 +159,15 @@ void StylePanel::onAction(const Action& action, bool undone) {
 }
 
 void StylePanel::onStylesheetFilterUpdate(wxCommandEvent&) {
-  if (list->hasSelection()) {
-    StyleSheetP existingStylesheetSelection = list->getSelection<StyleSheet>(false);
-    list->setFilter(stylesheet_filter->getFilter<PackageData>());
-    list->select(existingStylesheetSelection->name());
-  }
-  else {
-    list->setFilter(stylesheet_filter->getFilter<PackageData>());
-  }
+  onFilterChange();
 }
 
 // ----------------------------------------------------------------------------- : Selection
+
+CardP StylePanel::selectedCard() const {
+  if (!isInitialized()) return CardP();
+  return card;
+}
 
 void StylePanel::selectCard(const CardP& card) {
   this->card = card;
@@ -184,18 +202,19 @@ void StylePanel::doSelectAll()        { CUT_COPY_PASTE(doSelectAll,  return (voi
 // ----------------------------------------------------------------------------- : Events
 
 void StylePanel::onStyleSelect(wxCommandEvent&) {
-  if (list->hasSelection() && card) {
-    StyleSheetP stylesheet = list->getSelection<StyleSheet>();
-    if (stylesheet->game != set->game) {
-      throw PackageError(_("Stylesheet made for the wrong game"));
-    }
-    if (stylesheet == set->stylesheet) {
-      // select no special style when selecting the same style as the set default
-      stylesheet = StyleSheetP();
-    }
-    set->actions.addAction(make_unique<ChangeCardStyleAction>(card, stylesheet));
-    Layout();
+  if (!list->hasSelection() || !card) return;
+  StyleSheetP stylesheet = list->getSelection<StyleSheet>();
+  if (stylesheet->game != set->game) {
+    throw PackageError(_("Stylesheet made for the wrong game"));
   }
+  if (stylesheet == card->stylesheet) return;
+  if (stylesheet == set->stylesheet) {
+    // select no special style when selecting the same style as the set default
+    stylesheet = StyleSheetP();
+  }
+  if (stylesheet == card->stylesheet) return;
+  set->actions.addAction(make_unique<ChangeCardStyleAction>(card, stylesheet));
+  Layout();
 }
 
 void StylePanel::onUseForAll(wxCommandEvent&) {

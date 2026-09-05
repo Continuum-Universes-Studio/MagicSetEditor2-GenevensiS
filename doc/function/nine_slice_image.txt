@@ -1,0 +1,24 @@
+Function: nine_slice_image
+
+--Usage--
+> nine_slice_image(input: image, height: height_of_new_image, width: width_of_new_image, left: left_margin, right: right_margin, top: top_margin, bottom: bottom_margin)
+
+Shrink or grow an image to a new size specified in the parameters.
+The left and right margins are not stretched horizontally. The top and bottom margins are not stretched vertically.
+The corners are untouched. Only the center is stretched in both directions.
+
+The width of the resulting image will never be smaller than left + right + 1.
+The height of the resulting image will never be smaller than top + bottom + 1.
+
+This is mainly used to enlarge boxes without changing the border size.
+
+--Parameters--
+! Parameter		Type				Description
+| @input@		[[type:image]]		Image to resize
+| @width@		[[type:int]]		Total width of the resulting image
+| @height@		[[type:int]]		Total height of the resulting image
+| @left@		[[type:int]]		Width of the left margin, optional, defaults to 0
+| @right@		[[type:int]]		Width of the right margin, optional, defaults to 0
+| @top@		[[type:int]]		Width of the top margin, optional, defaults to 0
+| @bottom@		[[type:int]]		Width of the bottom margin, optional, defaults to 0
+

@@ -124,13 +124,33 @@ void CardListBase::onAction(const Action& action, bool undone) {
   TYPE_CASE(action, ValueAction) {
     if (action.card) refreshList(true);
   }
+  TYPE_CASE_(action, GlobalDisplayChangeAction) {
+    rebuild();
+  }
 }
 
 void CardListBase::getItems(vector<VoidP>& out) const {
   FOR_EACH(c, set->cards) {
     out.push_back(c);
   }
+  filterOutBackFaces(out);
 }
+
+void CardListBase::filterOutBackFaces(vector<VoidP>& out) const {
+  hidden_back_faces_count = 0;
+  if (!allow_back_face_hidding || !settings.default_stylesheet_settings.list_hide_back_faces()) return;
+  size_t before_count = out.size();
+  out.erase(
+    std::remove_if(out.begin(), out.end(),
+      [this](const VoidP& item) {
+        CardP card = static_pointer_cast<Card>(item);
+        return !!card->getFrontFaceCard(*set);
+      }),
+    out.end()
+  );
+  hidden_back_faces_count = (int)(before_count - out.size());
+}
+
 void CardListBase::sendEvent(int type) {
   CardSelectEvent ev(type);
   ev.SetEventObject(this);
@@ -216,7 +236,8 @@ bool CardListBase::doDelete() {
   // if there is one double faced card, select the other face to make it clear it hasn't been deleted
   CardP other_face = nullptr;
   if (cards_to_delete.size() == 1) {
-    other_face = cards_to_delete[0]->getLinkedOtherFaceCard(*set);
+    other_face = cards_to_delete[0]->getFrontFaceCard(*set);
+    if (!other_face) other_face = cards_to_delete[0]->getBackFaceCard(*set);
   }
   // delete cards
   set->actions.addAction(make_unique<AddCardAction>(REMOVE, *set, cards_to_delete));
@@ -534,6 +555,7 @@ bool CardListBase::canLink() const {
 }
 bool CardListBase::doLink() {
   CardLinkWindow wnd(this, set, getCard());
+  wnd.CentreOnParent();
   if (wnd.ShowModal() == wxID_OK) {
     // The actual linking is done in this window's onOk function
     return true;
@@ -543,9 +565,12 @@ bool CardListBase::doLink() {
 bool CardListBase::doUnlink(CardP linked_card) {
   CardP selected_card = getCard();
   vector<ActionP> actions;
-  actions.emplace_back(make_intrusive<OneWayLinkCardsAction>(selected_card, _(""), _(""), selected_card->findUIDLink(linked_card->uid)));
-  actions.emplace_back(make_intrusive<OneWayLinkCardsAction>(linked_card,   _(""), _(""), linked_card->findUIDLink(selected_card->uid)));
+  int selected_index = selected_card->findUIDLink(linked_card->uid);
+  int linked_index = linked_card->findUIDLink(selected_card->uid);
+  actions.emplace_back(make_intrusive<OneWayLinkCardsAction>(selected_card, _(""), _(""), selected_index));
+  if (linked_index >= 0) actions.emplace_back(make_intrusive<OneWayLinkCardsAction>(linked_card,   _(""), _(""), linked_index));
   set->actions.addAction(make_unique<BulkAction>(actions, set, this, false), false);
+  set->actions.tellListeners(GlobalDisplayChangeAction(),true);
   return true;
 }
 

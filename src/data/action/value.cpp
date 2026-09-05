@@ -289,7 +289,7 @@ String compute_new_bullet_value(const String& str, int& offset, size_t start_i, 
     String prefix(substr(str, 0, start_i));
     String suffix = end_i == String::npos ? String() : String(substr(str, end_i));
     String selection(substr(str, start_i, end_i - start_i));
-    selection = wxString::FromUTF8("<li><bullet>• </bullet>") + selection + _("</li>");
+    selection = _("<li><bullet>\u2022 </bullet>") + selection + _("</li>"); // \u2022 is the bullet point character
     offset += 1;
     return prefix + selection + suffix;
   }

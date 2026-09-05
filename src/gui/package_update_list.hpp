@@ -100,7 +100,7 @@ private:
   
   class TreeItem : public Item {
   public:
-    TreeItem() : position_type(TYPE_OTHER), position_hint(1000000) {}
+    TreeItem() : position_type(TYPE_OTHER), position_hint(10000000), group_hint(10000000) {}
     String label;
     vector<TreeItemP> children;
     InstallablePackageP package;
@@ -119,6 +119,7 @@ private:
       TYPE_OTHER,
     }   position_type;
     int position_hint;
+    int group_hint; // Lowest position_hint of any package found anywhere within this node's subtree.
     
     void add(const InstallablePackageP& package, const String& path, int level = -1);
     void toItems(vector<TreeList::ItemP>& items);

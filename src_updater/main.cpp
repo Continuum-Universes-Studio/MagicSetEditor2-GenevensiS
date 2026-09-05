@@ -15,6 +15,7 @@
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
 #include <unordered_map>
+#include <atomic>
 
 // ----------------------------------------------------------------------------- : Payload URL
 
@@ -93,7 +94,8 @@ public:
   wxButton*     button;
   Thread*       thread;
 
-  bool OK = false;
+  std::atomic<bool> OK{false};
+  std::atomic<bool> thread_finished{false};
 };
 
 class Thread : public wxThread {
@@ -178,7 +180,6 @@ void Frame::OnFail(wxThreadEvent& event) {
   DoFail(event.GetString());
 }
 void Frame::DoFail(const wxString& error) {
-  thread->Kill();
   status->SetForegroundColour(wxColor(*wxRED));
   status->SetLabelText(error);
   address->SetLabelText(wxString(""));
@@ -216,7 +217,9 @@ void Frame::OnOK(wxCommandEvent& event) {
     OK = true;
   }
   else {
-    thread->Kill();
+    if (!thread_finished) {
+      thread->Kill();
+    }
     Destroy();
   }
 }
@@ -230,12 +233,14 @@ void Thread::NotifyExtraction(const wxString& file) {
 }
 
 void Thread::NotifyFail(const wxString& error) {
+  frame->thread_finished = true;
   wxThreadEvent* event = new wxThreadEvent(wxEVT_FAIL);
   event->SetString(error);
   wxQueueEvent(frame, event);
 }
 
 void Thread::NotifySuccess(const wxString& app_folder) {
+  frame->thread_finished = true;
   wxThreadEvent* event = new wxThreadEvent(wxEVT_SUCCESS);
   event->SetString(app_folder);
   wxQueueEvent(frame, event);
@@ -269,7 +274,6 @@ wxThread::ExitCode Thread::Entry() {
     // Stall until the user gives the go ahead
     while (!frame->OK) {
       wxMilliSleep(50);
-      wxYield();
     }
 
     // Extract files from zip

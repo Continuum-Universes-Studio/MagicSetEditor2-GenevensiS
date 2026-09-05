@@ -20,6 +20,7 @@
 #include <data/set.hpp>
 #include <data/stylesheet.hpp>
 #include <data/card.hpp>
+#include <wx/progdlg.h>
 
 // ----------------------------------------------------------------------------- : Helper functions
 
@@ -53,7 +54,43 @@ inline static Value* get_container(IndexMap<FieldP, ValueP>& map, const String& 
   return it->get();
 }
 
-inline static void set_container(Value* container, ScriptValueP& value, String key_name) {
+inline static bool looks_like_url(const String& s) {
+  // only the schemes we actually know how to fetch
+  return s.starts_with(_("http://")) || s.starts_with(_("https://"))
+      || s.starts_with(_("ftp://"))  || s.starts_with(_("ftps://"));
+}
+
+inline static bool looks_like_local_path(const String& s) {
+  // unix absolute path
+  if (s.starts_with(_("/"))) return true;
+  // windows UNC / extended-length path:   \\server\share\... or \\?\C:\...
+  if (s.starts_with(_("\\\\"))) return true;
+  // windows absolute path
+  if (s.size() >= 3 && wxIsalpha(s[0]) && s[1] == _(':') && (s[2] == _('\\') || s[2] == _('/'))) return true;
+  return false;
+}
+
+inline static void set_image_from_external_string(Set* set, ImageValue* ivalue, const String& string, bool is_url) {
+  try {
+    GeneratedImageP loaded;
+    if (is_url) {
+      if (!settings.allow_image_download) {
+        ivalue->filename.makeEmpty();
+        return;
+      }
+      loaded = make_intrusive<DownloadedImage>(set, string);
+    } else {
+      loaded = make_intrusive<ImportedImage>(set, string);
+    }
+    ExternalImage* ext = dynamic_cast<ExternalImage*>(loaded.get());
+    ivalue->filename = LocalFileName::fromReadString(ext->toString(), "");
+  } catch (const ScriptError& e) {
+    queue_message(MESSAGE_ERROR, e.what());
+    ivalue->filename.makeEmpty();
+  }
+}
+
+inline static void set_container(Set* set, Value* container, String type, ScriptValueP& value, String key_name) {
   // set the given value into the container
   if (TextValue* tvalue = dynamic_cast<TextValue*>(container)) {
     tvalue->value = value->toString();
@@ -73,7 +110,16 @@ inline static void set_container(Value* container, ScriptValueP& value, String k
     if (ExternalImage* img = dynamic_cast<ExternalImage*>(value.get())) {
       ivalue->filename = LocalFileName::fromReadString(img->toString(), "");
     } else if (value->type() == SCRIPT_STRING) {
-      ivalue->filename = LocalFileName::fromReadString(value->toString(), "");
+      String str = value->toString();
+      if (trim(str).empty()) {
+        ivalue->filename.makeEmpty();
+      } else if (looks_like_url(str)) {
+        set_image_from_external_string(set, ivalue, str, true);
+      } else if (looks_like_local_path(str)) {
+        set_image_from_external_string(set, ivalue, str, false);
+      } else {
+        ivalue->filename = LocalFileName::fromReadString(str, "");
+      }
     } else {
       throw ScriptError(_ERROR_1_("cant set image value", key_name));
     }
@@ -86,18 +132,21 @@ inline static void set_container(Value* container, ScriptValueP& value, String k
     }
   }
   else {
-    throw ScriptError(_ERROR_1_("cant set value", key_name));
+    throw ScriptError(_ERROR_2_("cant set value", type, key_name));
   }
 }
 
 inline static bool set_stylesheet_container(const Game& game, CardP& card, ScriptValueP& value, String key_name, bool ignore_field_not_found) {
   // check if the given value is for a stylesheet, if found set it and return true
   key_name = unified_form(key_name);
-  if (key_name == _("style") || key_name == _("stylesheet") || key_name == _("template")) {
+  if (key_name == _("style") || key_name == _("stylesheet")) {
     if (!trim(value->toString()).empty()) {
       card->stylesheet = StyleSheet::byGameAndName(game, value->toString());
       if (card->stylesheet) {
+        // Keep old styling data so matching fields (by name) can be carried over.
+        IndexMap<FieldP, ValueP> old_styling_data = card->styling_data;
         card->styling_data.init(card->stylesheet->styling_fields);
+        card->styling_data.copyDataFrom(old_styling_data);
         card->extraDataFor(*card->stylesheet).init(card->stylesheet->extra_card_fields);
       }
     }
@@ -106,60 +155,36 @@ inline static bool set_stylesheet_container(const Game& game, CardP& card, Scrip
   return false;
 }
 
-inline static bool set_builtin_container(const Game& game, CardP& card, ScriptValueP& value, String key_name, bool ignore_field_not_found) {
+inline static bool set_builtin_container(const Game& game, Set* set, CardP& card, ScriptValueP& value, String key_name, bool ignore_field_not_found) {
   // check if the given value is for a built-in field, if found set it and return true
   key_name = unified_form(key_name);
-  if (key_name == _("style") || key_name == _("stylesheet") || key_name == _("template")) {
+  if (key_name == _("style") || key_name == _("stylesheet")) {
     return true; // we already took care of this
   }
-  else if (key_name == _("style_version") || key_name == _("stylesheet_version") || key_name == _("template_version")) {
+  else if (key_name == _("style_version") || key_name == _("stylesheet_version")) {
     card->stylesheet_version = Version::fromString(value->toString());
     return true;
   }
-  else if (key_name == _("card_notes") || key_name == _("notes") || key_name == _("note")) {
+  else if (key_name == _("notes") || key_name == _("note")) {
     card->notes = value->toString();
     return true;
   }
-  else if (key_name == _("id") || key_name == _("uid") || key_name == _("uuid")) {
+  else if (key_name == _("id") || key_name == _("uid")) {
     card->uid = value->toString();
     return true;
   }
-  else if (key_name == _("linked_card_1") || key_name == _("linked_card")) {
-    card->linked_card_1 = value->toString();
+  else if (Card::linkedCardFieldIndex(key_name) >= 0) {
+    card->getLinkedUID(Card::linkedCardFieldIndex(key_name)) = value->toString();
     return true;
   }
-  else if (key_name == _("linked_card_2")) {
-    card->linked_card_2 = value->toString();
+  else if (Card::linkedRelationFieldIndex(key_name) >= 0) {
+    card->getLinkedRelation(Card::linkedRelationFieldIndex(key_name)) = value->toString();
     return true;
   }
-  else if (key_name == _("linked_card_3")) {
-    card->linked_card_3 = value->toString();
-    return true;
-  }
-  else if (key_name == _("linked_card_4")) {
-    card->linked_card_4 = value->toString();
-    return true;
-  }
-  else if (key_name == _("linked_relation_1") || key_name == _("linked_relation")) {
-    card->linked_relation_1 = value->toString();
-    return true;
-  }
-  else if (key_name == _("linked_relation_2")) {
-    card->linked_relation_2 = value->toString();
-    return true;
-  }
-  else if (key_name == _("linked_relation_3")) {
-    card->linked_relation_3 = value->toString();
-    return true;
-  }
-  else if (key_name == _("linked_relation_4")) {
-    card->linked_relation_4 = value->toString();
-    return true;
-  }
-  else if          (key_name == _("styling_data")   || key_name == _("style_data")   || key_name == _("stylesheet_data")   || key_name == _("template_data") || key_name == _("styling")
-                 || key_name == _("styling_fields") || key_name == _("style_fields") || key_name == _("stylesheet_fields") || key_name == _("template_fields")
-                 || key_name == _("extra_data")     || key_name == _("extra_fields") || key_name == _("extra_card_data")   || key_name == _("extra_card_fields")) {
-    bool is_extra = key_name == _("extra_data")     || key_name == _("extra_fields") || key_name == _("extra_card_data")   || key_name == _("extra_card_fields");
+  else if          (key_name == _("styling_data")   || key_name == _("styling")
+                 || key_name == _("style_data")     || key_name == _("stylesheet_data")
+                 || key_name == _("extra_data")     || key_name == _("extra_card_data")) {
+    bool is_extra = key_name == _("extra_data")     || key_name == _("extra_card_data");
     String type = is_extra ? _("extra") : _("styling");
     if (value->type() != SCRIPT_COLLECTION) {
       throw ScriptError(_ERROR_1_("styling data not map", type));
@@ -175,12 +200,21 @@ inline static bool set_builtin_container(const Game& game, CardP& card, ScriptVa
       if (key == script_nil || value == script_nil) continue;
       String key_name = key->toString();
       Value* container = get_container(data, type, key_name, ignore_field_not_found);
-      set_container(container, value, key_name);
+      if (container == nullptr && ignore_field_not_found) continue;
+      set_container(set, container, type, value, key_name);
       if (!is_extra) card->has_styling = true;
     }
     return true;
   }
   return false;
+}
+
+// Is key_name "linked_card"/"linked_card_N", "linked_relation"/"linked_relation_N", or the
+// legacy "link_relation"/"link_relation_N" alias, for 1 <= N <= Card::MAX_LINKS?
+inline static bool is_recognized_link_header(const String& key_name) {
+  return Card::linkedCardFieldIndex(key_name) >= 0
+      || Card::linkedRelationFieldIndex(key_name) >= 0
+      || Card::indexedFieldIndex(key_name, _("link_relation"), Card::MAX_LINKS) >= 0;
 }
 
 inline static bool check_table_headers(GameP& game, std::vector<String>& headers, const String& file_extension, String& missing_fields_out) {
@@ -191,29 +225,13 @@ inline static bool check_table_headers(GameP& game, std::vector<String>& headers
   for (int x = 0; x < headers.size(); ++x) {
     String key_name = headers[x];
     if ( game->card_fields_alt_names.find(unified_form(key_name)) == game->card_fields_alt_names.end()
-      || key_name == _("notes")
-      || key_name == _("note")
-      || key_name == _("style")
-      || key_name == _("stylesheet")
-      || key_name == _("template")
-      || key_name == _("id")
-      || key_name == _("uid")
-      || key_name == _("multiverse_id")
-      || key_name == _("linked_card")
-      || key_name == _("linked_card_1")
-      || key_name == _("linked_card_2")
-      || key_name == _("linked_card_3")
-      || key_name == _("linked_card_4")
-      || key_name == _("linked_relation")
-      || key_name == _("linked_relation_1")
-      || key_name == _("linked_relation_2")
-      || key_name == _("linked_relation_3")
-      || key_name == _("linked_relation_4")
-      || key_name == _("link_relation")
-      || key_name == _("link_relation_1")
-      || key_name == _("link_relation_2")
-      || key_name == _("link_relation_3")
-      || key_name == _("link_relation_4")
+      && key_name != _("notes")
+      && key_name != _("note")
+      && key_name != _("style")
+      && key_name != _("stylesheet")
+      && key_name != _("id")
+      && key_name != _("uid")
+      && !is_recognized_link_header(key_name)
     ) {
       missing_fields_out += _("\n   ") + key_name;
     }
@@ -230,13 +248,31 @@ inline static bool cards_from_table(SetP& set, vector<String>& headers, std::vec
       return false;
     }
   }
-  // produce cards from table
+  // set up context
   Context& ctx = set->getContext();
   ScriptValueP new_card_function = ctx.getVariable("new_card");
   ScriptValueP ctx_input = ctx.getVariableOpt(SCRIPT_VAR_input);
   ScriptValueP ctx_ignore = ctx.getVariableOpt("ignore_field_not_found");
   ctx.setVariable("ignore_field_not_found", to_script(ignore_field_not_found));
-  for (int y = 0; y < table.size(); ++y) {
+  int total = (int)table.size();
+  // progress dialog, lets the user cancel
+  std::unique_ptr<wxProgressDialog> progress;
+  if (total > 0) {
+    progress = std::make_unique<wxProgressDialog>(
+      _TITLE_("importing cards"),
+      wxString::Format(_LABEL_2_("importing cards", String()<<1, String()<<total)),
+      total,
+      nullptr,
+      wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_CAN_ABORT
+    );
+  }
+  bool cancelled = false;
+  // produce cards from table
+  for (int y = 0; y < total; ++y) {
+    if (progress && !progress->Update(y, wxString::Format(_LABEL_2_("importing cards", String()<<(y+1), String()<<total)))) {
+      cancelled = true;
+      break;
+    }
     ScriptCustomCollectionP field_map = make_intrusive<ScriptCustomCollection>();
     for (int x = 0; x < count; ++x) {
       // check if value is worth writing
@@ -255,5 +291,5 @@ inline static bool cards_from_table(SetP& set, vector<String>& headers, std::vec
   }
   if (ctx_input) ctx.setVariable(SCRIPT_VAR_input, ctx_input);
   if (ctx_ignore) ctx.setVariable("ignore_field_not_found", ctx_ignore);
-  return true;
+  return !cancelled;
 }

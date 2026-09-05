@@ -48,8 +48,8 @@ AddCSVWindow::AddCSVWindow(Window* parent, const SetP& set, bool sizer)
       s2->Add(CreateButtonSizer(wxOK | wxCANCEL), 1, wxEXPAND, 8);
     s->Add(s2, 0, wxEXPAND | wxALL, 12);
     file_browse->SetFocus();
-    s->SetSizeHints(this);
     SetSizer(s);
+    s->SetSizeHints(this);
     SetSize(500, 110);
   }
 }

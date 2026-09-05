@@ -44,11 +44,11 @@ HtmlExportWindow::HtmlExportWindow(Window* parent, const SetP& set, const Export
       s2->Add(s3, 7, wxEXPAND | wxLEFT, 8);
     s->Add(s2, 1, wxEXPAND | wxALL, 4);
     s->Add(CreateButtonSizer(wxOK | wxCANCEL) , 0, wxEXPAND | wxALL, 8);
-    s->SetSizeHints(this);
   SetSizer(s);
+  s->SetSizeHints(this);
   SetSize(700,500);
   // list
-  list->showData<ExportTemplate>(set->game->name() + _("-*"));
+  list->showData<ExportTemplate>(set->game->name() + _("*"));
   list->select(settings.gameSettingsFor(*set->game).default_export);
 }
 

@@ -103,6 +103,10 @@ public:
   void perform(bool to_undo) override;
 };
 
+
+class GlobalDisplayChangeAction : public DisplayChangeAction {
+};
+
 /// Changing the style of a a card
 class ChangeCardStyleAction : public DisplayChangeAction {
 public:

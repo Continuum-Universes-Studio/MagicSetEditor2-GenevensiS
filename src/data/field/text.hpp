@@ -109,11 +109,15 @@ class TextValue : public Value {
 public:
   inline TextValue(const TextFieldP& field) : Value(field), last_update(1) {}
   DECLARE_VALUE_TYPE(Text, Defaultable<String>);
-  
+
+  void copyDataFrom(const Value& other) override;
+
   ValueType value;                ///< The text of this value
   Age       last_update;          ///< When was the text last changed?
 
   bool isDefault() override;
+
+  void makeDefault(bool d = true) override;
 
   bool update(Context&) override;
 };

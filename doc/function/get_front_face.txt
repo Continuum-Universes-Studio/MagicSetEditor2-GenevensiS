@@ -6,6 +6,10 @@ Function: get_front_face
 Inspects a given [[type:card]]'s links to find one of type "Front Face", and returns the linked card.
 Returns nil if no link of type "Front Face", or no card was found.
 
+This function is used by the app to determine which cards must be hidden from the card list
+because they are back faces, as well as which cards to group together during print/export.
+Its logic can be overwritten in the game's get_front_face_script.
+
 --Parameters--
 ! Parameter	Type				Description
 | @input@	[[type:card]]		The card whose links we'll inspect.

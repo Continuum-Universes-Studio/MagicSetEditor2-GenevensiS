@@ -309,6 +309,10 @@ bool Value::isDefault() {
   return false;
 }
 
+void Value::makeDefault(bool d) {
+  throw ScriptError(_("Unimplemented makeDefault function"));
+}
+
 bool Value::update(Context& ctx) {
   updateAge();
   updateSortValue(ctx);

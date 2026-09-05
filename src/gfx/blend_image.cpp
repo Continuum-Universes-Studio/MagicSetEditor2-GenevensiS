@@ -79,10 +79,10 @@ void linear_blend(Image& img1, const Image& img2, double x1,double y1, double x2
 
 // ----------------------------------------------------------------------------- : Mask Blend
 
-void mask_blend(Image& img1, const Image& img2, const Image& mask) {
-  int width = img1.GetWidth(), height = img1.GetHeight();
-  if (img2.GetWidth() != width || img2.GetHeight() != height) {
-    throw Error(_ERROR_3_("blending different sizes", "masked_blend", String()<<width<<_("x")<<height, String()<<img2.GetWidth()<<_("x")<<img2.GetHeight()));
+void mask_blend(Image& light, const Image& dark, const Image& mask) {
+  int width = light.GetWidth(), height = light.GetHeight();
+  if (dark.GetWidth() != width || dark.GetHeight() != height) {
+    throw Error(_ERROR_3_("blending different sizes", "masked_blend", String()<<width<<_("x")<<height, String()<<dark.GetWidth()<<_("x")<<dark.GetHeight()));
   }
   if (mask.GetWidth() != width || mask.GetHeight() != height) {
     throw Error(_ERROR_3_("blending different mask", "masked_blend", String()<<width<<_("x")<<height, String()<<mask.GetWidth()<<_("x")<<mask.GetHeight()));
@@ -91,24 +91,24 @@ void mask_blend(Image& img1, const Image& img2, const Image& mask) {
   UInt size = width * height;
   // these have the following structure:
   // [pixel1red, pixel1green, pixel1blue, pixel2red, pixel2green, pixel2blue, pixel3red, etc...]
-  Byte *data1 = img1.GetData(), *data2 = img2.GetData(), *dataM = mask.GetData();
+  Byte *data1 = light.GetData(), *data2 = dark.GetData(), *dataM = mask.GetData();
   // for each subpixel...
   for (UInt i = 0; i < (size * 3); ++i) {
     data1[i] = (data1[i] * dataM[i] + data2[i] * (255 - dataM[i])) / 255;
   }
 
-  if (img1.HasAlpha() && img2.HasAlpha()) {
+  if (light.HasAlpha() && dark.HasAlpha()) {
     // these have the following structure:
     // [pixel1alpha, pixel2alpha, pixel3alpha, etc...]
-    Byte *alpha1 = img1.GetAlpha(), *alpha2 = img2.GetAlpha();
+    Byte *alphaLight = light.GetAlpha(), *alphaDark = dark.GetAlpha();
     for (UInt i = 0; i < size; ++i) {
       // use mask's red channel to blend alpha (all mask channels should be identical since it's grey scale)
-      alpha1[i] = (alpha1[i] * dataM[i * 3] + alpha2[i] * (255 - dataM[i * 3])) / 255;
+      alphaLight[i] = (alphaLight[i] * dataM[i * 3] + alphaDark[i] * (255 - dataM[i * 3])) / 255;
     }
   }
 
   //transfer metadata
-  img1.SetOption(wxIMAGE_OPTION_PNG_DESCRIPTION, metadata_merge(img1, img2));
+  light.SetOption(wxIMAGE_OPTION_PNG_DESCRIPTION, metadata_merge(light, dark));
 }
 
 // ----------------------------------------------------------------------------- : Alpha

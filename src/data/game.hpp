@@ -46,6 +46,8 @@ public:
   vector<CardLinkP>          card_links;             ///< Possible links between cards
   OptionalScript             card_list_color_script; ///< Script that determines the color of items in the card list
   OptionalScript             import_script;          ///< Script applied as the last step of the new_card function
+  OptionalScript             get_front_face_script;  ///< Script used to get a card's front face
+  OptionalScript             get_back_face_script;   ///< Script used to get a card's back face
   vector<String>             json_paths;             ///< Paths inside JSON files to find the card array
   vector<StatsDimensionP>    statistics_dimensions;  ///< (Additional) statistics dimensions
   vector<StatsCategoryP>     statistics_categories;  ///< (Additional) statistics categories

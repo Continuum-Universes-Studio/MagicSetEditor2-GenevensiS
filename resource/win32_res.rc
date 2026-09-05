@@ -45,6 +45,8 @@ tool/find IMAGE "tool/find.png"
 tool/dark_find IMAGE "tool/dark_find.png"
 tool/preferences IMAGE "tool/preferences.png"
 tool/dark_preferences IMAGE "tool/dark_preferences.png"
+tool/default_reset IMAGE "tool/default_reset.png"
+tool/dark_default_reset IMAGE "tool/dark_default_reset.png"
 
 tool/font IMAGE "tool/font.png"
 tool/dark_font IMAGE "tool/dark_font.png"

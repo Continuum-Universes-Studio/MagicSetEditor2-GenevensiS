@@ -116,3 +116,11 @@ void PackageChoiceValueEditor::initDropDown() {
   if (drop_down) return;
   drop_down = make_shared<DropDownPackageChoiceList>(&editor(), this);
 }
+
+// ----------------------------------------------------------------------------- : Resetting
+
+void PackageChoiceValueEditor::doDefaultReset() {
+  if (!valueP()) return;
+  unique_ptr<ResetValueAction<PackageChoiceValue, false>> action = make_unique<ResetValueAction<PackageChoiceValue, false>>(valueP());
+  addAction(std::move(action));
+}

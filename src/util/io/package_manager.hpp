@@ -61,7 +61,9 @@ class PackageDirectory {
 public:
   void init(bool local);
   void init(const String& dir);
-  
+
+  void deleteEmptyFolders();
+
   bool valid() const { return !directory.empty(); }
   
   /// Name of a package in this directory
@@ -74,7 +76,10 @@ public:
   
   /// Find all packages that match a filename pattern (using wxFindFirst)
   String findFirstMatching(const String& pattern) const;
-  
+
+  /// Verify that a package contains its titular file
+  bool checkForPackageFile(const String& package_name);
+
   /// Get all installed packages
   void installedPackages(vector<InstallablePackageP>& packages);
   
@@ -116,7 +121,9 @@ public:
   void destroy();
   /// Empty the list of packages, they will all be reloaded
   void reset();
-  
+  /// Clear a package from the list, it will be reloaded
+  void evictFromCache(const String& filename_or_name);
+
   // --------------------------------------------------- : Packages in memory
   
   /// Open a package with the specified name (including extension)
@@ -131,6 +138,10 @@ public:
     }
   }
   
+  /// Prepare a filename so that it can be used as a key in loaded_packages
+  String cleanFilename(const String& name);
+  String normalizeFilename(const String& name);
+
   /// Open a package with the specified name, the type of package is determined by its extension!
   /** @param if just_header is true, then the package is not fully parsed.
    */
@@ -171,7 +182,7 @@ public:
   
   /// Install/uninstall a package, returns success
   bool install(const InstallablePackage& package);
-  
+
   // --------------------------------------------------- : Other package like things
   
   /// Get the directory for dictionary files

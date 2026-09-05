@@ -315,12 +315,22 @@ ChoiceValue::ChoiceValue(const ChoiceFieldP& field, bool initial_first_choice)
          , true)
 {}
 
+void ChoiceValue::copyDataFrom(const Value& other) {
+  if (const ChoiceValue* o = dynamic_cast<const ChoiceValue*>(&other)) {
+    value = o->value;
+  }
+}
+
 String ChoiceValue::toString() const {
   return value();
 }
 
 bool ChoiceValue::isDefault() {
   return value.isDefault();
+}
+
+void ChoiceValue::makeDefault(bool d) {
+  value.makeDefault(d);
 }
 
 bool ChoiceValue::update(Context& ctx) {

@@ -69,6 +69,23 @@ public:
       vector<Value>::push_back(value ? value->clone() : value);
     }
   }
+  /// Merge in data from another IndexMap by matching keys by name, not by position.
+  /** Unlike cloneFrom, copyDataFrom does not assume the two maps share the same key domain.
+  *  For each value in `this`, look up a value with the same key name in `other`;
+  *  if found, copy its payload (not its key) into the value in `this` using
+  *  Value::copyDataFrom. Entries with no match, or a match of an incompatible
+  *  type, are left as-is (typically their freshly init()'d default).
+  *  `this` should already be init()'d with the desired (destination) key domain.
+  */
+  void copyDataFrom(const IndexMap<Key,Value>& other) {
+    for (typename vector<Value>::iterator it = begin() ; it != end() ; ++it) {
+      if (!*it) continue;
+      typename vector<Value>::const_iterator other_it = other.find(get_key_name(*it));
+      if (other_it != other.end() && *other_it) {
+        (*it)->copyDataFrom(**other_it);
+      }
+    }
+  }
   /// Change this map by adding an additional key and value
   void add(const Key& key, const Value& value) {
     assert(get_key(value) == key);

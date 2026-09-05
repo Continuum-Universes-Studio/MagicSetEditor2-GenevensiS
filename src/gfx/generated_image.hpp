@@ -162,6 +162,20 @@ private:
   GeneratedImageP mask;
 };
 
+// ----------------------------------------------------------------------------- : VisibilityMaskImage
+
+/// Generate a black/white mask marking pixels that are (or neighbor) a pixel with alpha <= threshold
+class VisibilityMaskImage : public SimpleFilterImage {
+public:
+  inline VisibilityMaskImage(const GeneratedImageP& image, int threshold, int radius)
+    : SimpleFilterImage(image), threshold(threshold), radius(radius)
+  {}
+  Image generate(const Options& opt) override;
+  bool operator == (const GeneratedImage& that) const override;
+private:
+  int threshold, radius;
+};
+
 /// Change the alpha channel of an image
 class SetAlphaImage : public SimpleFilterImage {
 public:
@@ -331,6 +345,21 @@ private:
     int height;
 };
 
+// ----------------------------------------------------------------------------- : NineSliceImage
+
+class NineSliceImage : public SimpleFilterImage {
+public:
+  inline NineSliceImage(const GeneratedImageP& image, int width, int height, int left, int right, int top, int bottom)
+    : SimpleFilterImage(image), width(max(max(0, left) + max(0, right) + 1, width)), height(max(max(0, top) + max(0, bottom) + 1, height))
+    , left(max(0, left)), right(max(0, right)), top(max(0, top)), bottom(max(0, bottom))
+  {}
+  Image generate(const Options& opt) override;
+  bool operator == (const GeneratedImage& that) const override;
+private:
+  int width, height;
+  int left, right, top, bottom;
+};
+
 // ----------------------------------------------------------------------------- : CropImage
 
 /// Crop an image at a certain point, to a certain size
@@ -385,8 +414,8 @@ private:
 /// Insert an image at a certain point inside another image
 class InsertedImage : public GeneratedImage {
 public:
-    inline InsertedImage(const GeneratedImageP& base_image, const GeneratedImageP& inserted_image, int offset_x, int offset_y, Color background_color)
-        : base_image(base_image), inserted_image(inserted_image), offset_x(offset_x), offset_y(offset_y), background_color(background_color)
+    inline InsertedImage(const GeneratedImageP& base_image, const GeneratedImageP& inserted_image, int offset_x, int offset_y, bool widen, Color background_color)
+        : base_image(base_image), inserted_image(inserted_image), offset_x(offset_x), offset_y(offset_y), widen(widen), background_color(background_color)
     {}
     Image generate(const Options& opt) override;
     ImageCombine combine() const override;
@@ -395,6 +424,7 @@ public:
 private:
     GeneratedImageP base_image, inserted_image;
     int offset_x, offset_y;
+    bool widen;
     Color background_color;
 };
 

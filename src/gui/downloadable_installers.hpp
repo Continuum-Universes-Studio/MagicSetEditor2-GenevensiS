@@ -13,6 +13,7 @@
 #include <wx/wfstream.h>
 #include <wx/webrequest.h>
 #include <wx/dialup.h>
+#include <wx/datetime.h>
 
 class DownloadableInstallerList;
 
@@ -28,17 +29,13 @@ public:
 
   /// Check for updates if the settings say so
   inline void check_updates() {
-    settings.check_updates_counter++;
     wxDialUpManager* manager = wxDialUpManager::Create();
     bool connected = manager->IsOk() && manager->IsOnline();
     delete manager;
     if (!connected) return;
-    if (
-         (settings.check_updates_when == CHECK_ALWAYS)
-      || (settings.check_updates_when == CHECK_5  && settings.check_updates_counter > 4)
-      || (settings.check_updates_when == CHECK_10 && settings.check_updates_counter > 9)
-      ) {
-      settings.check_updates_counter = 0;
+    if (settings.check_updates_when == CHECK_NEVER) return;
+    int interval_days = (settings.check_updates_when == CHECK_7_DAYS) ? 7 : 30;
+    if (days_since_last_check() >= interval_days) {
       check_updates_now();
     }
   }
@@ -68,12 +65,12 @@ public:
 
   /// Show a dialog to inform the user that updates are available (if there are any)
   /// Call check_updates first. Call this function from an onIdle loop
-  inline void show_update_dialog(Window* parent) {
+  inline void show_update_dialog(Window* set_window) {
     if (shown_dialog || check_status != FOUND) return; // we already have the latest version, or this has already been displayed.
     shown_dialog = true;
-    wxMessageDialog dial = wxMessageDialog(parent, _LABEL_("updates found"), _TITLE_("updates available"), wxYES_NO);
+    wxMessageDialog dial = wxMessageDialog(set_window, _LABEL_("updates found"), _TITLE_("updates available"), wxYES_NO);
     if (dial.ShowModal() == wxID_YES) {
-      (new PackagesWindow(parent))->Show();
+      (new PackagesWindow(set_window))->Show();
     }
   }
 
@@ -87,27 +84,51 @@ public:
 private:
   wxMutex lock;
 
+  /// Today's date, encoded as an integer YYYYMMDD
+  static inline int today_as_int() {
+    wxDateTime now = wxDateTime::Now();
+    return now.GetYear() * 10000 + (static_cast<int>(now.GetMonth()) + 1) * 100 + now.GetDay();
+  }
+
+  /// Number of days since settings.check_updates_last_check (a large number if never checked)
+  static inline int days_since_last_check() {
+    int last = settings.check_updates_last_check;
+    if (last <= 0) return 1 << 30; // never checked before, so check now
+    int y = last / 10000;
+    int m = (last / 100) % 100;
+    int d = last % 100;
+    wxDateTime last_check_date(static_cast<wxDateTime::wxDateTime_t>(d), static_cast<wxDateTime::Month>(m - 1), y);
+    wxTimeSpan elapsed = wxDateTime::Now() - last_check_date;
+    return (int)elapsed.GetDays();
+  }
+
   struct DownloadThread : public wxThread {
     inline ExitCode Entry() override {
-      // fetch list
-      wxWebRequestSync request = wxWebSessionSync::GetDefault().CreateRequest(settings.installer_list_url);
-      auto const result = request.Execute();
-      if (!result) {
+      try {
+        // fetch list
+        wxWebRequestSync request = wxWebSessionSync::GetDefault().CreateRequest(settings.installer_list_url);
+        auto const result = request.Execute();
+        if (!result) {
+          wxMutexLocker l(downloadable_installers.lock);
+          downloadable_installers.download_status = DONE;
+          downloadable_installers.check_status = FAILED;
+          return 0;
+        }
+        wxInputStream* is = request.GetResponse().GetStream();
+        // Read installer list
+        Reader reader(*is, nullptr, _("installers"), true);
+        vector<DownloadableInstallerP> installers;
+        reader.handle(_("installers"),installers);
+        // done
         wxMutexLocker l(downloadable_installers.lock);
+        swap(installers, downloadable_installers.installers);
+        downloadable_installers.download_status = DONE;
+        return 0;
+      } catch (...) {
+        // ignore all errors, we don't want problems if update checking fails
         downloadable_installers.download_status = DONE;
         downloadable_installers.check_status = FAILED;
-        return 0;
       }
-      wxInputStream* is = request.GetResponse().GetStream();
-      // Read installer list
-      Reader reader(*is, nullptr, _("installers"), true);
-      vector<DownloadableInstallerP> installers;
-      reader.handle(_("installers"),installers);
-      // done
-      wxMutexLocker l(downloadable_installers.lock);
-      swap(installers, downloadable_installers.installers);
-      downloadable_installers.download_status = DONE;
-      return 0;
     }
   };
 
@@ -128,6 +149,7 @@ private:
           wxMilliSleep(30);
         }
         if (downloadable_installers.check_status == FAILED) return;
+        settings.check_updates_last_check = today_as_int();
         InstallablePackages installable_packages;
         FOR_EACH(inst, downloadable_installers.installers) {
           merge(installable_packages, inst);
@@ -149,9 +171,10 @@ private:
                                                                 || p->description->name.EndsWith("mse-symbol-font")))
               || (settings.check_updates_what == CHECK_APP   && (  p->description->name.EndsWith("mse-updater")
                                                                 || p->description->name.EndsWith("mse-locale")))
-            )
-            downloadable_installers.check_status = FOUND;
-            return;
+            ) {
+              downloadable_installers.check_status = FOUND;
+              return;
+            }
           }
         }
         downloadable_installers.check_status = NOT_FOUND;

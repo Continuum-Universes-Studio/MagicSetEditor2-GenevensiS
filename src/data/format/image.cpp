@@ -146,10 +146,7 @@ Image export_image(const SetP& set, const CardP& card, bool write_metadata, doub
 Image export_image(const SetP& set,
                    const vector<CardP>& cards,
                    int padding,
-                   double global_zoom,
-                   bool use_zoom_setting,
-                   bool use_rotation_setting,
-                   bool use_bleed_setting) {
+                   ExportImageMode mode) {
   if (!set) throw Error(_("no set"));
   if (cards.size() == 0) throw Error(_("no cards"));
   vector<Image> imgs;
@@ -159,10 +156,19 @@ Image export_image(const SetP& set,
   vector<double> bleeds;
   // Draw card images
   FOR_EACH(card, cards) {
-    Settings::ExportSettings card_settings = settings.exportSettingsFor(set->stylesheetFor(card));
-    double zoom = use_zoom_setting ? global_zoom * card_settings.zoom : global_zoom;
-    double angle = use_rotation_setting ? card_settings.angle_radians : 0.0;
-    double bleed = use_bleed_setting ? card_settings.bleed_pixels : 0.0;
+    double zoom, angle, bleed;
+    if (mode == ExportImageMode::DEFAULT) {
+      zoom = 1.0;
+      angle = 0.0;
+      bleed = 0.0;
+    } else {
+      Settings::ExportSettings card_settings = mode == ExportImageMode::CLIPBOARD ?
+        settings.clipboardSettingsFor(set->stylesheetFor(card)) :
+        settings.exportSettingsFor(set->stylesheetFor(card));
+      zoom = card_settings.zoom;
+      angle = card_settings.angle_radians;
+      bleed = card_settings.bleed_pixels;
+    }
     imgs.push_back(export_image(set, card, false, zoom, angle, bleed));
     zooms.push_back(zoom);
     angles.push_back(angle);
@@ -215,7 +221,16 @@ Image export_image(const SetP& set,
 
 void export_image(const SetP& set, const CardP& card, const String& filename) {
   const StyleSheet& stylesheet = set->stylesheetFor(card);
-  StyleSheetSettings& stylesheet_settings = settings.stylesheetSettingsFor(stylesheet);
+  // is this card part of a front/back pair that should be combined?
+  pair<CardP, CardP> faces = settings.stylesheetSettingsFor(stylesheet).card_dfc_export() ?
+                             card->getFrontFaceBackFacePair(*set) :
+                             make_pair(CardP(), CardP());
+  if (faces.first && faces.second) {
+    vector<CardP> combo{faces.first, faces.second};
+    Image img = export_image(set, combo);
+    img.SaveFile(filename);
+    return;
+  }
   Settings::ExportSettings export_settings = settings.exportSettingsFor(stylesheet);
   Image img = export_image(set, card, true, export_settings.zoom, export_settings.angle_radians, export_settings.bleed_pixels);
   img.SaveFile(filename);
@@ -229,24 +244,54 @@ void export_image(const SetP& set, const vector<CardP>& cards, const String& pat
   wxFileName fn(path);
   // Export
   std::set<String> used; // for CONFLICT_NUMBER_OVERWRITE
+  std::set<Card*> processed; // cards already written as part of a front/back pair, skip if hit again
   FOR_EACH_CONST(card, cards) {
-    // filename for this card
-    Context& ctx = set->getContext(card);
-    String filename = clean_filename(untag(ctx.eval(*filename_script)->toString()));
-    if (!filename) continue; // no filename -> no saving
-    // full path
-    fn.SetFullName(filename);
-    // does the file exist?
-    if (!resolve_filename_conflicts(fn, conflicts, used)) continue;
-    // write image
-    filename = fn.GetFullPath();
-    used.insert(filename);
-    export_image(set, card, filename);
+    if (processed.count(card.get())) continue;
+    // is this card part of a front/back pair that should be combined?
+    const StyleSheet& stylesheet = set->stylesheetFor(card);
+    pair<CardP, CardP> faces = settings.stylesheetSettingsFor(stylesheet).card_dfc_export() ?
+                               card->getFrontFaceBackFacePair(*set) :
+                               make_pair(CardP(), CardP());
+    if (faces.first && faces.second) {
+      // filename is "<front name> -- <back name>"
+      Context& ctx_front = set->getContext(faces.first);
+      String front_name = clean_filename(untag(ctx_front.eval(*filename_script)->toString()));
+      Context& ctx_back = set->getContext(faces.second);
+      String back_name  = clean_filename(untag(ctx_back.eval(*filename_script)->toString()));
+      if (!front_name || !back_name) continue; // no filename -> no saving
+      wxFileName front_fn(front_name);
+      String combined_name = front_fn.GetName() + _(" -- ") + wxFileName(back_name).GetName();
+      String ext = front_fn.GetExt();
+      if (!ext.empty()) combined_name += _(".") + ext;
+      // full path
+      fn.SetFullName(combined_name);
+      // does the file exist?
+      if (!resolve_filename_conflicts(fn, conflicts, used)) continue;
+      // write image
+      String filename = fn.GetFullPath();
+      used.insert(filename);
+      vector<CardP> combo{faces.first, faces.second};
+      Image img = export_image(set, combo);
+      img.SaveFile(filename);
+      processed.insert((faces.first == card ? faces.second : faces.first).get());
+    } else {
+      // filename for this card
+      Context& ctx = set->getContext(card);
+      String filename = clean_filename(untag(ctx.eval(*filename_script)->toString()));
+      if (!filename) continue; // no filename -> no saving
+      // full path
+      fn.SetFullName(filename);
+      // does the file exist?
+      if (!resolve_filename_conflicts(fn, conflicts, used)) continue;
+      // write image
+      filename = fn.GetFullPath();
+      used.insert(filename);
+      export_image(set, card, filename);
+    }
   }
 }
 
-String export_metadata(const SetP& set, const CardP& card, double zoom, Radians angle_radians, int width, int height, double offset_x, double offset_y)
-{
+String export_metadata(const SetP& set, const CardP& card, double zoom, Radians angle_radians, int width, int height, double offset_x, double offset_y) {
   IndexMap<FieldP, ValueP>& card_data = card->data;
   boost::json::object cardv = mse_to_json(card, set.get());
   boost::json::object& cardv_data = cardv["data"].as_object();
@@ -266,7 +311,7 @@ String export_metadata(const SetP& set, const CardP& card, double zoom, Radians 
       if (style) {
         style->update(set->getContext(card));
         // store the entire image in the metadata
-        if (style->store_in_metadata()) {
+        if (style->store_in_metadata() && settings.stylesheetSettingsFor(*stylesheet).card_metaimage_export()) {
           Image img = value->getImage(set);
           cardv_data[field->name.ToStdString()] = encodeImageInString(img);
         }

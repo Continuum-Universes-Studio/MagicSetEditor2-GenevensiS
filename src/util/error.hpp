@@ -52,7 +52,9 @@ public:
 /// A package is not found
 class PackageNotFoundError : public PackageError {
 public:
-  inline PackageNotFoundError(const String& str) : PackageError(str) {}
+  inline PackageNotFoundError(const String& str, const String& package_name = String())
+    : PackageError(str), package_name(package_name) {}
+  String package_name;
 };
 
 /// A file is not found

@@ -121,3 +121,11 @@ void SymbolValueEditor::editSymbol() {
 unique_ptr<ValueActionPerformer> SymbolValueEditor::getActionPerformer() {
   return make_unique<ValueActionPerformer>(valueP(), editor().getCard(), editor().getSetForActions());
 }
+
+// ----------------------------------------------------------------------------- : Resetting
+
+void SymbolValueEditor::doDefaultReset() {
+  if (!valueP()) return;
+  unique_ptr<ResetValueAction<SymbolValue, false>> action = make_unique<ResetValueAction<SymbolValue, false>>(valueP());
+  addAction(std::move(action));
+}

@@ -134,6 +134,7 @@ void FilteredImageCardList::onChangeSet() {
 void FilteredImageCardList::getItems(vector<VoidP>& out) const {
   if (filter) {
     filter->getItems(set->cards,out);
+    filterOutBackFaces(out);
   } else {
     ImageCardList::getItems(out);
   }

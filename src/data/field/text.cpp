@@ -174,12 +174,22 @@ IMPLEMENT_REFLECTION(TextStyle) {
 
 // ----------------------------------------------------------------------------- : TextValue
 
+void TextValue::copyDataFrom(const Value& other) {
+  if (const TextValue* o = dynamic_cast<const TextValue*>(&other)) {
+    value = o->value;
+  }
+}
+
 String TextValue::toString() const {
   return untag_hide_sep(value());
 }
 
 bool TextValue::isDefault() {
   return value.isDefault();
+}
+
+void TextValue::makeDefault(bool d) {
+  value.makeDefault(d);
 }
 
 bool TextValue::update(Context& ctx) {

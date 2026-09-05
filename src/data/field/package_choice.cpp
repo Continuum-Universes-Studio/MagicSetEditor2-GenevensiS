@@ -51,6 +51,12 @@ IMPLEMENT_REFLECTION(PackageChoiceStyle) {
 
 // ----------------------------------------------------------------------------- : PackageChoiceValue
 
+void PackageChoiceValue::copyDataFrom(const Value& other) {
+  if (const PackageChoiceValue* o = dynamic_cast<const PackageChoiceValue*>(&other)) {
+    package_name = o->package_name;
+  }
+}
+
 String PackageChoiceValue::toString() const {
   PackagedP pack = getPackage();
   if (pack.get()) return pack->short_name;
@@ -66,6 +72,12 @@ bool PackageChoiceValue::isDefault() {
   PackageChoiceFieldP packageFieldP = boost::dynamic_pointer_cast<PackageChoiceField>(fieldP);
   if (packageFieldP) return package_name == packageFieldP->initial;
   return false;
+}
+
+void PackageChoiceValue::makeDefault(bool d) {
+  if (!d) return;
+  PackageChoiceFieldP packageFieldP = boost::dynamic_pointer_cast<PackageChoiceField>(fieldP);
+  if (packageFieldP) package_name = packageFieldP->initial;
 }
 
 bool PackageChoiceValue::update(Context& ctx) {

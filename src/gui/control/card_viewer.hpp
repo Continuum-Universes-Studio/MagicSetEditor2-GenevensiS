@@ -29,21 +29,26 @@ public:
   /** May NOT be called while in onPaint/draw */
   shared_ptr<RotatedDC> overdrawDC();
   
-  /// Invalidate and redraw the entire viewer
-  void redraw();
+  /// Invalidate and redraw the entire viewer. If force = true it bypasses the is_focused check.
+  void redraw(bool force = false);
   /// Invalidate and redraw (the area of) a single value viewer
-  void redraw(const ValueViewer&) override;
+  void redraw(const ValueViewer&, bool force = false) override;
   
   /// The rotation to use
   Rotation getRotation() const override;
-  
+
+  /// Is this viewer currently in focus? We don't draw out of focus viewers except when the program is idle.
+  bool is_focused;
+  /// Does this viewer want a redraw on the next idle call?
+  bool redraw_pending;
+
   bool AcceptsFocus() const override { return false; }
   
 protected:
   /// Return the desired size of control
   wxSize DoGetBestSize() const override;
   
-  void onChange() override;
+  void onChange(bool force = false) override;
   void onChangeSize() override;
   
   /// Should the given viewer be drawn?
@@ -58,8 +63,14 @@ private:
 
   void onClick(wxMouseEvent&);
 
-  Bitmap buffer;     ///< Off-screen buffer we draw to
-  bool   up_to_date; ///< Is the buffer up to date?
+  void onIdle(wxIdleEvent&);
+
+  void onTimer(wxTimerEvent&);
+
+  Bitmap  buffer;         ///< Off-screen buffer we draw to
+  bool    up_to_date;     ///< Is the buffer up to date?
+  bool    full_repaint;   ///< True only while onPaint() is (re)building the whole buffer from scratch. While true, shouldDraw() ignores GetUpdateRegion() and draws everything
+  wxTimer redraw_timer;   ///< Timer that will trigger a redraw
   
   class OverdrawDC;
   class OverdrawDC_aux;

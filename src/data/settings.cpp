@@ -26,10 +26,9 @@
 // ----------------------------------------------------------------------------- : Extra types
 
 IMPLEMENT_REFLECTION_ENUM(CheckUpdates) {
-  VALUE_N("always",   CHECK_ALWAYS);
-  VALUE_N("every 5",  CHECK_5); //default
-  VALUE_N("every 10", CHECK_10);
-  VALUE_N("never",    CHECK_NEVER);
+  VALUE_N("every 7 days",  CHECK_7_DAYS); //default
+  VALUE_N("every 30 days", CHECK_30_DAYS);
+  VALUE_N("never",         CHECK_NEVER);
 }
 
 IMPLEMENT_REFLECTION_ENUM(CheckUpdatesTargets) {
@@ -145,12 +144,15 @@ StyleSheetSettings::StyleSheetSettings()
   , card_normal_export      (true,  true)
   , card_bleed_export       (false, true)
   , card_notes_export       (false, true)
+  , card_metaimage_export   (true,  true)
+  , card_dfc_export         (true,  true)
   , card_spellcheck_enabled (true,  true)
+  , list_hide_back_faces    (false, true)
 {}
 
 void StyleSheetSettings::useDefault(const StyleSheetSettings& ss) {
   if (card_zoom              .isDefault()) card_zoom              .assignDefault(ss.card_zoom);
-  if (export_scale_selection .isDefault()) export_scale_selection  .assignDefault(ss.export_scale_selection);
+  if (export_scale_selection .isDefault()) export_scale_selection .assignDefault(ss.export_scale_selection);
   if (card_angle             .isDefault()) card_angle             .assignDefault(ss.card_angle);
   if (card_anti_alias        .isDefault()) card_anti_alias        .assignDefault(ss.card_anti_alias);
   if (card_borders           .isDefault()) card_borders           .assignDefault(ss.card_borders);
@@ -158,7 +160,10 @@ void StyleSheetSettings::useDefault(const StyleSheetSettings& ss) {
   if (card_normal_export     .isDefault()) card_normal_export     .assignDefault(ss.card_normal_export);
   if (card_bleed_export      .isDefault()) card_bleed_export      .assignDefault(ss.card_bleed_export);
   if (card_notes_export      .isDefault()) card_notes_export      .assignDefault(ss.card_notes_export);
+  if (card_metaimage_export  .isDefault()) card_metaimage_export  .assignDefault(ss.card_metaimage_export);
+  if (card_dfc_export        .isDefault()) card_dfc_export        .assignDefault(ss.card_dfc_export);
   if (card_spellcheck_enabled.isDefault()) card_spellcheck_enabled.assignDefault(ss.card_spellcheck_enabled);
+  if (list_hide_back_faces   .isDefault()) list_hide_back_faces   .assignDefault(ss.list_hide_back_faces);
 }
 
 IMPLEMENT_REFLECTION_NO_SCRIPT(StyleSheetSettings) {
@@ -171,7 +176,10 @@ IMPLEMENT_REFLECTION_NO_SCRIPT(StyleSheetSettings) {
   REFLECT(card_normal_export);
   REFLECT(card_bleed_export);
   REFLECT(card_notes_export);
+  REFLECT(card_metaimage_export);
+  REFLECT(card_dfc_export);
   REFLECT(card_spellcheck_enabled);
+  REFLECT(list_hide_back_faces);
 }
 
 // ----------------------------------------------------------------------------- : Printing settings
@@ -198,7 +206,7 @@ Settings::Settings()
   : locale                   (_("en"))
   , set_window_maximized     (false)
   , set_window_width         (790)
-  , set_window_height        (300)
+  , set_window_height        (600)
   , card_notes_height        (40)
   , open_sets_in_new_window  (true)
   , symbol_grid_size         (30)
@@ -209,11 +217,13 @@ Settings::Settings()
   , print_cutter_lines       (CUTTER_ALL)
   , dark_mode_type           (DARKMODE_SYSTEM)
   , import_scale_selection   (0)
+  , clipboard_scale_selection(3)
+  , card_dfc_copy            (true)
   , allow_image_download     (true)
   , installer_list_url       (_("https://raw.githubusercontent.com/MagicSetEditorPacks/Installer-Pack/refs/heads/main/packages.txt"))
   , check_updates_what       (CHECK_EVERYTHING)
-  , check_updates_when       (CHECK_5)
-  , check_updates_counter    (0)
+  , check_updates_when       (CHECK_7_DAYS)
+  , check_updates_last_check (0)
   , website_url              (_("https://magicseteditor.boards.net/"))
   , documentation_url        (_("https://mseverse.miraheze.org/wiki/Dev:Documentation#Topics"))
   , install_type             (INSTALL_DEFAULT)
@@ -282,6 +292,14 @@ double Settings::importScaleSettingsFor(const StyleSheet& stylesheet) {
   return (double)scale_choices[import_scale_selection - 4] / 100.0;
 }
 
+double Settings::clipboardScaleSettingsFor(const StyleSheet& stylesheet) {
+  if (clipboard_scale_selection == 0) return exportScaleSettingsFor(stylesheet);
+  if (clipboard_scale_selection == 1) return adaptiveScaleSettingsFor(stylesheet, 300.0, 50.0);
+  if (clipboard_scale_selection == 2) return adaptiveScaleSettingsFor(stylesheet, 300.0, 1.0);
+  if (clipboard_scale_selection == 3) return adaptiveScaleSettingsFor(stylesheet, 150.0, 1.0);
+  return (double)scale_choices[clipboard_scale_selection - 4] / 100.0;
+}
+
 double Settings::adaptiveScaleSettingsFor(const StyleSheet& stylesheet, double dpi_target, double dpi_leeway) {
   if (abs(stylesheet.card_dpi - dpi_target) <= dpi_leeway) return 1.0;
   return dpi_target / max(10.0, stylesheet.card_dpi);
@@ -297,6 +315,14 @@ Settings::ExportSettings Settings::exportSettingsFor(const StyleSheet& styleshee
 
 IndexMap<FieldP,ValueP>& Settings::exportOptionsFor(const ExportTemplate& export_template) {
   return export_options.get(export_template.name(), export_template.option_fields);
+}
+
+Settings::ExportSettings Settings::clipboardSettingsFor(const StyleSheet& stylesheet) {
+  StyleSheetSettings& ss = stylesheetSettingsFor(stylesheet);
+  double zoom = settings.clipboardScaleSettingsFor(stylesheet);
+  double angle = ss.card_normal_export() ? 0.0 : deg_to_rad(ss.card_angle());
+  double bleed = ss.card_bleed_export() ? (stylesheet.card_dpi / 300.0) * 36.0 * zoom : 0.0; // 36 pixels of bleed on a 300 DPI print
+  return ExportSettings{zoom, angle, bleed};
 }
 
 /// Retrieve the directory to use for settings and other data files
@@ -347,10 +373,12 @@ IMPLEMENT_REFLECTION_NO_SCRIPT(Settings) {
   REFLECT(dark_mode_type);
   REFLECT(apprentice_location);
   REFLECT(import_scale_selection);
+  REFLECT(clipboard_scale_selection);
+  REFLECT(card_dfc_copy);
   REFLECT(allow_image_download);
   REFLECT(check_updates_what);
   REFLECT(check_updates_when);
-  REFLECT(check_updates_counter);
+  REFLECT(check_updates_last_check);
   REFLECT(install_type);
   REFLECT(website_url);
   REFLECT(documentation_url);

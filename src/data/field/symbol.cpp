@@ -47,12 +47,23 @@ IMPLEMENT_REFLECTION_NO_SCRIPT(SymbolVariation) {
 
 // ----------------------------------------------------------------------------- : SymbolValue
 
+void SymbolValue::copyDataFrom(const Value& other) {
+  if (const SymbolValue* o = dynamic_cast<const SymbolValue*>(&other)) {
+    filename = o->filename;
+  }
+}
+
 String SymbolValue::toString() const {
   return filename.empty() ? _("") : _("<symbol>");
 }
 
 bool SymbolValue::isDefault() {
   return filename.empty();
+}
+
+void SymbolValue::makeDefault(bool d) {
+  if (!d) return;
+  filename.makeEmpty();
 }
 
 IMPLEMENT_REFLECTION_NO_GET_MEMBER(SymbolValue) {

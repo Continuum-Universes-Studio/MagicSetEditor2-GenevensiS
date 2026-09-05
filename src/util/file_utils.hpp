@@ -24,6 +24,9 @@ String normalize_internal_filename(const String& filename);
 /** true for hidden OS and version control files */
 bool ignore_file(const String& name);
 
+/// Glob-style match, supporting '*' (any run of characters) and '?' (any single character)
+bool match_filename_wildcard(const String& text, const String& pattern);
+
 /// Add an extension to a filename if it is not already present
 /**  add_extension("test",".txt") == "test.txt"
  *   add_extension("test.txt",".txt") == "test.txt"
@@ -66,6 +69,10 @@ bool remove_file_or_dir(const String& file);
 /// Rename a file or directory
 bool rename_file_or_dir(const String& old_name, const String& new_name);
 
-/// Move files/dirs that are ignored by packages to another directory
-void move_ignored_files(const String& from_dir, const String& to_dir);
+/// Move files/dirs matching one of the given wildcard patterns from one directory to another
+/** Used when updating a package: files the package declares in read_only_files
+ *  (see Package::isIgnoredOnSave) are not managed by the package, so they need to be
+ *  moved from the old installed directory into the freshly installed one by hand.
+ */
+void move_ignored_files(const String& from_dir, const String& to_dir, const vector<String>& ignore_patterns);
 

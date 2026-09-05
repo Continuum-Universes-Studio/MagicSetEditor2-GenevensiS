@@ -48,6 +48,11 @@ public:
   inline bool empty() const {
     return fn.empty();
   }
+
+  inline void makeEmpty() {
+    fn.clear();
+  }
+
   inline bool operator == (LocalFileName const& that) const {
     return this->fn == that.fn;
   }
@@ -169,6 +174,10 @@ public:
   /// If they are to be kept in the package.
   void referenceFile(const String& file);
 
+  /// Is a file ignored by the package when saving or garbage collecting?
+  /// Used for custom addons written by the user that we only want to read, but never overwrite.
+  virtual bool isIgnoredOnSave(const String& file) const { return false; }
+
   // --------------------------------------------------- : Managing the inside of the package : Reader/writer
 
   template <typename T>
@@ -277,9 +286,15 @@ public:
   String dark_icon_filename;               ///< Filename of icon to use in package lists, when a variant for dark mode is needed
   vector<PackageDependencyP> dependencies; ///< Dependencies of this package
   int    position_hint;                    ///< A hint for the package list
+  vector<String> read_only_files;          ///< Filenames/wildcard patterns (*,?) of files in this
+                                           ///< package that are not managed by the program, and so
+                                           ///< must never be overwritten or garbage collected on save.
 
   /// Get an input stream for the package icon, if there is any
   unique_ptr<wxInputStream> openIconFile();
+
+  /// A file matches if it equals, or matches a wildcard (*,?) pattern in, read_only_files
+  bool isIgnoredOnSave(const String& file) const override;
 
   /// Open a package, and read the data
   /** if just_header is true, then the package is not fully parsed.

@@ -16,6 +16,7 @@
 #include <util/io/package_manager.hpp>
 #include <util/platform.hpp>
 #include <gui/util.hpp> // load_resource_image
+#include <wx/webrequest.h>
 #include <wx/filename.h>
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
@@ -213,6 +214,7 @@ PackageDescription::PackageDescription(const Packaged& package)
   , position_hint(package.position_hint)
   //, description(package.description)
   , dependencies(package.dependencies)
+  , read_only_files(package.read_only_files)
 {
   // name
   if (full_name.empty()) full_name = short_name;
@@ -249,6 +251,7 @@ IMPLEMENT_REFLECTION_NO_SCRIPT(PackageDescription) {
   REFLECT(position_hint);
   REFLECT(description);
   REFLECT_N("depends_ons", dependencies);
+  REFLECT_NO_SCRIPT(read_only_files);
 }
 
 void PackageDescription::merge(const PackageDescription& p2) {
@@ -256,6 +259,10 @@ void PackageDescription::merge(const PackageDescription& p2) {
   if (installer_group.empty()) installer_group = p2.installer_group;
   if (short_name.empty()) short_name = p2.short_name;
   if (full_name.empty()) full_name = p2.full_name;
+  std::unordered_set<String> seen(read_only_files.begin(), read_only_files.end());
+  for (const auto& file : p2.read_only_files) {
+    if (seen.insert(file).second) read_only_files.push_back(file);
+  }
 }
 
 IMPLEMENT_REFLECTION_NO_SCRIPT(InstallerDescription) {
@@ -317,6 +324,27 @@ void InstallablePackage::determineStatus() {
     }
     #endif
   }
+}
+
+bool InstallablePackage::ensureIsDownloaded() {
+  if (!installer) return true; // Nothing to download
+  if (installer->installer) return true; // Already loaded
+  if (installer->installer_url.empty()) return false; // No URL
+  // download installer
+  wxWebRequestSync request = wxWebSessionSync::GetDefault().CreateRequest(installer->installer_url);
+  auto const result = request.Execute();
+  if (!result) {
+    throw Error(_ERROR_2_("can't download installer", description->name, installer->installer_url));
+  } 
+  wxInputStream* is(request.GetResponse().GetStream());
+  installer->installer_file = wxFileName::CreateTempFileName(_("mse-installer"));
+  wxFileOutputStream os(installer->installer_file);
+  os.Write(*is);
+  os.Close();
+  // open installer
+  installer->installer = make_intrusive<Installer>();
+  installer->installer->open(installer->installer_file);
+  return true;
 }
 
 bool InstallablePackage::willBeInstalled() const {
@@ -633,7 +661,7 @@ InstallablePackageP mse_installable_package() {
   PackageDescriptionP mse_description(new PackageDescription);
   mse_description->name            = mse_description->installer_group = mse_package;
   mse_description->short_name      = mse_description->full_name = _TITLE_("magic set editor");
-  mse_description->position_hint   = -100;
+  mse_description->position_hint   = -10000000;
   mse_description->icon            = load_resource_image(_("installer_program"));
   //mse_description->description   = _LABEL_("magic set editor package");
   return make_intrusive<InstallablePackage>(mse_description, mse_version);

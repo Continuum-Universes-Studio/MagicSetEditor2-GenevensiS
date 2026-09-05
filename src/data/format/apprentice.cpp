@@ -640,8 +640,8 @@ ApprenticeExportWindow::ApprenticeExportWindow(Window* parent, const SetP& set)
     s->Add(new wxStaticText(this, -1, _HELP_( "set code")), 0, wxALL, 4);
     s->AddSpacer(4);
     s->Add(CreateButtonSizer(wxOK | wxCANCEL), 0, wxEXPAND | (wxALL & ~wxTOP),    8);
-  s->SetSizeHints(this);
   SetSizer(s);
+  s->SetSizeHints(this);
 }
 
 void ApprenticeExportWindow::onApprenticeBrowse(wxCommandEvent& ev) {

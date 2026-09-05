@@ -139,31 +139,11 @@ void ReorderCardsAction::perform(bool to_undo) {
 OneWayLinkCardsAction::OneWayLinkCardsAction(CardP& card, const String& uid, const String& relation, int index)
   : card(card), uid(uid), relation(relation)
 {
-  switch (index) {
-    case 0: {
-      linked_uid      = &card->linked_card_1;
-      linked_relation = &card->linked_relation_1;
-      return;
-    }
-    case 1: {
-      linked_uid      = &card->linked_card_2;
-      linked_relation = &card->linked_relation_2;
-      return;
-    }
-    case 2: {
-      linked_uid      = &card->linked_card_3;
-      linked_relation = &card->linked_relation_3;
-      return;
-    }
-    case 3: {
-      linked_uid      = &card->linked_card_4;
-      linked_relation = &card->linked_relation_4;
-      return;
-    }
-    default: {
-      throw ScriptError(_("OneWayLinkCardsAction created with invalid index"));
-    }
+  if (index < 0 || index >= Card::MAX_LINKS) {
+    throw ScriptError(String("OneWayLinkCardsAction created with invalid index: ") << index << _(" on card: ") << card->identification());
   }
+  linked_uid      = &card->getLinkedUID(index);
+  linked_relation = &card->getLinkedRelation(index);
 }
 
 String OneWayLinkCardsAction::getName(bool to_undo) const {

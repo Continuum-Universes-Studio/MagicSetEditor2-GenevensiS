@@ -46,10 +46,14 @@ public:
     return img;
   }
 
+  void copyDataFrom(const Value& other) override;
+
   ValueType filename;    ///< Filename of the image (in the current package), or ""
   Age       last_update; ///< When was the image last changed?
 
   bool isDefault() override;
+
+  void makeDefault(bool d = true) override;
 };
 
 // ----------------------------------------------------------------------------- : ImageStyle

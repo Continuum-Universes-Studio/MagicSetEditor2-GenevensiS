@@ -288,16 +288,24 @@ SCRIPT_FUNCTION(to_json) {
   SCRIPT_PARAM_C(Set*, set);
   SCRIPT_PARAM_DEFAULT(bool, pretty_print, true);
   SCRIPT_PARAM_DEFAULT(bool, console_print, false);
-  boost::json::value jv = mse_to_json(input, set);
-  if (console_print) queue_message(MESSAGE_INFO, json_pretty_print(jv));
-  if (pretty_print) return to_script(json_pretty_print(jv));
-  else              return to_script(json_ugly_print(jv));
+  try {
+    boost::json::value jv = mse_to_json(input, set);
+    if (console_print) queue_message(MESSAGE_INFO, json_pretty_print(jv));
+    if (pretty_print) return to_script(json_pretty_print(jv));
+    else              return to_script(json_ugly_print(jv));
+  } catch (const ScriptError& e) {
+    return delay_error(e);
+  }
 }
 
 SCRIPT_FUNCTION(from_json) {
   SCRIPT_PARAM_C(ScriptValueP, input);
   SCRIPT_PARAM_C(Set*, set);
-  return json_to_mse(input, set);
+  try {
+    return json_to_mse(input, set);
+  } catch (const ScriptError& e) {
+    return delay_error(e);
+  }
 }
 
 SCRIPT_FUNCTION(type_name) {
@@ -735,18 +743,26 @@ SCRIPT_FUNCTION(make_map) {
   ScriptValueP values_it = values->makeIterator();
   ScriptValueP value;
   ScriptCustomCollectionP map = make_intrusive<ScriptCustomCollection>();
+  String keys_string;
   while (key = keys_it->next()) {
-    if (key == script_nil) continue;
+    keys_string = keys_string + _(", ") + key->toString();
+    if (key == script_nil) {
+      values_it->next();
+      continue;
+    }
     if (value = values_it->next()) {
       map->key_value[key->toString()] = value;
     }
     else {
-      queue_message(MESSAGE_WARNING, "More keys than values given in function make_map!");
+      while (key = keys_it->next()) {
+        keys_string = keys_string + _(", ") + key->toString();
+      }
+      queue_message(MESSAGE_WARNING, _ERROR_1_("more keys than values", keys_string.SubString(2, keys_string.size())));
       break;
     }
   }
   if (value = values_it->next()) {
-    queue_message(MESSAGE_WARNING, "More values than keys given in function make_map!");
+    queue_message(MESSAGE_WARNING, _ERROR_1_("more values than keys", keys_string.SubString(2, keys_string.size())));
   }
   return map;
 }
@@ -810,18 +826,57 @@ SCRIPT_FUNCTION(get_cards_from_link) {
     return script_nil;
   }
   SCRIPT_PARAM(String, linked_relation);
-  ScriptCustomCollectionP ret(new ScriptCustomCollection());
-  vector<CardP> other_cards = input_card->getLinkedRelationCards(*set, linked_relation);
-  if (other_cards.size() > 0) {
-    FOR_EACH(other_card, other_cards) {
-      ret->value.push_back(to_script(other_card));
-    }
+  String actual_relation = linked_relation;
+  vector<CardP> other_cards = input_card->getLinkedRelationCards(*set, actual_relation);
+  if (other_cards.size() == 0 && set->game->card_links_alt_names.find(linked_relation) != set->game->card_links_alt_names.end()) {
+    actual_relation = set->game->card_links_alt_names[linked_relation];
+    other_cards = input_card->getLinkedRelationCards(*set, actual_relation);
   }
-  else if (set->game->card_links_alt_names.find(linked_relation) != set->game->card_links_alt_names.end()) {
-    other_cards = input_card->getLinkedRelationCards(*set, set->game->card_links_alt_names[linked_relation]);
-    FOR_EACH(other_card, other_cards) {
-      ret->value.push_back(to_script(other_card));
-    }
+  ScriptCustomCollectionP ret(new ScriptCustomCollection());
+  FOR_EACH(other_card, other_cards) {
+    ret->value.push_back(to_script(other_card));
+  }
+  return ret;
+}
+
+SCRIPT_FUNCTION(get_link_from_cards) {
+  SCRIPT_PARAM_C(Set*, set);
+  SCRIPT_PARAM_C(ScriptValueP, input);
+  CardP input_card = nullptr;
+  if (ScriptObject<CardP>* ic = dynamic_cast<ScriptObject<CardP>*>(input.get())) {
+    input_card = ic->getValue();
+  }
+  else if (input->type() == SCRIPT_STRING) {
+    input_card = Card::getUIDCard(*set, input->toString());
+  }
+  if (!input_card) {
+    queue_message(MESSAGE_ERROR, _ERROR_("could not find input"));
+    return script_nil;
+  }
+  SCRIPT_PARAM(ScriptValueP, linked_card);
+  CardP other_card = nullptr;
+  if (ScriptObject<CardP>* c = dynamic_cast<ScriptObject<CardP>*>(linked_card.get())) {
+    other_card = c->getValue();
+  }
+  else if (linked_card->type() == SCRIPT_STRING) {
+    other_card = Card::getUIDCard(*set, linked_card->toString());
+  }
+  if (!other_card) {
+    queue_message(MESSAGE_WARNING, _ERROR_("could not find linked"));
+    return script_nil;
+  }
+  ScriptCustomCollectionP ret(new ScriptCustomCollection());
+  int index = other_card->findUIDLink(input_card->uid);
+  if (index >= 0) {
+    ret->value.push_back(to_script(other_card->getLinkedRelation(index)));
+  } else {
+    ret->value.push_back(script_nil);
+  }
+  int other_index = input_card->findUIDLink(other_card->uid);
+  if (other_index >= 0) {
+    ret->value.push_back(to_script(input_card->getLinkedRelation(other_index)));
+  } else {
+    ret->value.push_back(script_nil);
   }
   return ret;
 }
@@ -840,9 +895,21 @@ SCRIPT_FUNCTION(get_front_face) {
     queue_message(MESSAGE_ERROR, _ERROR_("could not find input"));
     return script_nil;
   }
+  // use game script logic if defined
+  if (set->game->get_front_face_script) {
+    Context& ctx = set->getContext(input_card);
+    ctx.setVariable(SCRIPT_VAR_input, input);
+    ScriptValueP result = set->game->get_front_face_script.invoke(ctx);
+    if (result != script_nil && !dynamic_cast<ScriptObject<CardP>*>(result.get())) {
+      queue_message(MESSAGE_ERROR, _ERROR_1_("result not card or nil", "get_front_face_script"));
+      return script_nil;
+    }
+    return result;
+  }
+  // fallback on regular Front Face/Back Face logic
   vector<CardP> other_cards = input_card->getLinkedRelationCards(*set, "Front Face");
   if (other_cards.size() == 0) return script_nil;
-  if (other_cards.size() > 1) queue_message(MESSAGE_WARNING, _ERROR_1_("multiple front faces", input_card->identification()));
+  //if (other_cards.size() > 1) queue_message(MESSAGE_WARNING, _ERROR_1_("multiple front faces", input_card->identification()));
   SCRIPT_RETURN(other_cards[0]);
 }
 
@@ -860,9 +927,21 @@ SCRIPT_FUNCTION(get_back_face) {
     queue_message(MESSAGE_ERROR, _ERROR_("could not find input"));
     return script_nil;
   }
+  // use game script logic if defined
+  if (set->game->get_back_face_script) {
+    Context& ctx = set->getContext(input_card);
+    ctx.setVariable(SCRIPT_VAR_input, input);
+    ScriptValueP result = set->game->get_back_face_script.invoke(ctx);
+    if (result != script_nil && !dynamic_cast<ScriptObject<CardP>*>(result.get())) {
+      queue_message(MESSAGE_ERROR, _ERROR_1_("result not card or nil", "get_back_face_script"));
+      return script_nil;
+    }
+    return result;
+  }
+  // fallback on regular Front Face/Back Face logic
   vector<CardP> other_cards = input_card->getLinkedRelationCards(*set, "Back Face");
   if (other_cards.size() == 0) return script_nil;
-  if (other_cards.size() > 1) queue_message(MESSAGE_WARNING, _ERROR_1_("multiple back faces", input_card->identification()));
+  //if (other_cards.size() > 1) queue_message(MESSAGE_WARNING, _ERROR_1_("multiple back faces", input_card->identification()));
   SCRIPT_RETURN(other_cards[0]);
 }
 
@@ -945,12 +1024,7 @@ SCRIPT_FUNCTION(remove_links) {
 SCRIPT_FUNCTION(has_link) {
   SCRIPT_PARAM_C(CardP, input);
   SCRIPT_PARAM(String, linked_relation);
-  SCRIPT_RETURN(
-    input->linked_relation_1 == linked_relation ||
-    input->linked_relation_2 == linked_relation ||
-    input->linked_relation_3 == linked_relation ||
-    input->linked_relation_4 == linked_relation
-  );
+  SCRIPT_RETURN(!input->findRelationLinks(linked_relation).empty());
 }
 
 // ----------------------------------------------------------------------------- : Keywords
@@ -1055,6 +1129,7 @@ void init_script_basic_functions(Context& ctx) {
   ctx.setVariable(_("get_card_export_settings"),  script_get_card_export_settings);
   ctx.setVariable(_("get_card_from_uid"),         script_get_card_from_uid);
   ctx.setVariable(_("get_cards_from_link"),       script_get_cards_from_link);
+  ctx.setVariable(_("get_link_from_cards"),       script_get_link_from_cards);
   ctx.setVariable(_("get_back_face"),             script_get_back_face);
   ctx.setVariable(_("get_front_face"),            script_get_front_face);
   ctx.setVariable(_("has_link"),                  script_has_link);

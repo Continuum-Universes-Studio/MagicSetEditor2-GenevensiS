@@ -199,8 +199,8 @@ AutoReplaceWindow::AutoReplaceWindow(Window* parent, const Game& game)
       s4->Add(defaults,                           0, wxALL & ~wxRIGHT, 8);
       s4->Add(CreateButtonSizer(wxOK | wxCANCEL), 1, wxALL, 8);
     s->Add(s4, 0, wxEXPAND);
-  s->SetSizeHints(this);
   SetSizer(s);
+  s->SetSizeHints(this);
   // Set default size
   SetSize(350, 450);
   // initialize values

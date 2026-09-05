@@ -63,7 +63,10 @@ public:
   
   /// Update expensive things that were previously delayed
   void updateDelayed();
-  
+
+  // Update all values that depend on card links
+  void updateLinkScripts(const CardP& card);
+
   /// Update all fields of all cards
   /** Update all set info fields
    *  Doesn't update styles

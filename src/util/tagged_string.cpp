@@ -132,7 +132,18 @@ String fix_old_tags(const String& str) {
 [[nodiscard]] String::const_iterator skip_all_tags(String::const_iterator it, String::const_iterator end, bool skip_open, bool skip_close, bool skip_nonformat) {
   // move after first possible position corresponding
   while (it != end && *it == '<') {
-    if (skip_nonformat && !is_formatting_tag(it, end)) {
+    if (is_tag(it, end, "<soft-line")) {
+      if (!skip_open) return it;
+      // don't ever allow the cursor to be inside <soft-line>
+      it = skip_tag(it, end);
+      if (it != end && *it != '<') ++it;
+      if (it != end && is_tag(it, end, "</soft-line")) {
+        it = skip_tag(it, end);
+      }
+    } else if (is_tag(it, end, "</soft-line")) {
+      // move past </soft-line> unconditionally
+      it = skip_tag(it, end);
+    } else if (skip_nonformat && !is_formatting_tag(it, end)) {
       it = skip_tag(it, end);
     } else if (it + 1 != end && *(it + 1) == '/') {
       if (skip_close) {
@@ -381,6 +392,10 @@ String tag_at(const String& str, size_t pos) {
 }
 
 String tag_type_at(const String& str, size_t pos) {
+  // don't mistake <soft-line> for <soft>
+  if (is_tag(str, pos, _("<soft-line")) || is_tag(str, pos, _("</soft-line"))) {
+    return _("soft-line");
+  }
   size_t end = str.find_first_of(_(">-"), pos);
   if (end == String::npos) return _("");
   return str.substr(pos + 1, end - pos - 1);
@@ -861,6 +876,12 @@ bool check_tagged(const String& str, bool check_balance) {
           if (close == String::npos) {
             queue_message(MESSAGE_WARNING, _("Invalid tagged string: missing close tag for <") + tag_at(str,i) + _(">"));
             return false;
+          }
+          if (is_tag(str, i, _("<soft-line"))) {
+            if (close - end != 1 || str.GetChar(end) != _('\n')) {
+              queue_message(MESSAGE_WARNING, _("Invalid tagged string: <soft-line> doesn't contain exactly one newline character"));
+              return false;
+            }
           }
         }
       }

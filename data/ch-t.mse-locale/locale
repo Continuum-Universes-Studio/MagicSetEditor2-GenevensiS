@@ -1,8 +1,9 @@
-﻿mse version: 2.5.8
-installer group: Magic Set Editor/translations/chinese traditional
-full name: 繁體中文 (Traditional Chinese)
-version: 2026-02-28
-icon: cn.png
+mse version:		2.6.0
+full name:			繁體中文 (Traditional Chinese)
+icon:				cn.png
+position hint:		01
+installer group:	Magic Set Editor/translations/chinese traditional
+version:			2026-02-28
 
 
 ############################################################## Menu items
@@ -42,6 +43,8 @@ menu:
 	paste card:							貼上	Ctrl+V
 	paste keyword:						貼上	Ctrl+V
 	select all:							全選	Ctrl+A
+	#TODO: Localize
+	default reset:						Reset to Default
 	find:								搜尋	Ctrl+F
 	find next:							搜尋下一個	F3
 	replace:							替換	Ctrl+H
@@ -199,6 +202,8 @@ help:
 	paste card:							從剪切板插入卡牌
 	paste keyword:						從剪切板插入關鍵詞
 	select all:							全選
+	#TODO: Localize
+	default reset:						Revert the selected field to its default value
 	find:								搜索卡牌文字
 	find next:							搜尋下一個
 	replace:							替換卡牌文字
@@ -393,12 +398,13 @@ tool:
 	# cards toolbar
 	#TODO: Localize Section
 	search cards:						Search cards (Ctrl+K)
-	#TODO: Localize
-	stats card counts 1:				%s Total
-	#TODO: Localize
-	stats card counts 2:				%s Filtered, %s Total
-	card counts 2:						%s Selected, %s Total
-	card counts 3:						%s Selected, %s Filtered, %s Total
+	card counts selected:				1 Selected
+	card counts selecteds:				%s Selected
+	card counts hidden:					1 Hidden
+	card counts hiddens:				%s Hidden
+	card counts back:					(of which 1 is a Back Face)
+	card counts backs:					(of which %s are Back Faces)
+	card counts total:					%s Total
 
 	# edit toolbar
 	undo:								撤銷
@@ -581,7 +587,7 @@ label:
 	linked cards relation:				Choose the type of relation between the selected card ('%s') and the linked cards:
 	selected card:						Selected Card:
 	linked cards:						Linked Cards:
-	select linked cards:				Choose up to 4 cards to link:
+	select linked cards:				Choose up to 32 cards to link:
 
 	# bulk modification dialog
 	#TODO: Localize Section
@@ -618,6 +624,21 @@ label:
 	stylesheet not found:
 		你要打開的套牌使用的是 "%s" 樣式表
 		這個樣式表在你的系統里沒有找到，請選擇其他方案
+	#TODO: Localize
+	stylesheet dep not found:
+		The set you are trying to open uses the stylesheet "%s".
+		This stylesheet was found, but one of its dependencies "%s"
+		was not. Please select an alternative, or look for it online.
+	#TODO: Localize
+	searching online:					Searching online...
+	#TODO: Localize
+	searching online fail:				Not found online
+	#TODO: Localize
+	found online downloading:			Found online! Downloading...
+	#TODO: Localize
+	found online installing:			Found online! Installing...
+	#TODO: Localize
+	found online fail:					Installation failed
 
 	# preferences dialog
 	language:							語言
@@ -632,10 +653,14 @@ label:
 	dark mode yes:						Dark mode
 	app language:						程序界面語言 (App Language)
 	card display:						卡牌顯示
+	#TODO: Localize
+	card list display:					Card List Display
 	zoom:								縮放
 	#TODO: Localize
 	import:								Import
 	export:								導出
+	#TODO: Localize
+	clipboard:							Clipboard
 	scale:								內部刻度
 	#TODO: Localize Section
 	use export scale:					Use Export Scale
@@ -650,6 +675,8 @@ label:
 	export desc:						When exporting cards to images:
 	#TODO: Localize
 	import desc:						When importing images for illustrations:
+	#TODO: Localize
+	clipboard desc:						When copying card images to the clipboard:
 	internal scale desc:
 		縮放以在內部儲存卡片圖像。
 		更改此項目可能會影響銳化的外觀。
@@ -691,6 +718,8 @@ label:
 	add card csv comma:					Comma
 	add card csv semicolon:				Semicolon
 	add card csv file:					CSV or TSV file path:
+	#TODO: Localize
+	importing cards:					Importing Card %s / %s
 
 	# JSON import dialog
 	#TODO: Localize Section
@@ -838,13 +867,33 @@ button:
 	notes export:
 		Export card notes inside
 		image meta data
+	#TODO: Localize
+	metaimage export:
+		Allow storing images in
+		the image metadata.
+	#TODO: Localize
+	dfc export:
+		Merge front and back faces
+		into a single image.
+	#TODO: Localize
+	dfc copy:
+		Always copy both faces
+		of a card together.
 	spellcheck enabled:					在卡片上顯示拼字錯誤
+	#TODO: Localize
+	hide back faces:
+		Hide back faces
+		from the card list
 	check now:							立刻檢查
 	always:								總是
 	#TODO: Localize
 	every 5 startups:					Every 5 startups
 	#TODO: Localize
 	every 10 startups:					Every 10 startups
+	#TODO: Localize
+	every 7 days:						Every 7 days
+	#TODO: Localize
+	every 30 days:						Every 30 days
 	if internet connection exists:		如果接入互聯網
 	never:								從不
 	#TODO: Localize
@@ -901,6 +950,14 @@ button:
 	install group:						全部安裝
 	upgrade group:						全部昇級
 	remove group:						全部移除
+	#TODO: Localize
+	uninstall anyway:					Uninstall anyway
+	#TODO: Localize
+	abort:								Abort
+
+	# stylesheet not found dialog
+	#TODO: Localize
+	find package online:				Search Online
 
 ############################################################## Titles in the GUI
 title:
@@ -969,6 +1026,8 @@ title:
 	add card csv file:					Open CSV or TSV file
 	add card json:						Add Cards from JSON file
 	add card json file:					Open JSON file
+	#TODO: Localize
+	importing cards:					Importing Cards
 
 	# auto replace
 	auto replaces:						自動替換
@@ -1024,6 +1083,8 @@ action:
 
 	# choice/color editors
 	change:								修改 %s
+	#TODO: Localize
+	reset:								Reset %s
 
 	# symbol actions
 	move:								移動 %s
@@ -1062,12 +1123,27 @@ error:
 	file not found package like:
 		沒有找到文件：'%s' 在 '%s' 文件包中
 		如果你嘗試從別的文件包中打開文件， 使用以下格式"/package/filename"
+	#TODO: Localize
+	file not found package like init:
+		File not found: '%s' in package '%s'
+		If this folder is empty or unused, delete it.
+	#TODO: Localize
+	package name parse error:			Unable to parse package name '%s'
 	file parse error:
 		處理文件發生錯誤:'%s'
 		%s
 	package not found:					文件包沒有找到： '%s'
 	package out of date:				文件包 '%s' （版本 %s） 過期，需要 %s 以上版本
 	package too new:					文件包 '%s' （版本 %s）與這個版本不兼容 %s，需要 '%s' 以上版本
+	#TODO: Localize
+	write to read only:					Trying to write to file that has been declared read only: '%s'
+	#TODO: Localize
+	uninstall read only:
+		The package '%s' contains the following read only files:
+		%s
+		These files usually hold custom addons written by users.
+		If you have modified these files, you may want to
+		back them up before uninstalling this package.
 	unable to open output file:			保存時出錯，無法打開輸出文件
 	unable to store file:				保存時出錯，無法儲存文件
 	#TODO: Localize
@@ -1102,7 +1178,7 @@ error:
 	no field with name:					Could not find %s field named '%s'
 	styling data not map:				Given value for '%s_data' is not a map
 	styling data without stylesheet:	Given value for '%s_data' before a stylesheet was set
-	cant set value:						Can not set card value '%s', it is not of the right type
+	cant set value:						Can not set %s value '%s', it is not of the right type
 	cant set image value:				Can only set image value with a relative filename from within the package, or with the import_image/download_image functions, in field named '%s'
 	cant set symbol value:				Can only set symbol value with a relative filename from within the package, in field named '%s'
 	add card csv file not found:		Could not find or load the CSV or TSV file
@@ -1117,6 +1193,8 @@ error:
 	json cant parse:					Failed to parse JSON file
 	json cant convert:					Input must be a string when importing from JSON
 	json cant concat:					Can't merge map with array
+	#TODO: Localize
+	mse map duplicate key:				MSE script map contains duplicate key: '%s'. One of those will be dropped in the conversion to JSON
 	import empty file:					%s file is empty
 	import missing fields:
 		The %s file contains the following entries that could not
@@ -1136,6 +1214,10 @@ error:
 	in keyword reminder:
 		%s
 		  在提示文本里的關鍵詞 '%s'
+	#TODO: Localize
+	more keys than values:				More keys than values given in function make_map! (Keys: %s)
+	#TODO: Localize
+	more values than keys:				More values than keys given in function make_map! (Keys: %s)
 
 	# image stuff
 	coordinates for blending overlap:	坐標混合重疊
@@ -1188,9 +1270,9 @@ error:
 
 	# card linking
 	#TODO: Localize Section
-	not enough free links:				Card '%s' does not have enough free links available. Can only link up to 4 cards.
-	not enough free links for copy:		Card '%s' does not have enough free links available for copy. Can only link up to 4 cards.
-	could not link:						The following cards could not be linked, as they already have 4 links:
+	not enough free links:				Card '%s' does not have enough free links available. Can only link up to 32 cards.
+	not enough free links for copy:		Card '%s' does not have enough free links available for copy. Can only link up to 32 cards.
+	could not link:						The following cards could not be linked, as they already have 32 links:
 	#TODO: Localize
 	missing free links:					Card only has %s free links available. Select less cards.
 	link duplicate:						Duplicate localized link name. '%s' maps both to '%s' and to '%s'.
@@ -1199,9 +1281,11 @@ error:
 	#TODO: Localize
 	cant link to self:					Cannot link a card to itself. (This assignment will be ignored.)
 	#TODO: Localize
-	no cards selected:					No cards selected. Select up to 4 cards to link.
+	no cards selected:					No cards selected. Select up to 32 cards to link.
 	could not find input:				Could not find input card.
 	could not find linked:				Could not find linked card.
+	#TODO: Localize
+	result not card or nil:				Result of %s is not a card or nil.
 
 	# bulk modification
 	#TODO: Localize Section

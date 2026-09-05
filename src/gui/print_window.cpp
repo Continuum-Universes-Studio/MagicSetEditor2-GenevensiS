@@ -37,7 +37,8 @@ void PrintJob::measure_cards() {
     if (already_measured_cards.find(card) != already_measured_cards.end()) continue;
     already_measured_cards.emplace(card);
     card_layouts.emplace_back(measure_card(card));
-    CardP other_face = card->getLinkedOtherFaceCard(*set); // we assume that if you want to print one side, you also want to print the other, so we look for it in the entire set instead of just the given cards
+    CardP other_face = card->getFrontFaceCard(*set); // we assume that if you want to print one side, you also want to print the other, so we look for it in the entire set instead of just the given cards
+    if (!other_face) other_face = card->getBackFaceCard(*set);
     if (other_face && already_measured_cards.find(other_face) == already_measured_cards.end()) {
       already_measured_cards.emplace(other_face);
       card_layouts.emplace_back(measure_card(other_face));

@@ -1,0 +1,23 @@
+Function: visibility_mask
+
+DOC_MSE_VERSION: since 2.6.0
+
+--Usage--
+> visibility_mask(input: image, threshold: alpha_value, radius: pixel_radius)
+
+Create a mask of the same dimensions as the input image, that contains white or black pixels as follows:
+If the corresponding pixel on the input image, or one of its neighbors within the radius (including diagonals),
+has alpha <= threshold, the pixel is white. Otherwise, the pixel is black.
+
+This encodes if a pixel can been seen through the input image.
+
+This is mainly used to generate a mask for an illustration that is below a card frame.
+The card frame image is the input image. This determines what parts of the illustration can be seen.
+The point of this mask is to add a visual aid when importing an illustration.
+
+
+--Parameters--
+! Parameter	Type			Description
+| @input@	[[type:image]]		Image that occludes the illustration field.
+| @threshold@	[[type:int]]		The biggest alpha value that can be seen through. Optional, defaults to 254.
+| @radius@	[[type:int]]		The radius in which we look for neighbors (so 0 means no neighbors, 1 means 8 neighbors, etc). Optional, defaults to 1.

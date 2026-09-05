@@ -48,7 +48,10 @@ public:
   
   /// Redraw only the selected items
   void RefreshSelection();
-  
+
+  /// Make sure the given item is visible
+  void ensureVisible(size_t item);
+
 protected:
   static const size_t NO_SELECTION = (size_t)-1;
   size_t active_subcolumn;  ///< The active subcolumn

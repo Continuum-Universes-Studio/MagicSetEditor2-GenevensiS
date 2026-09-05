@@ -102,7 +102,12 @@ public:
   
   /// Insert the given text (replacing the current selection)
   virtual void insert(const String& text, const String& action_name) {};
-  
+
+  // --------------------------------------------------- : Resetting
+
+  virtual bool canDefaultReset() const { return false; }
+  virtual void doDefaultReset() {}
+
   // --------------------------------------------------- : Search / replace
   
   /// Do a search or replace action for the given FindInfo

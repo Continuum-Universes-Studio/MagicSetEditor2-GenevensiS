@@ -267,6 +267,10 @@ void SetScriptManager::updateDelayed() {
   delay = 0;
 }
 
+void SetScriptManager::updateLinkScripts(const CardP& card) {
+  updateAllDependend(set.game->dependent_scripts_links, card);
+}
+
 void SetScriptManager::updateValue(Value& value, const CardP& card) {
   Age starting_age; // the start of the update process
   deque<ToUpdate> to_update;

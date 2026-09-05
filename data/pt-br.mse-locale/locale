@@ -1,8 +1,10 @@
-﻿mse version: 2.5.8
-installer group: Magic Set Editor/translations/portuguese brazilian
-full name: Português do Brasil (Brazilian Portuguese)
-version: 2026-02-28
-icon: br.png
+mse version:		2.6.0
+full name:			Português do Brasil (Brazilian Portuguese)
+icon:				br.png
+position hint:		01
+installer group:	Magic Set Editor/translations/brazilian portuguese
+version:			2026-02-28
+
 
 #By Luciano da Silva
 ############################################################## Menu items
@@ -21,7 +23,7 @@ menu:
 	export images:						Todas as I&magens dos Cards...
 	export apprentice:					&Apprentice...
 	export mws:							Magic &Workstation...
-	check updates:						&Atualizações...
+	check updates:						&Atualizações / Novas folhas de estilo...
 	print preview:						V&isualização da Imprensão...
 	print:								&Imprimir...	Ctrl+P
 	reload data:						Recarregar Dados	Ctrl+F5
@@ -42,6 +44,7 @@ menu:
 	paste card:							&Colar	Ctrl+V
 	paste keyword:						&Colar	Ctrl+V
 	select all:							Selecionar tudo	Ctrl+A
+	default reset:						Restaurar ao padrão
 	find:								&Encontrar	Ctrl+F
 	find next:							Encontrar &Próximo	F3
 	replace:							S&ubstituir	Ctrl+H
@@ -186,6 +189,7 @@ help:
 	paste card:							Introduz o Card que está na Área de Transferência.
 	paste keyword:						Introduz a Palavra Chave que está na Área de Transferência.
 	select all:							Selecione todo o texto
+	default reset:						Reverter o campo selecionado para o seu valor padrão
 	find:								Busca pelo texto do Card.
 	find next:							Busca pelo próximo texto do Card.
 	replace:							Substitui o texto dos Cards.
@@ -371,10 +375,13 @@ tool:
 
 	# cards toolbar
 	search cards:						Pesquisar Cards (Ctrl+K)
-	stats card counts 1:				%s Total
-	stats card counts 2:				%s Filtrados, %s Total
-	card counts 2:						%s Selecionados, %s Total
-	card counts 3:						%s Selecionados, %s Filtrados, %s Total
+	card counts selected:				1 Selecionado
+	card counts selecteds:				%s Selecionados
+	card counts hidden:					1 Oculto
+	card counts hiddens:				%s Ocultos
+	card counts back:					(dos quais 1 é o verso)
+	card counts backs:					(dos quais %s são versos)
+	card counts total:					%s Total
 
 	# edit toolbar
 	undo:								Desfazer
@@ -549,7 +556,7 @@ label:
 	linked cards relation:				Escolha o tipo de relação entre o Card selecionado ('%s') e os Cards vinculados:
 	selected card:						Card selecionado:
 	linked cards:						Cards vinculados:
-	select linked cards:				Escolha até 4 Cards para vincular:
+	select linked cards:				Escolha até 32 Cards para vincular:
 
 	# bulk modification dialog
 	bulk modify selection:				Quais Cards devem ser modificados:
@@ -582,8 +589,18 @@ label:
 
 	# stylesheet not found dialog
 	stylesheet not found:
-			A Edição está tentando abrir a folha de estilo "%s".
-		Esta folha de estilo não é compatível com o sistema padrão. Por favor escolha uma folha de estilo alternativa.
+		A Edição está tentando abrir a folha de estilo "%s".
+		Esta folha de estilo não é compatível com o sistema padrão.
+		Selecione uma alternativa ou procure-a online.
+	stylesheet dep not found:
+		A Edição está tentando abrir a folha de estilo "%s".
+		Esta folha de estilo foi encontrada, mas uma de suas dependências "%s"
+		não foi encontrada. Selecione uma alternativa ou procure-a online.
+	searching online:					Pesquisando online...
+	searching online fail:				Não encontrado online
+	found online downloading:			Encontrado online! Baixando...
+	found online installing:			Encontrado online! Instalando...
+	found online fail:					Falha na instalação
 
 	# preferences dialog
 	language:							Linguagem
@@ -593,10 +610,12 @@ label:
 	dark mode no:						Modo Claro
 	dark mode yes:						Modo Escuro
 	app language:						Linguagem da sua interface (App Language)
-	card display:						Visualização do Card
+	card display:						Exibição de Cards
+	card list display:					Exibição da Lista de Cards
 	zoom:								Ampliação
 	import:								Importar
 	export:								&Exportar
+	clipboard:							Área de transferência
 	scale:								Escala Interna:
 	use export scale:					Usar Escala de Exportação
 	export around 300:					Cerca de 300 DPI
@@ -608,6 +627,7 @@ label:
 	apprentice exe:						Executável do Apprentice
 	export desc:						Ao exportar Cards para imagens:
 	import desc:						Ao importar imagens para ilustrações:
+	clipboard desc:						Ao copiar imagens de Cards para a área de transferência:
 	internal scale desc:
 		Dimensione para armazenar internamente imagens de Card.
 		Alterar isso pode afetar a aparência da Nitidez.
@@ -646,6 +666,7 @@ label:
 	add card csv comma:					Vírgula
 	add card csv semicolon:				Ponto e vírgula
 	add card csv file:					Caminho do arquivo CSV ou TSV:
+	importing cards:					Importando Card %s / %s
 
 	# JSON import dialog
 	add card json type:					Tipo de arquivo JSON:
@@ -780,11 +801,25 @@ button:
 	notes export:
 		Exportar notas do Card dentro
 		dos metadados da imagem
+	metaimage export:
+		Permitir o armazenamento de imagens
+		dentro dos metadados da imagem
+	dfc export:
+		Mesclar faces frontal e traseira
+		em uma única imagem
+	dfc copy:
+		Sempre copie as duas faces
+		de uma carta juntas
 	spellcheck enabled:					Mostra erro&s de ortografia nos Cards
+	hide back faces:
+		Ocultar versos da
+		lista de cartões
 	check now:							Proucurar Agor&a
 	always:								Sempre
 	every 5 startups:					A cada 5 inicializações
 	every 10 startups:					A cada 10 inicializações
+	every 7 days:						A cada 7 dias
+	every 30 days:						A cada 30 dias
 	if internet connection exists:		Se a conexão da internet existir
 	never:								Nunca
 	check app:							Somente aplicativo
@@ -836,6 +871,11 @@ button:
 	install group:						&Instalar/Atualizar o grupo
 	upgrade group:						&Atualizar o grupo
 	remove group:						&Remover o grupo
+	uninstall anyway:					Desinstalar mesmo assim
+	abort:								Abortar
+
+	# stylesheet not found dialog
+	find package online:				Pesquisar online
 
 ############################################################## Titles in the GUI
 title:
@@ -897,6 +937,7 @@ title:
 	add card csv file:					Abrir arquivo CSV ou TSV
 	add card json:						Adicionar Cards de um arquivo JSON
 	add card json file:					Abrir arquivo JSON
+	importing cards:					Importando Cards
 
 	# auto replace
 	auto replaces:						Auto Substituição
@@ -947,6 +988,7 @@ action:
 
 	# choice/color editors
 	change:								Alterar %s
+	reset:								Redefinir %s
 
 	# symbol actions
 	move:								Mover %s
@@ -981,16 +1023,27 @@ action:
 ############################################################## Error messages
 error:
 	# file related
-	file not found:						O arquivo não foi encontrado: '%s' em pacotes '%s'
+	file not found:						O arquivo não foi encontrado: '%s' no pacote '%s'
 	file not found package like:
-		Arquivo nao encontrado: '%s' in package '%s'
+		Arquivo nao encontrado: '%s' no pacote '%s'
 		Se você está tentando abrir um arquivo de outro pacote, use "/package/filename"
+	file not found package like init:
+		Arquivo nao encontrado: '%s' no pacote '%s'
+		Se esta pasta estiver vazia ou não for usada, exclua-a.
+	package name parse error:			Não foi possível analisar o nome do pacote '%s'
 	file parse error:
 		Erro ao analisar o arquivo: '%s'
 		%s
 	package not found:					Pacotes não encontrado: '%s'
 	package out of date:				O pacote '%s' (versão %s) está fora dos dado, versão %s é requerida.
 	package too new:					O pacote '%s' (versão %s) não é compatível com a versão %s, exigida '%s'
+	write to read only:					Tentativa de escrita em arquivo que foi declarado como somente leitura: '%s'
+	uninstall read only:
+		O pacote '%s' contém os seguintes arquivos somente leitura:
+		%s
+		Esses arquivos geralmente contêm complementos personalizados
+		criados por usuários. Se você modificou esses arquivos, convém
+		fazer um backup deles antes de desinstalar este pacote.
 	unable to open output file:			Erro ao salvar, não foi possível abrir arquivo de saída
 	unable to store file:				Erro ao salvar, não para armazenar arquivos
 	nested folder:
@@ -1017,7 +1070,7 @@ error:
 	no field with name:					Não foi possível encontrar o campo de %s chamado '%s'
 	styling data not map:				O valor fornecido para '%s_data' não é um vetor associativo
 	styling data without stylesheet:	Um valor foi fornecido para '%s_data' antes de um estilo ser definido
-	cant set value:						Não é possível definir o valor do Card '%s', ele não é do tipo correto
+	cant set value:						Não é possível definir o valor do %s '%s', ele não é do tipo correto
 	cant set image value:				É possível definir o valor da imagem apenas com um nome de arquivo relativo de dentro do pacote ou com as funções import_image/download_image, no campo chamado '%s'
 	cant set symbol value:				É possível definir o valor do símbolo apenas com um nome de arquivo relativo de dentro do pacote, no campo chamado '%s'
 	add card csv file not found:		Não foi possível encontrar ou carregar o arquivo CSV ou TSV
@@ -1032,6 +1085,7 @@ error:
 	json cant parse:					Falha ao analisar o arquivo JSON
 	json cant convert:					A entrada deve ser uma string ao importar de JSON
 	json cant concat:					Não é possível mesclar um vetor associativo com um vetor
+	mse map duplicate key:				O mapa de script MSE contém uma chave duplicada: '%s'. Uma delas será descartada na conversão para JSON.
 	import empty file:					Arquivo %s vazio
 	import missing fields:
 		O arquivo %s contém as seguintes entradas que não puderam ser importadas
@@ -1051,6 +1105,8 @@ error:
 	in keyword reminder:
 		%s
 		 lembrete de palavra-chave no texto '%s'
+	more keys than values:				A função make_map passou mais chaves do que valores! (Chaves: %s)
+	more values than keys:				A função make_map passou mais valores do que chaves! (Chaves: %s)
 
 	# image stuff
 	coordinates for blending overlap:	As coordenadas para a mistura se sobrepõem.
@@ -1093,17 +1149,18 @@ error:
 	no updates:							Não existe atualizações disponíveis no momento.
 
 	# card linking
-	not enough free links:				O Card '%s' não tem vínculos suficientes disponíveis. Só é possível vincular até 4 Cards.
-	not enough free links for copy:		O Card '%s' não tem vínculos suficientes disponíveis para cópia. Só é possível vincular até 4 Cards.
-	could not link:						Os seguintes Cards não puderam ser vinculados, pois já têm 4 vínculos:
+	not enough free links:				O Card '%s' não tem vínculos suficientes disponíveis. Só é possível vincular até 32 Cards.
+	not enough free links for copy:		O Card '%s' não tem vínculos suficientes disponíveis para cópia. Só é possível vincular até 32 Cards.
+	could not link:						Os seguintes Cards não puderam ser vinculados, pois já têm 32 vínculos:
 	missing free links:					O Card possui apenas %s links livres disponíveis. Selecione menos Cards.
 	link duplicate:						Nome de link localizado duplicado. '%s' corresponde tanto a '%s' quanto a '%s'.
 	multiple front faces:				O Card '%s' possui vários Cards vinculados como faces frontais.
 	multiple back faces:				O Card '%s' possui vários Cards vinculados como faces traseiras.
 	cant link to self:					Não é possível vincular um cartão a si mesmo. (Esta tarefa será ignorada.)
-	no cards selected:					Nenhum Card selecionado. Selecione até 4 Card para vincular.
+	no cards selected:					Nenhum Card selecionado. Selecione até 32 Card para vincular.
 	could not find input:				Não foi possível encontrar o Card de entrada (input).
 	could not find linked:				Não foi possível encontrar o Card vinculado (linked_card).
+	result not card or nil:				O resultado de %s não é uma carta nem nil.
 
 	# bulk modification
 	bulk modify value type unknown:		O tipo de campo selecionado (%s) não é compatível. Selecione outro campo.

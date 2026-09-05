@@ -194,8 +194,11 @@ private:
   DECLARE_EVENT_TABLE();
 
   void onMotion(wxMouseEvent& ev) {
+    size_t item = findItem(ev);
     wxFrame* frame = dynamic_cast<wxFrame*>(wxGetTopLevelParent(this));
-    if (frame) frame->SetStatusText(dimensions[findItem(ev)]->description.get());
+    if (frame && item < dimensions.size()) {
+      frame->SetStatusText(dimensions[item]->description.get());
+    }
   }
   void onMouseLeave(wxMouseEvent& ev) {
     wxFrame* frame = dynamic_cast<wxFrame*>(wxGetTopLevelParent(this));
@@ -270,7 +273,7 @@ void StatDimensionList::drawItem(DC& dc, int x, int y, size_t item) {
   RealPoint pos = align_in_rect(ALIGN_MIDDLE_LEFT, size, rect);
   dc.DrawText(str, (int)pos.x, (int)pos.y);
   // draw selection icon
-  for (size_t j = 1 ; j <= dimensions.size() ; ++j) {
+  for (size_t j = 1 ; j <= (size_t)dimension_count ; ++j) {
     bool prefered = j <= prefered_dimension_count;
     if (isSelected(item,j)) {
       // TODO: different icons for different dimensions
@@ -330,8 +333,8 @@ void StatsPanel::initControls() {
     s->Add(categories, 0, wxEXPAND | wxRIGHT, 2);
   #endif
   s->Add(splitter,   1, wxEXPAND);
-  s->SetSizeHints(this);
   SetSizer(s);
+  s->SetSizeHints(this);
   
   // init menu
   menuGraph = new wxMenu();

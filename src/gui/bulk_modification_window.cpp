@@ -85,8 +85,8 @@ BulkModificationWindow::BulkModificationWindow(Window* parent, const SetP& set, 
     s1->AddButton(new wxButton(this, wxID_CANCEL));
     s1->Realize();
     s->Add(s1, 1, wxEXPAND | wxALL, 12);
-    s->SetSizeHints(this);
     SetSizer(s);
+    s->SetSizeHints(this);
     SetSize(600, 400);
     Layout();
   }
@@ -379,7 +379,7 @@ void BulkModificationWindow::onOk(wxCommandEvent&) {
   }
   else {
     set->actions.addAction(make_unique<BulkAction>(actions, set, card_list_window, actions.size() > 1), false);
-    set->actions.tellListeners(DisplayChangeAction(),true);
+    set->actions.tellListeners(GlobalDisplayChangeAction(),true);
     wxMessageDialog dial = wxMessageDialog(this, _ERROR_1_("bulk modify success", String() << actions.size()));
     dial.ShowModal();
     EndModal(wxID_OK);

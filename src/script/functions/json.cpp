@@ -12,10 +12,15 @@
 #include <util/delayed_index_maps.hpp>
 #include <util/prec.hpp>
 #include <data/card.hpp>
+#include <data/card_link.hpp>
+#include <data/word_list.hpp>
+#include <data/statistics.hpp>
 #include <data/field/information.hpp>
 #include <data/field/boolean.hpp>
 #include <data/field/multiple_choice.hpp>
 #include <data/format/clipboard.hpp>
+#include <data/update_cards_script.hpp>
+#include <data/add_cards_script.hpp>
 #include <render/symbol/filter.hpp>
 #include <script/functions/construction_helper.hpp>
 #include <sstream>
@@ -28,7 +33,7 @@
 
 // ----------------------------------------------------------------------------- : JSON to String
 
-void pretty_print(std::ostream& os, const boost::json::value& jv, std::string* indent)
+void pretty_print(std::ostringstream& os, const boost::json::value& jv, std::string* indent)
 {
   std::string indent_;
   if(! indent)
@@ -89,9 +94,23 @@ void pretty_print(std::ostream& os, const boost::json::value& jv, std::string* i
 
   case boost::json::kind::uint64:
   case boost::json::kind::int64:
-  case boost::json::kind::double_:
     os << jv;
     break;
+
+  case boost::json::kind::double_: {
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision(10) << jv.as_double();
+    std::string str = oss.str();
+    // remove trailing zeros
+    if (str.find('.') != std::string::npos) {
+      str.erase(str.find_last_not_of('0') + 1);
+      if (str.back() == '.') {
+        str.pop_back();
+      }
+    }
+    os << str;
+    break;
+  }
 
   case boost::json::kind::bool_:
     if(jv.get_bool())
@@ -210,14 +229,12 @@ CardP json_to_mse_card(boost::json::object& jv, Set* set) {
   read(card->time_modified,     jv, "time_modified");
   read(card->notes,             jv, "notes");
   read(card->uid,               jv, "uid");
-  read(card->linked_card_1,     jv, "linked_card_1");
-  read(card->linked_card_2,     jv, "linked_card_2");
-  read(card->linked_card_3,     jv, "linked_card_3");
-  read(card->linked_card_4,     jv, "linked_card_4");
-  read(card->linked_relation_1, jv, "linked_relation_1");
-  read(card->linked_relation_2, jv, "linked_relation_2");
-  read(card->linked_relation_3, jv, "linked_relation_3");
-  read(card->linked_relation_4, jv, "linked_relation_4");
+  for (int i = 0; i < Card::MAX_LINKS; ++i) {
+    std::string card_key     = "linked_card_"     + std::to_string(i + 1);
+    std::string relation_key = "linked_relation_" + std::to_string(i + 1);
+    read(card->getLinkedUID(i),      jv, card_key.c_str());
+    read(card->getLinkedRelation(i), jv, relation_key.c_str());
+  }
   // card fields
   if (jv.contains("data") && jv["data"].is_object()) {
     boost::json::object datav = jv["data"].get_object();
@@ -226,7 +243,7 @@ CardP json_to_mse_card(boost::json::object& jv, Set* set) {
       String key_name = String::FromUTF8(key_view.data(), key_view.size());
       Value* container = get_card_field_container(*set->game, card->data, key_name, false);
       ScriptValueP value = json_to_mse(it->value(), set);
-      set_container(container, value, key_name);
+      set_container(set, container, _("card"), value, key_name);
     }
   }
   // stylesheet
@@ -244,7 +261,7 @@ CardP json_to_mse_card(boost::json::object& jv, Set* set) {
         String key_name = String::FromUTF8(key_view.data(), key_view.size());
         Value* container = get_container(card->styling_data, String("styling"), key_name, false);
         ScriptValueP value = json_to_mse(it->value(), set);
-        set_container(container, value, key_name);
+        set_container(set, container, _("styling"), value, key_name);
         card->has_styling = true;
       }
     }
@@ -263,7 +280,7 @@ CardP json_to_mse_card(boost::json::object& jv, Set* set) {
           String key_name = String::FromUTF8(key_view.data(), key_view.size());
           Value* container = get_container(stylesheet_data, String("extra card"), key_name, false);
           ScriptValueP value = json_to_mse(stylesheet_it->value(), set);
-          set_container(container, value, key_name);
+          set_container(set, container, _("extra"), value, key_name);
         }
       }
     }
@@ -291,7 +308,7 @@ SetP json_to_mse_set(boost::json::object& jv) {
       String key_name = String::FromUTF8(key_view.data(), key_view.size());
       Value* container = get_container(set->data, String("set"), key_name, false);
       ScriptValueP value = json_to_mse(it->value(), set.get());
-      set_container(container, value, key_name);
+      set_container(set.get(), container, _("set"), value, key_name);
     }
   }
   // styling
@@ -308,7 +325,7 @@ SetP json_to_mse_set(boost::json::object& jv) {
         String key_name = String::FromUTF8(key_view.data(), key_view.size());
         Value* container = get_container(stylesheet_data, String("styling"), key_name, false);
         ScriptValueP value = json_to_mse(stylesheet_it->value(), set.get());
-        set_container(container, value, key_name);
+        set_container(set.get(), container, _("styling"), value, key_name);
       }
     }
   }
@@ -427,6 +444,11 @@ ScriptValueP json_to_mse(const ScriptValueP& sv, Set* set) {
 
 // ----------------------------------------------------------------------------- : MSE to JSON
 
+inline boost::json::string to_json_string(const String& s) {
+  wxScopedCharBuffer buffer = s.ToUTF8();
+  return boost::json::string(buffer.data(), buffer.length());
+}
+
 template <typename T>
 void write(boost::json::object& out, const String& name, const T& value) {
   wxStringOutputStream stream;
@@ -437,7 +459,7 @@ void write(boost::json::object& out, const String& name, const T& value) {
   if (!string.empty()) {
     if (string.StartsWith(name + ":")) string = string.substr(name.length() + 1).Trim(false);
     if (string.EndsWith("\n")) string = string.substr(0, string.length() - 1);
-    out.emplace(name.ToStdString(), string);
+    out.emplace(name.ToStdString(), to_json_string(string));
   }
 }
 
@@ -502,14 +524,12 @@ boost::json::object mse_to_json(const CardP& card, const Set* set) {
   write(cardv, "time_modified",     card->time_modified);
   write(cardv, "notes",             card->notes);
   write(cardv, "uid",               card->uid);
-  write(cardv, "linked_card_1",     card->linked_card_1);
-  write(cardv, "linked_card_2",     card->linked_card_2);
-  write(cardv, "linked_card_3",     card->linked_card_3);
-  write(cardv, "linked_card_4",     card->linked_card_4);
-  write(cardv, "linked_relation_1", card->linked_relation_1);
-  write(cardv, "linked_relation_2", card->linked_relation_2);
-  write(cardv, "linked_relation_3", card->linked_relation_3);
-  write(cardv, "linked_relation_4", card->linked_relation_4);
+  for (int i = 0; i < Card::MAX_LINKS; ++i) {
+    const String& uid = card->getLinkedUID(i);
+    if (uid.empty()) continue;
+    write(cardv, String::Format(_("linked_card_%d"), i + 1),     uid);
+    write(cardv, String::Format(_("linked_relation_%d"), i + 1), card->getLinkedRelation(i));
+  }
   // card fields
   write(cardv, "data",              card->data);
   // stylesheet
@@ -552,14 +572,14 @@ boost::json::object mse_to_json(const StyleP& style) {
   stylev.emplace("height",    String::Format(wxT("%.2f"), style->height()));
   stylev.emplace("angle",     String::Format(wxT("%.2f"), style->angle()));
   stylev.emplace("visible",                               style->visible());
-  stylev.emplace("mask",                                  style->mask.toScriptString());
+  stylev.emplace("mask",                                  to_json_string(style->mask.toScriptString()));
 
   if (TextStyle* s = dynamic_cast<TextStyle*>(style.get())) {
     stylev.emplace("field_type", "text");
 
     boost::json::object fontv;
-    fontv.emplace("name",                                              s->font.name());
-    fontv.emplace("italic_name",                                       s->font.italic_name());
+    fontv.emplace("name",                                              to_json_string(s->font.name()));
+    fontv.emplace("italic_name",                                       to_json_string(s->font.italic_name()));
     fontv.emplace("size",                  String::Format(wxT("%.2f"), s->font.size()));
     fontv.emplace("weight",                                            s->font.weight());
     fontv.emplace("style",                                             s->font.style());
@@ -580,7 +600,7 @@ boost::json::object mse_to_json(const StyleP& style) {
     stylev.emplace("font",                                             fontv);
 
     boost::json::object symbolfontv;
-    symbolfontv.emplace("name",                                              s->symbol_font.name());
+    symbolfontv.emplace("name",                                              to_json_string(s->symbol_font.name()));
     symbolfontv.emplace("size",                  String::Format(wxT("%.2f"), s->symbol_font.size()));
     symbolfontv.emplace("underline",                                         s->symbol_font.underline());
     symbolfontv.emplace("strikethrough",                                     s->symbol_font.strikethrough());
@@ -620,10 +640,10 @@ boost::json::object mse_to_json(const StyleP& style) {
     layoutv.emplace("content_bottom",      String::Format(wxT("%.2f"), s->layout->bottom()));
     layoutv.emplace("content_width",       String::Format(wxT("%.2f"), s->layout->width));
     layoutv.emplace("content_height",      String::Format(wxT("%.2f"), s->layout->height));
-    layoutv.emplace("content_lines",       String::Format(wxT("%i"),   s->layout->lines.size()));
-    layoutv.emplace("content_clauses",     String::Format(wxT("%i"),   s->layout->clauses.size()));
-    layoutv.emplace("content_paragraphs",  String::Format(wxT("%i"),   s->layout->paragraphs.size()));
-    layoutv.emplace("content_blocks",      String::Format(wxT("%i"),   s->layout->blocks.size()));
+    layoutv.emplace("content_lines",       String::Format(wxT("%i"),   (int)s->layout->lines.size()));
+    layoutv.emplace("content_clauses",     String::Format(wxT("%i"),   (int)s->layout->clauses.size()));
+    layoutv.emplace("content_paragraphs",  String::Format(wxT("%i"),   (int)s->layout->paragraphs.size()));
+    layoutv.emplace("content_blocks",      String::Format(wxT("%i"),   (int)s->layout->blocks.size()));
     boost::json::array separatorsv;
     int size = s->layout->separators.size();
     for (int i = 0; i < size; i++) {
@@ -636,7 +656,7 @@ boost::json::object mse_to_json(const StyleP& style) {
 
   else if (ImageStyle* s = dynamic_cast<ImageStyle*>(style.get())) {
     stylev.emplace("field_type", "image");
-    stylev.emplace("default",           s->default_image.toScriptString());
+    stylev.emplace("default",           to_json_string(s->default_image.toScriptString()));
     stylev.emplace("store_in_metadata", s->store_in_metadata());
   }
 
@@ -644,15 +664,15 @@ boost::json::object mse_to_json(const StyleP& style) {
     stylev.emplace("field_type", "multiple_choice");
     stylev.emplace("popup_style",          popup_style_to_string(      s->popup_style));
     stylev.emplace("render_style",         render_style_to_string(     s->render_style));
-    stylev.emplace("image",                                            s->image.toScriptString());
+    stylev.emplace("image",                                            to_json_string(s->image.toScriptString()));
     stylev.emplace("combine",              combine_to_string(          s->combine));
     stylev.emplace("alignment",            alignment_to_string(        s->alignment));
     stylev.emplace("direction",            direction_to_string(        s->direction()));
     stylev.emplace("spacing",              String::Format(wxT("%.2f"), s->spacing()));
 
     boost::json::object fontv;
-    fontv.emplace("name",                                              s->font.name());
-    fontv.emplace("italic_name",                                       s->font.italic_name());
+    fontv.emplace("name",                                              to_json_string(s->font.name()));
+    fontv.emplace("italic_name",                                       to_json_string(s->font.italic_name()));
     fontv.emplace("size",                  String::Format(wxT("%.2f"), s->font.size()));
     fontv.emplace("weight",                                            s->font.weight());
     fontv.emplace("style",                                             s->font.style());
@@ -675,7 +695,7 @@ boost::json::object mse_to_json(const StyleP& style) {
     boost::json::object choiceimagesv;
     for (auto choice_image : s->choice_images) {
       String image = choice_image.second.toScriptString();
-      if (!image.empty()) choiceimagesv.emplace(choice_image.first.ToStdString(), image);
+      if (!image.empty()) choiceimagesv.emplace(choice_image.first.ToStdString(), to_json_string(image));
     }
     if (choiceimagesv.size() > 0) stylev.emplace("choice_images", choiceimagesv);
   }
@@ -684,13 +704,13 @@ boost::json::object mse_to_json(const StyleP& style) {
     stylev.emplace("field_type", dynamic_cast<BooleanStyle*>(style.get()) ? "boolean" : "choice");
     stylev.emplace("popup_style",          popup_style_to_string(      s->popup_style));
     stylev.emplace("render_style",         render_style_to_string(     s->render_style));
-    stylev.emplace("image",                                            s->image.toScriptString());
+    stylev.emplace("image",                                            to_json_string(s->image.toScriptString()));
     stylev.emplace("combine",              combine_to_string(          s->combine));
     stylev.emplace("alignment",            alignment_to_string(        s->alignment));
 
     boost::json::object fontv;
-    fontv.emplace("name",                                              s->font.name());
-    fontv.emplace("italic_name",                                       s->font.italic_name());
+    fontv.emplace("name",                                              to_json_string(s->font.name()));
+    fontv.emplace("italic_name",                                       to_json_string(s->font.italic_name()));
     fontv.emplace("size",                  String::Format(wxT("%.2f"), s->font.size()));
     fontv.emplace("weight",                                            s->font.weight());
     fontv.emplace("style",                                             s->font.style());
@@ -713,7 +733,7 @@ boost::json::object mse_to_json(const StyleP& style) {
     boost::json::object choiceimagesv;
     for (auto choice_image : s->choice_images) {
       String image = choice_image.second.toScriptString();
-      if (!image.empty()) choiceimagesv.emplace(choice_image.first.ToStdString(), image);
+      if (!image.empty()) choiceimagesv.emplace(choice_image.first.ToStdString(), to_json_string(image));
     }
     if (choiceimagesv.size() > 0) stylev.emplace("choice_images", choiceimagesv);
   }
@@ -722,8 +742,8 @@ boost::json::object mse_to_json(const StyleP& style) {
     stylev.emplace("field_type", "package_choice");
 
     boost::json::object fontv;
-    fontv.emplace("name",                                              s->font.name());
-    fontv.emplace("italic_name",                                       s->font.italic_name());
+    fontv.emplace("name",                                              to_json_string(s->font.name()));
+    fontv.emplace("italic_name",                                       to_json_string(s->font.italic_name()));
     fontv.emplace("size",                  String::Format(wxT("%.2f"), s->font.size()));
     fontv.emplace("weight",                                            s->font.weight());
     fontv.emplace("style",                                             s->font.style());
@@ -762,7 +782,7 @@ boost::json::object mse_to_json(const StyleP& style) {
     int size = s->variations.size();
     for (int i = 0; i < size; i++) {
       boost::json::object variationv;
-      variationv.emplace("name",                                         s->variations[i]->name);
+      variationv.emplace("name",                                         to_json_string(s->variations[i]->name));
       variationv.emplace("border_radius",    String::Format(wxT("%.2f"), s->variations[i]->border_radius));
       SymbolFilterP filter = s->variations[i]->filter;
       if (SolidFillSymbolFilter* f = dynamic_cast<SolidFillSymbolFilter*>(filter.get())) {
@@ -803,8 +823,8 @@ boost::json::object mse_to_json(const StyleP& style) {
     stylev.emplace("background_color",     format_color(               s->background_color));
 
     boost::json::object fontv;
-    fontv.emplace("name",                                              s->font.name());
-    fontv.emplace("italic_name",                                       s->font.italic_name());
+    fontv.emplace("name",                                              to_json_string(s->font.name()));
+    fontv.emplace("italic_name",                                       to_json_string(s->font.italic_name()));
     fontv.emplace("size",                  String::Format(wxT("%.2f"), s->font.size()));
     fontv.emplace("weight",                                            s->font.weight());
     fontv.emplace("style",                                             s->font.style());
@@ -863,11 +883,147 @@ boost::json::object mse_to_json(const Set* set) {
   return setv;
 }
 
+boost::json::object mse_to_json(const StyleSheetP stylesheet) {
+  boost::json::object stylesheetv;
+  stylesheetv.emplace("mse_object_type",    "stylesheet");
+  // built-in values
+  write(stylesheetv, "mse_version",        stylesheet->fileVersion());
+  write(stylesheetv, "short_name",         stylesheet->short_name);
+  write(stylesheetv, "full_name",          stylesheet->full_name);
+  write(stylesheetv, "folder_name",        stylesheet->folder_name + _(".mse-style"));
+  write(stylesheetv, "version",            stylesheet->version);
+  write(stylesheetv, "installer_group",    stylesheet->installer_group);
+  write(stylesheetv, "icon",               stylesheet->icon_filename);
+  write(stylesheetv, "dark_icon",          stylesheet->dark_icon_filename);
+  write(stylesheetv, "position_hint",      stylesheet->position_hint);
+  write(stylesheetv, "game",               stylesheet->game);
+  write(stylesheetv, "card_width",         stylesheet->card_width);
+  write(stylesheetv, "card_height",        stylesheet->card_height);
+  write(stylesheetv, "card_dpi",           stylesheet->card_dpi);
+  write(stylesheetv, "card_background",    format_color(stylesheet->card_background));
+  // update scripts
+  boost::json::array updatescriptsv;
+  for (const UpdateCardsScriptP& script : stylesheet->update_cards_scripts) {
+    updatescriptsv.emplace_back(to_json_string(script->before_version.toString()));
+  }
+  if (!updatescriptsv.empty()) stylesheetv.emplace("update_cards_scripts", updatescriptsv);
+  // styling fields
+  boost::json::array stylingfieldsv;
+  for (const FieldP& field : stylesheet->styling_fields) {
+    stylingfieldsv.emplace_back(to_json_string(field->name));
+  }
+  if (!stylingfieldsv.empty()) stylesheetv.emplace("styling_fields", stylingfieldsv);
+  // extra fields
+  boost::json::array extrafieldsv;
+  for (const FieldP& field : stylesheet->extra_card_fields) {
+    extrafieldsv.emplace_back(to_json_string(field->name));
+  }
+  if (!extrafieldsv.empty()) stylesheetv.emplace("extra_card_fields", extrafieldsv);
+  // done
+  return stylesheetv;
+}
+
+boost::json::object mse_to_json(const Game* game) {
+  boost::json::object gamev;
+  gamev.emplace("mse_object_type",    "game");
+  // built-in values
+  write(gamev, "mse_version",        game->fileVersion());
+  write(gamev, "short_name",         game->short_name);
+  write(gamev, "full_name",          game->full_name);
+  write(gamev, "folder_name",        game->folder_name + _(".mse-game"));
+  write(gamev, "version",            game->version);
+  write(gamev, "installer_group",    game->installer_group);
+  write(gamev, "icon",               game->icon_filename);
+  write(gamev, "dark_icon",          game->dark_icon_filename);
+  write(gamev, "position_hint",      game->position_hint);
+  // update scripts
+  boost::json::array updatescriptsv;
+  for (const UpdateCardsScriptP& script : game->update_cards_scripts) {
+    updatescriptsv.emplace_back(to_json_string(script->before_version.toString()));
+  }
+  if (!updatescriptsv.empty()) gamev.emplace("update_cards_scripts", updatescriptsv);
+  // add scripts
+  boost::json::array addscriptsv;
+  for (const AddCardsScriptP& script : game->add_cards_scripts) {
+    addscriptsv.emplace_back(script->name);
+  }
+  if (!addscriptsv.empty()) gamev.emplace("add_cards_scripts", addscriptsv);
+  // set fields
+  boost::json::array setfieldsv;
+  for (const FieldP& field : game->set_fields) {
+    setfieldsv.emplace_back(to_json_string(field->name));
+  }
+  if (!setfieldsv.empty()) gamev.emplace("set_fields", setfieldsv);
+  // card fields
+  boost::json::array cardfieldsv;
+  for (const FieldP& field : game->card_fields) {
+    cardfieldsv.emplace_back(to_json_string(field->name));
+  }
+  if (!cardfieldsv.empty()) gamev.emplace("card_fields", cardfieldsv);
+  // card links
+  boost::json::array cardlinksv;
+  for (const CardLinkP& link : game->card_links) {
+    cardlinksv.emplace_back(to_json_string(link->name()));
+  }
+  if (!cardlinksv.empty()) gamev.emplace("card_links", cardlinksv);
+  // json paths
+  boost::json::array jsonpathsv;
+  for (const String& path : game->json_paths) {
+    jsonpathsv.emplace_back(to_json_string(path));
+  }
+  if (!jsonpathsv.empty()) gamev.emplace("json_paths", jsonpathsv);
+  // word lists
+  boost::json::array wordlistsv;
+  for (const WordListP& list : game->word_lists) {
+    wordlistsv.emplace_back(to_json_string(list->name));
+  }
+  if (!wordlistsv.empty()) gamev.emplace("word_lists", wordlistsv);
+  // keywords
+  boost::json::array keywordmodesv;
+  for (const KeywordModeP& mode : game->keyword_modes) {
+    keywordmodesv.emplace_back(to_json_string(mode->name));
+  }
+  if (!keywordmodesv.empty()) gamev.emplace("keyword_modes", keywordmodesv);
+  boost::json::array keywordparametersv;
+  for (const KeywordParamP& mode : game->keyword_parameter_types) {
+    keywordparametersv.emplace_back(to_json_string(mode->name));
+  }
+  if (!keywordparametersv.empty()) gamev.emplace("keyword_parameters", keywordparametersv);
+  boost::json::array keywordsv;
+  for (const KeywordP& keyword : game->keywords) {
+    keywordsv.emplace_back(to_json_string(keyword->keyword));
+  }
+  if (!keywordsv.empty()) gamev.emplace("keywords", keywordsv);
+  // pack types
+  boost::json::array pack_typesv;
+  for (const PackTypeP& pack_type : game->pack_types) {
+    pack_typesv.emplace_back(to_json_string(pack_type->name));
+  }
+  if (!pack_typesv.empty()) gamev.emplace("pack_types", pack_typesv);
+  // statistics
+  boost::json::array statisticsdimensionsv;
+  for (const StatsDimensionP& stat : game->statistics_dimensions) {
+    statisticsdimensionsv.emplace_back(to_json_string(stat->name));
+  }
+  if (!statisticsdimensionsv.empty()) gamev.emplace("statistics_dimensions", statisticsdimensionsv);
+  // done
+  return gamev;
+}
+
 boost::json::object mse_to_json(const IndexMap<FieldP, ValueP>& map) {
   boost::json::object indexmapv;
-  indexmapv.emplace("mse_object_type", "index_map");
+  indexmapv.emplace("mse_object_type", "value_index_map");
   for (auto it = map.begin(); it != map.end(); ++it) {
     write(indexmapv, (*it)->fieldP->name, *it);
+  }
+  return indexmapv;
+}
+
+boost::json::object mse_to_json(const IndexMap<FieldP, StyleP>& map) {
+  boost::json::object indexmapv;
+  indexmapv.emplace("mse_object_type", "style_index_map");
+  for (auto it = map.begin(); it != map.end(); ++it) {
+    indexmapv.emplace((*it)->fieldP->name.ToStdString(), mse_to_json(*it));
   }
   return indexmapv;
 }
@@ -881,7 +1037,11 @@ boost::json::value mse_to_json(const ScriptValueP& sv, Set* set, bool suppress_w
   if (ScriptObject<CardP>*                o = dynamic_cast<ScriptObject<CardP>*>               (sv.get())) return mse_to_json( o->getValue(), set);
   if (ScriptObject<SetP>*                 o = dynamic_cast<ScriptObject<SetP>*>                (sv.get())) return mse_to_json( o->getValue().get());
   if (ScriptObject<Set*>*                 o = dynamic_cast<ScriptObject<Set*>*>                (sv.get())) return mse_to_json( o->getValue());
+  if (ScriptObject<StyleSheetP>*          o = dynamic_cast<ScriptObject<StyleSheetP>*>         (sv.get())) return mse_to_json( o->getValue());
+  if (ScriptObject<GameP>*                o = dynamic_cast<ScriptObject<GameP>*>               (sv.get())) return mse_to_json( o->getValue().get());
+  if (ScriptObject<Game*>*                o = dynamic_cast<ScriptObject<Game*>*>               (sv.get())) return mse_to_json( o->getValue());
   if (ScriptMap<IndexMap<FieldP,ValueP>>* o = dynamic_cast<ScriptMap<IndexMap<FieldP,ValueP>>*>(sv.get())) return mse_to_json(*o->value);
+  if (ScriptMap<IndexMap<FieldP,StyleP>>* o = dynamic_cast<ScriptMap<IndexMap<FieldP,StyleP>>*>(sv.get())) return mse_to_json(*o->value);
 
   // primitive types
   ScriptType type = sv->type();
@@ -889,26 +1049,29 @@ boost::json::value mse_to_json(const ScriptValueP& sv, Set* set, bool suppress_w
   if (type == SCRIPT_INT)      return boost::json::value(sv->toInt());
   if (type == SCRIPT_DOUBLE)   return boost::json::value(sv->toDouble());
   if (type == SCRIPT_BOOL)     return boost::json::value(sv->toBool());
-  if (type == SCRIPT_STRING)   return boost::json::value(sv->toString());
-  if (type == SCRIPT_REGEX)    return boost::json::value(sv->toString());
+  if (type == SCRIPT_STRING)   return boost::json::value(to_json_string(sv->toString()));
+  if (type == SCRIPT_REGEX)    return boost::json::value(to_json_string(sv->toString()));
   if (type == SCRIPT_COLOR)    return boost::json::value(format_color(sv->toColor()));
   if (type == SCRIPT_DATETIME) return boost::json::value(sv->toDateTime().FormatISOCombined(' '));
   if (type == SCRIPT_COLLECTION) {
     ScriptCustomCollection* custom = dynamic_cast<ScriptCustomCollection*>(sv.get());
     if (custom) {
-      if (custom->value.size() > 0) {
+      if (custom->key_value.size() > 0) {
+        boost::json::object object;
+        map<String, ScriptValueP>::iterator it;
+        for (it = custom->key_value.begin(); it != custom->key_value.end(); it++) {
+          const std::string& key = it->first.ToStdString();
+          if (object.contains(key)) queue_message(MESSAGE_WARNING, _ERROR_1_("mse map duplicate key", it->first));
+          object.emplace(key, mse_to_json(it->second, set));
+        }
+        return object;
+      }
+      else {
         boost::json::array array;
         for (size_t i = 0; i < custom->value.size(); i++) {
           array.emplace_back(mse_to_json(custom->value[i], set));
         }
         return array;
-      } else if (custom->key_value.size() > 0) {
-        boost::json::object object;
-        map<String, ScriptValueP>::iterator it;
-        for (it = custom->key_value.begin(); it != custom->key_value.end(); it++) {
-          object.emplace(it->first.ToStdString(), mse_to_json(it->second, set));
-        }
-        return object;
       }
     } else {
       ScriptConcatCollection* concat = dynamic_cast<ScriptConcatCollection*>(sv.get());
@@ -926,9 +1089,15 @@ boost::json::value mse_to_json(const ScriptValueP& sv, Set* set, bool suppress_w
           boost::json::object object_a = a.get_object();
           boost::json::object object_b = b.get_object();
           for (auto it = object_b.begin(); it != object_b.end(); ++it) {
-            object_a.emplace(it->key(), it->value());
+            boost::json::string_view key_view = it->key();
+            if (object_a.contains(key_view)) queue_message(MESSAGE_WARNING, _ERROR_1_("mse map duplicate key", String::FromUTF8(key_view.data(), key_view.size())));
+            object_a.emplace(key_view, it->value());
           }
           return object_a;
+        } else if (a.is_object() && b.is_array() && b.as_array().size() == 0) {
+          return a.get_object();
+        } else if (b.is_object() && a.is_array() && a.as_array().size() == 0) {
+          return b.get_object();
         } else {
           queue_message(MESSAGE_ERROR, _ERROR_("json cant concat"));
           return boost::json::value(nullptr);
