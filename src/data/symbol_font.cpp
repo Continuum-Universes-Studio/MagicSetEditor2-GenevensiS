@@ -124,7 +124,12 @@ Image SymbolInFont::getImage(Package& pkg, double size) {
   // scale to match expected size
   Image resampled_image((int) (actual_size.GetWidth()  * size / img_size),
                         (int) (actual_size.GetHeight() * size / img_size), false);
-  if (!resampled_image.Ok()) return Image(1,1);
+  if (!resampled_image.Ok()) {
+    Image fallback(1,1);
+    fallback.InitAlpha();
+    fallback.GetAlpha()[0] = 0;
+    return fallback;
+  }
   resample(img, resampled_image);
   return resampled_image;
 }
@@ -150,7 +155,8 @@ RealSize SymbolInFont::size(Package& pkg, double size) {
     // we don't know what size the image will be
     getBitmap(pkg, size);
   }
-  return wxSize(actual_size * (int) (size) / (int) (img_size));
+  return RealSize(actual_size.GetWidth()  * size / img_size,
+                  actual_size.GetHeight() * size / img_size);
 }
 
 void SymbolInFont::update(Context& ctx) {
@@ -294,7 +300,7 @@ void SymbolFont::draw(RotatedDC& dc, RealRect rect, double scale, const SymbolFo
     SymbolInFont& sym = *dsym.symbol;
     Bitmap bmp = sym.getBitmap(*this, font_size_ext);
     if (!almost_equal(stretch, 1.0)) {
-      bmp = Bitmap(resample(bmp.ConvertToImage(), bmp.GetWidth() * stretch, bmp.GetHeight()));
+      bmp = Bitmap(resample(bmp.ConvertToImage(), lround(bmp.GetWidth() * stretch), bmp.GetHeight()));
     }
     RealSize  bmp_size = dc.trInvS(RealSize(bmp));
     RealPoint bmp_pos  = align_in_rect(font.alignment(), bmp_size, sym_rect);

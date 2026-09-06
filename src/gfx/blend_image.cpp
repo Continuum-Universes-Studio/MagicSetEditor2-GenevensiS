@@ -149,8 +149,10 @@ void set_alpha(Image& img, double alpha) {
     memset(img.GetAlpha(), Byte(0), size);
   }
   else if (alpha > 1.0) {
-    if (!img.HasAlpha()) return;
-    else {
+    if (!img.HasAlpha()) {
+      img.InitAlpha();
+      memset(img.GetAlpha(), Byte(255), size);
+    } else {
       Byte *im = img.GetAlpha();
       for (size_t i = 0 ; i < size ; ++i) {
         im[i] = Byte(min(im[i] * alpha, 255.0));

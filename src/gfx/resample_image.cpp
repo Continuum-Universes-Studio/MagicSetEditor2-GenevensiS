@@ -128,6 +128,8 @@ void resample(const Image& img_in, Image& img_out) {
   resample_and_clip(img_in, img_out, wxRect(0, 0, img_in.GetWidth(), img_in.GetHeight()));
 }
 Image resample(const Image& img_in, int width, int height) {
+  width  = max(1, width);
+  height = max(1, height);
   if (img_in.GetWidth() == width && img_in.GetHeight() == height) {
     return img_in; // already the right size
   } else {

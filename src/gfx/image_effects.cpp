@@ -161,7 +161,7 @@ void blur_image_alpha(Image& img, int center_weight) {
 
 // ----------------------------------------------------------------------------- : Thickening
 
-Byte thicken_pixel_alpha_7x7(std::vector<unsigned char> in, int i, int x, int y, int width, int height) {
+Byte thicken_pixel_alpha_7x7(const std::vector<unsigned char>& in, int i, int x, int y, int width, int height) {
   Byte result = in[i];
   Byte diag = in[i];
   Byte corner = in[i];
@@ -229,7 +229,7 @@ Byte thicken_pixel_alpha_7x7(std::vector<unsigned char> in, int i, int x, int y,
   return result;
 }
 
-Byte thicken_pixel_alpha_5x5(std::vector<unsigned char> in, int i, int x, int y, int width, int height) {
+Byte thicken_pixel_alpha_5x5(const std::vector<unsigned char>& in, int i, int x, int y, int width, int height) {
   Byte result = in[i];
   Byte diag = in[i];
   if (x > 1) {
@@ -267,7 +267,7 @@ Byte thicken_pixel_alpha_5x5(std::vector<unsigned char> in, int i, int x, int y,
   return result;
 }
 
-Byte thicken_pixel_alpha_3x3(std::vector<unsigned char> in, int i, int x, int y, int width, int height) {
+Byte thicken_pixel_alpha_3x3(const std::vector<unsigned char>& in, int i, int x, int y, int width, int height) {
   Byte result = in[i];
   Byte diag = in[i];
   if (x > 0) {
@@ -427,7 +427,7 @@ void downsample_to_alpha(Bitmap& bmp_in, Image& img_out) {
 Image make_stroke_image(Image& img, Color stroke_color, int stroke_radius, int blur_radius) {
   stroke_radius = max(0,min(100,stroke_radius));
   blur_radius   = max(0,min(100,blur_radius));
-  if (!img.HasAlpha()) set_alpha(img, 255);
+  if (!img.HasAlpha()) set_alpha(img, 1.0);
   int margin = blur_radius + stroke_radius;
   int s_width = img.GetWidth() + 2 * margin, s_height = img.GetHeight() + 2 * margin;
   int x_end = s_width - margin;

@@ -115,9 +115,9 @@ Byte blur_pixel_alpha(Byte* in, int x, int y, int width, int height, int center_
 void blur_image_alpha(Image& img, int center_weight = 2);
 
 // Thicken the alpha of a pixel
-Byte thicken_pixel_alpha_3x3(std::vector<Byte> in, int i, int x, int y, int width, int height);
-Byte thicken_pixel_alpha_5x5(std::vector<Byte> in, int i, int x, int y, int width, int height);
-Byte thicken_pixel_alpha_7x7(std::vector<Byte> in, int i, int x, int y, int width, int height);
+Byte thicken_pixel_alpha_3x3(const std::vector<Byte>& in, int i, int x, int y, int width, int height);
+Byte thicken_pixel_alpha_5x5(const std::vector<Byte>& in, int i, int x, int y, int width, int height);
+Byte thicken_pixel_alpha_7x7(const std::vector<Byte>& in, int i, int x, int y, int width, int height);
 // Thicken the alpha channel of an image
 void thicken_image_alpha(Image& img, int radius);
 
