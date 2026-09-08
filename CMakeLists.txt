@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(magicseteditor VERSION 2.6.1 LANGUAGES CXX)
-# ------------------------------------------------------------------------------
-# CPack RPM packaging
-# ------------------------------------------------------------------------------
+project(magicseteditor VERSION 2.6.2)
 
 set(CPACK_PACKAGE_NAME "magicseteditor")
 set(CPACK_PACKAGE_VENDOR "Continuum Universes Studio")
