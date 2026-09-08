@@ -42,9 +42,8 @@ public:
 
   inline Image getImage(const SetP& set) {
     auto imageInputStream = set->openIn(filename);
-    Image img;
-    image_load_file(img, *imageInputStream);
-    if (!img.IsOk()) throw ScriptError(_ERROR_2_("file not found", filename.toStringForKey(), set->relativeFilename()));
+    Image img(*imageInputStream, wxBITMAP_TYPE_ANY);
+    if (!img.IsOk()) throw ScriptError(_ERROR_2_("file not found", filename.toStringForKey(), set));
     return img;
   }
 

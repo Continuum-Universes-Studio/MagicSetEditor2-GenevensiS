@@ -823,8 +823,7 @@ ScriptedImage::ScriptedImage(Set* set, const GeneratedImageP& image) {
 
 Image ScriptedImage::generate(const Options& opt) {
   auto imageInputStream = opt.local_package->openIn(savename);
-  Image img;
-  image_load_file(img, *imageInputStream);
+  Image img(*imageInputStream, wxBITMAP_TYPE_ANY);
 
   if (!img.IsOk()) throw ScriptError(_ERROR_1_("can't import image", loadpath));
 
@@ -865,8 +864,7 @@ ImportedImage::ImportedImage(Set* set, const String& filepath) {
 
 Image ImportedImage::generate(const Options& opt) {
   auto imageInputStream = opt.local_package->openIn(savename);
-  Image img;
-  image_load_file(img, *imageInputStream);
+  Image img(*imageInputStream, wxBITMAP_TYPE_ANY);
 
   if (!img.IsOk()) throw ScriptError(_ERROR_1_("can't import image", loadpath));
 
@@ -905,8 +903,7 @@ DownloadedImage::DownloadedImage(Set* set, const String& url) {
 
 Image DownloadedImage::generate(const Options& opt) {
   auto imageInputStream = opt.local_package->openIn(savename);
-  Image img;
-  image_load_file(img, *imageInputStream);
+  Image img(*imageInputStream, wxBITMAP_TYPE_ANY);
 
   if (!img.IsOk()) throw ScriptError(_ERROR_1_("can't download image", loadpath));
 
