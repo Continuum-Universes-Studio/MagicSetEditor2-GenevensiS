@@ -49,7 +49,9 @@ endif()
 # ------------------------------------------------------------------------------
 
 find_package(wxWidgets 3.3.1 REQUIRED COMPONENTS core base net html)
-include(${wxWidgets_USE_FILE})
+if(wxWidgets_USE_FILE)
+    include(${wxWidgets_USE_FILE})
+endif()
 
 find_package(Boost REQUIRED COMPONENTS regex)
 find_package(PkgConfig REQUIRED)
@@ -183,6 +185,9 @@ if(WIN32)
     target_sources(magicseteditor-cli PRIVATE
         "${PROJECT_SOURCE_DIR}/src/cli/win32_cli_wrapper.cpp"
     )
+
+    target_compile_definitions(magicseteditor-cli PRIVATE WIN32)
+    target_link_options(magicseteditor-cli PRIVATE -mconsole)
 
     add_custom_command(
         TARGET magicseteditor-cli
