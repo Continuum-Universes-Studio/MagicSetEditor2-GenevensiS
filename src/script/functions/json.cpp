@@ -453,7 +453,10 @@ template <typename T>
 void write(boost::json::object& out, const String& name, const T& value) {
   wxStringOutputStream stream;
   Writer writer(stream);
-  writer.indentation = -1000;
+  // Keep the serialized value compact without violating Writer's block
+  // invariant. A negative indentation makes exitBlock() assert as soon as a
+  // non-empty value is written.
+  writer.indentation = 0;
   writer.handle(name, value);
   String string = stream.GetString();
   if (!string.empty()) {

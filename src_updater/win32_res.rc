@@ -7,3 +7,4 @@
 // -------------------------------------------------------- : Icon
 
 updater ICON "updater.ico"
+1 RT_MANIFEST "../resource/win32.manifest"

@@ -404,8 +404,11 @@ void draw3DBorder(DC& dc, int x1, int y1, int x2, int y2) {
 }
 
 void draw_control_box(Window* win, DC& dc, const wxRect& rect, bool focused, bool enabled) {
+  #if defined(__WXMSW__)
+    RECT r;
+  #endif
   #if wxUSE_UXTHEME && defined(__WXMSW__)
-    RECT r = msw_rect(rect, 1,1,1,1);
+    r = msw_rect(rect, 1,1,1,1);
     if (wxUxThemeIsActive()) {
       HTHEME hTheme = (HTHEME)::OpenThemeData(GetHwndOf(win), VSCLASS_EDIT);
       if (hTheme) {
