@@ -7,6 +7,8 @@
 #include <winresrc.h> // include for version info constants
 #include <config.hpp>
 
+1 RT_MANIFEST "win32.manifest"
+
 // -------------------------------------------------------- : Icons
 
 icon/app ICON "icon/app.ico" // has to come first in alphabet!!
