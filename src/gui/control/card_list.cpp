@@ -720,6 +720,7 @@ String CardListBase::OnGetItemText(long pos, long col) const {
     // wx may give us non existing columns!
     return _("");
   }
+  if (pos < 0 || (size_t)pos >= sorted_list.size()) return _ ("");
   ValueP val = getCard(pos)->data[column_fields[col]];
   if (val) return val->toString();
   else     return _("");

@@ -197,11 +197,14 @@ void Keyword::prepare(const vector<KeywordParamP>& param_types, bool force) {
   }
   regex += _("(") + regex_escape(text) + _(")");
   #if USE_BOOST_REGEX
-    regex = _("\\<")
+    // Keep accented Latin letters and combining marks attached to their words.
+    // The regex engine's built-in word boundary treats these as separators.
+    const String word_chars = _("A-Za-z0-9_À-ʯ̀-ͯᴀ-ᶿḀ-ỿⱠ-ⱿꜢ-ꟿꬰ-ꭥ");
+    regex = _("(?<![") + word_chars + _("])") + regex
+          + _("(?![") + word_chars + _("(])"); // '(' starts a parameter, not a keyword ending
   #else
-    regex = _("\\y")
+    regex = _("\\y") + regex + _("(?=$|[^a-zA-Z0-9\\(])");
   #endif
-        + regex + _("(?=$|[^a-zA-Z0-9\\(])"); // only match whole words
   match_re.assign(regex);
   // not valid if it matches "", that would make MSE hang
   valid = !match_re.matches(_(""));

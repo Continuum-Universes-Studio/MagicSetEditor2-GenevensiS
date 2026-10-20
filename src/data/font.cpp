@@ -162,6 +162,10 @@ FontRefP FontRef::make(int add_flags, bool add_underline, bool add_strikethrough
   return f;
 }
 
+// Font names commonly arrive from GTK/fontconfig with the style appended to
+// the family name (for example "DejaVu Sans Bold Italic").  Keep the family
+// name separate and pass the style/weight to wxFont so wxGTK can select the
+// correct face.
 static bool stripFontFaceSuffix(String& familyName, const String& suffix) {
   if (familyName.length() <= suffix.length()) return false;
   if (familyName.Right(suffix.length()).CmpNoCase(suffix) != 0) return false;
@@ -182,11 +186,67 @@ static void applyFontFaceSuffixes(String& familyName, wxFontWeight& weight, wxFo
       style = wxFONTSTYLE_SLANT;
       changed = true;
     }
+    if (stripFontFaceSuffix(familyName, _(" Slanted"))) {
+      style = wxFONTSTYLE_SLANT;
+      changed = true;
+    }
+    // Test longer names before their shorter suffixes (ExtraLight before
+    // Light, and ExtraBold before Bold).
+    if (stripFontFaceSuffix(familyName, _(" ExtraLight"))) {
+      weight = wxFONTWEIGHT_EXTRALIGHT;
+      changed = true;
+    }
+    if (stripFontFaceSuffix(familyName, _(" ExtraBold"))) {
+      weight = wxFONTWEIGHT_EXTRABOLD;
+      changed = true;
+    }
+    if (stripFontFaceSuffix(familyName, _(" SemiBold")) ||
+        stripFontFaceSuffix(familyName, _(" DemiBold"))) {
+      weight = wxFONTWEIGHT_SEMIBOLD;
+      changed = true;
+    }
+    if (stripFontFaceSuffix(familyName, _(" Thin"))) {
+      weight = wxFONTWEIGHT_THIN;
+      changed = true;
+    }
+    if (stripFontFaceSuffix(familyName, _(" Light"))) {
+      weight = wxFONTWEIGHT_LIGHT;
+      changed = true;
+    }
+    if (stripFontFaceSuffix(familyName, _(" Medium"))) {
+      weight = wxFONTWEIGHT_MEDIUM;
+      changed = true;
+    }
+    if (stripFontFaceSuffix(familyName, _(" Heavy")) ||
+        stripFontFaceSuffix(familyName, _(" Black"))) {
+      weight = wxFONTWEIGHT_HEAVY;
+      changed = true;
+    }
     if (stripFontFaceSuffix(familyName, _(" Bold"))) {
       weight = wxFONTWEIGHT_BOLD;
       changed = true;
     }
+    // These are face-name aliases, not weight changes.
+    if (stripFontFaceSuffix(familyName, _(" Regular")) ||
+        stripFontFaceSuffix(familyName, _(" Book")) ||
+        stripFontFaceSuffix(familyName, _(" Roman"))) {
+      weight = wxFONTWEIGHT_NORMAL;
+      changed = true;
+    }
   }
+}
+
+// Construct a wxFont without going through the legacy 6-argument wxFont(...)
+// That constructor silently treats a pointSize of exactly 70 as a request for wxDEFAULT
+static wxFont make_font(int point_size, wxFontFamily family, wxFontStyle style, wxFontWeight weight, bool underlined, const String& face) {
+  wxFont font;
+  font.SetFamily(family);
+  font.SetStyle(style);
+  font.SetWeight(weight);
+  font.SetUnderlined(underlined);
+  if (!face.empty()) font.SetFaceName(face);
+  font.SetPointSize(point_size);
+  return font;
 }
 
 wxFont FontRef::toWxFont(double scale) const {
@@ -213,11 +273,11 @@ wxFont FontRef::toWxFont(double scale) const {
     String familyName = italic_name();
     wxFontStyle italicNameStyle = wxFONTSTYLE_NORMAL;
     applyFontFaceSuffixes(familyName, weight_i, italicNameStyle);
-    font = wxFont(size_i, wxFONTFAMILY_DEFAULT, italicNameStyle, weight_i, underline(), familyName);
+    font = make_font(size_i, wxFONTFAMILY_DEFAULT, italicNameStyle, weight_i, underline(), familyName);
   } else {
     String familyName = name();
     applyFontFaceSuffixes(familyName, weight_i, style_i);
-    font = wxFont(size_i, wxFONTFAMILY_DEFAULT, style_i, weight_i, underline(), familyName);
+    font = make_font(size_i, wxFONTFAMILY_DEFAULT, style_i, weight_i, underline(), familyName);
   }
   // fix size
 #if defined(__WXMSW__) || defined(__WXGTK__)

@@ -251,7 +251,7 @@ public:
   CheckUpdatesTargets check_updates_what;
   CheckUpdates check_updates_when;
   int check_updates_counter;
-
+  int check_updates_last_check;
   // --------------------------------------------------- : Help links
 
   String website_url;

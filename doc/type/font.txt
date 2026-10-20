@@ -6,8 +6,8 @@ A reference to a normal [[type:font]] for drawing text.
 
 --Properties--
 ! Property		Type					Default		Description
-| @name@		[[type:scriptable]] [[type:string]]	''required''	Name of the font as it appears in most text programs.
-| @italic name@		[[type:scriptable]] [[type:string]]	 		Optionally, a different font to use for italic text instead of the normal italic version of the font.
+| @name@		[[type:scriptable]] [[type:string]]	''required''	Name of the font as it appears in most text programs. A trailing @Thin@, @ExtraLight@, @Light@, @Medium@, @SemiBold@, @DemiBold@, @Bold@, @ExtraBold@, @Heavy@, or @Black@ suffix selects that wxWidgets weight; @Italic@, @Oblique@, and @Slanted@ select the corresponding style.
+| @italic name@		[[type:scriptable]] [[type:string]]	 		Optionally, a different font to use for italic text instead of the normal italic version of the font. The same weight and style suffixes are recognized, for example @Noto Serif Light Italic@.
 | @size@		[[type:scriptable]] [[type:double]]	''required''	Size of the font in points on a 96 DPI display.
 | @scale down to@	[[type:double]]				&infin;		Minimum size in points to scale the size down to.
 | @max stretch@		[[type:double]]				@1.0@		Maximum multiplier by which the width of the text is compressed, so @max width: 0.5@ means the text can be compressed to half the normal width.

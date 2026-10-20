@@ -102,7 +102,7 @@ void ItemList::selectItemPos(long pos, bool focus, bool force_focus) {
 
 void ItemList::findSelectedItemPos() {
   // find the position of the selected item
-  long count = GetItemCount();
+  long count = (long)sorted_list.size();
   selected_item_pos = -1;
   for (long pos = 0 ; pos < count ; ++pos) {
     if (getItem(pos) == selected_item) {

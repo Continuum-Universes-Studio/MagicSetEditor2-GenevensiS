@@ -110,6 +110,11 @@ ScriptValueP Context::dependencies(const Dependency& dep, const Script& script) 
   if (level > 400) {
     throw ScriptError(_("Stack overflow during dependency analysis"));
   }
+  // There is no instruction pointer for an empty script.  Avoid evaluating
+  // &script.instructions[0], which asserts with the current libstdc++.
+  if (script.instructions.empty()) {
+    return dependency_dummy;
+  }
   // Dependency analysis proceeds in the same way as normal evaluation.
   // Operator calls will be replaced by "push dummy", we don't care about values.
   // Only the operators left are:
