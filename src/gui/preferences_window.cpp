@@ -242,7 +242,6 @@ DisplayPreferencesPage::DisplayPreferencesPage(Window* parent)
   s3->Add(new wxStaticText(this, wxID_ANY, _LABEL_("zoom")),             0, wxALL & ~wxLEFT,  4);
   s3->AddSpacer(2);
   s3->Add(zoom);
-  s3->Add(new wxStaticText(this, wxID_ANY, _LABEL_("percent of normal")),1, wxALL & ~wxRIGHT, 4);
   s2->Add(s3, 0, wxEXPAND | wxALL, 4);
   s->Add(s2, 0, wxEXPAND | wxALL, 8);
   wxSizer* s4 = new wxStaticBoxSizer(wxVERTICAL, this, _LABEL_("card list display"));

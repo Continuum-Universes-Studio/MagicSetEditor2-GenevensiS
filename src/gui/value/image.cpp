@@ -20,6 +20,68 @@
 
 IMPLEMENT_VALUE_EDITOR(Image) {}
 
+// ----------------------------------------------------------------------------- : Drawing
+
+void ImageValueEditor::draw(RotatedDC& dc) {
+  if (!nativeLook()) {
+    ImageValueViewer::draw(dc);
+    return;
+  }
+  // in the UI (styling or set field) show a preview of the image
+  drawFieldBorder(dc);
+  RealRect rect = dc.getInternalRect();
+  draw_checker(dc, rect); // shows transparency, and a background if there is no image
+  updatePreview(max(0, (int)rect.width), max(0, (int)rect.height));
+  if (preview_bitmap.Ok()) {
+    RealSize size(preview_bitmap.GetWidth(), preview_bitmap.GetHeight());
+    // left aligned, vertically centered
+    dc.DrawBitmap(preview_bitmap, align_in_rect((Alignment)(ALIGN_MIDDLE | ALIGN_LEFT), size, rect));
+  } else {
+    // no image (or it could not be loaded), show a hint
+    dc.SetFont(wxFont(10,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL));
+    dc.SetTextForeground(*wxBLACK);
+    String label = _LABEL_("load image");
+    RealSize text_size = dc.GetTextExtent(label);
+    dc.DrawText(label, align_in_rect(ALIGN_MIDDLE_CENTER, text_size, rect));
+  }
+}
+
+void ImageValueEditor::updatePreview(int w, int h) {
+  if (preview_valid && preview_w == w && preview_h == h) return;
+  // set the cache state first, so a file that fails to load is not retried on every redraw
+  preview_valid = true;
+  preview_w = w;
+  preview_h = h;
+  preview_bitmap = Bitmap();
+  if (value().filename.empty() || w < 1 || h < 1) return;
+  try {
+    auto image_file = getLocalPackage().openIn(value().filename);
+    Image image;
+    if (!image_load_file(image, *image_file) || !image.Ok()) return;
+    // scale to fit, keeping the aspect ratio
+    double scale = min(w / (double)image.GetWidth(), h / (double)image.GetHeight());
+    int new_w = max(1, (int)(image.GetWidth()  * scale));
+    int new_h = max(1, (int)(image.GetHeight() * scale));
+    image.Rescale(new_w, new_h, wxIMAGE_QUALITY_HIGH);
+    preview_bitmap = Bitmap(image);
+  } catch (const Error& e) {
+    handle_error(e);
+  }
+}
+
+void ImageValueEditor::onValueChange() {
+  ImageValueViewer::onValueChange();
+  preview_valid = false;
+  preview_bitmap = Bitmap();
+}
+
+void ImageValueEditor::determineSize(bool) {
+  if (style().height == 0) style().height = 50;
+  bounding_box.height = 50;
+}
+
+// ----------------------------------------------------------------------------- : Events
+
 bool ImageValueEditor::onLeftDClick(const RealPoint&, wxMouseEvent&) {
   String directory = settings.default_image_dir;
   String filename = _("");
@@ -40,11 +102,7 @@ bool ImageValueEditor::onLeftDClick(const RealPoint&, wxMouseEvent&) {
     filename = dlg.GetPath();
     settings.default_image_dir = wxPathOnly(filename);
     wxImage image;
-    {
-      wxLogNull noLog;
-      image = wxImage(filename);
-    }
-    if (!image.Ok()) queue_message(MESSAGE_ERROR, _ERROR_("can't load image"));
+    if (!image_load_file(image, filename)) queue_message(MESSAGE_ERROR, _ERROR_("can't load image"));
     else sliceImage(image, filename, cardname);
   }
   return true;
@@ -54,9 +112,12 @@ void ImageValueEditor::sliceImage(const Image& image, const String& filename, co
   if (!image.Ok()) return;
   // determine import scale based on the user's settings.
   double import_scale = 1.0;
-  StyleSheetP stylesheet = editor().getCard()->stylesheet;
-  if (!stylesheet) stylesheet = editor().getSet()->stylesheet;
-  if (stylesheet) import_scale = settings.importScaleSettingsFor(*stylesheet);
+  const CardP& card = editor().getCard();
+  if (card) {
+    StyleSheetP stylesheet = card->stylesheet;
+    if (!stylesheet) stylesheet = editor().getSet()->stylesheet;
+    if (stylesheet) import_scale = settings.importScaleSettingsFor(*stylesheet);
+  }
   RealSize target_size = RealSize(style().getSize() * import_scale);
   target_size = RealSize((int)target_size.width, (int)target_size.height);
   // mask
@@ -70,7 +131,12 @@ void ImageValueEditor::sliceImage(const Image& image, const String& filename, co
     // store the image into the set
     LocalFileName new_image_file = getLocalPackage().newFileName(field().name, _(".png")); // a new unique name in the package
     Image img = s.getImage();
-    img.SaveFile(getLocalPackage().nameOut(new_image_file), wxBITMAP_TYPE_PNG); // always use PNG images, see #69. Disk space is cheap anyway.
+    String out_path = getLocalPackage().nameOut(new_image_file);
+    // always use PNG images, see #69. Disk space is cheap anyway.
+    if (!retry_io([&]{ return img.SaveFile(out_path, wxBITMAP_TYPE_PNG); })) {
+      queue_message(MESSAGE_ERROR, _ERROR_1_("can't write image to set", out_path));
+      return;
+    }
     addAction(value_action(valueP(), new_image_file));
   }
 }
@@ -82,7 +148,8 @@ bool ImageValueEditor::canCopy() const {
 }
 
 bool ImageValueEditor::canPaste() const {
-  return wxTheClipboard->IsSupported(wxDF_BITMAP) &&
+  return (wxTheClipboard->IsSupported(wxImageDataObject().GetFormat()) ||
+          wxTheClipboard->IsSupported(wxDF_BITMAP)) &&
         !wxTheClipboard->IsSupported(CardsDataObject::format); // we don't want to (accidentally) paste card images
 }
 
@@ -93,24 +160,35 @@ bool ImageValueEditor::doCopy() {
   if (!image_load_file(image, *image_file)) return false;
   // set data
   if (!wxTheClipboard->Open()) return false;
-  bool ok = wxTheClipboard->SetData(new wxBitmapDataObject(image));
+  wxDataObjectComposite* composite = new wxDataObjectComposite();
+  composite->Add(new wxImageDataObject(image), true);
+  composite->Add(new wxBitmapDataObject(image));
+  bool ok = wxTheClipboard->SetData(composite);
   wxTheClipboard->Flush();
   wxTheClipboard->Close();
   return ok;
 }
 
 bool ImageValueEditor::doPaste() {
-  // get bitmap
   if (!wxTheClipboard->Open()) return false;
-  wxBitmapDataObject data;
-  bool ok = wxTheClipboard->GetData(data);
+  // Prefer wxImageDataObject because wxBitmapDataObjectdoes not support transparency
+  Image image;
+  wxImageDataObject image_data;
+  if (wxTheClipboard->IsSupported(image_data.GetFormat()) && wxTheClipboard->GetData(image_data)) {
+    image = image_data.GetImage();
+  } else {
+    wxBitmapDataObject bitmap_data;
+    if (wxTheClipboard->GetData(bitmap_data)) {
+      image = bitmap_data.GetBitmap().ConvertToImage();
+    }
+  }
   wxTheClipboard->Flush();
   wxTheClipboard->Close();
-  if (!ok)  return false;
+  if (!image.Ok()) return false;
   // slice
   CardP card = parent.getCard();
   String cardname = card ? card->identification() : _("clipboard");
-  sliceImage(data.GetBitmap().ConvertToImage(), _("clipboard"), cardname);
+  sliceImage(image, _("clipboard"), cardname);
   return true;
 }
 

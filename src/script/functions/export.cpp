@@ -57,7 +57,9 @@ String get_export_full_path(String& rel_name) {
 void ensure_dir_valid(String& path) {
   if (!wxDirExists(path)) {
     wxFileName filename = path;
-    filename.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL);
+    if (!retry_io([&]{ return filename.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL); })) {
+      throw Error(_("Unable to create export folder for '") + path + _("'"));
+    }
   }
 }
 
@@ -202,7 +204,10 @@ String symbols_to_html(const String& str, SymbolFont& symbol_font, double size) 
       wxFileName fn;
       fn.SetPath(ei.directory_absolute);
       fn.SetFullName(filename);
-      img.SaveFile(fn.GetFullPath());
+      String out_path = fn.GetFullPath();
+      if (!retry_io([&]{ return img.SaveFile(out_path); })) {
+        throw Error(_("Unable to write symbol image file '") + out_path + _("'"));
+      }
       it = ei.exported_images.insert(make_pair(filename, wxSize(img.GetWidth(), img.GetHeight()))).first;
     }
     html += _("<img src='") + filename + _("' alt='") + html_escape(sym.text)
@@ -404,9 +409,16 @@ SCRIPT_FUNCTION(copy_file) {
   ExportInfo& ei = *export_info();
   auto in = ei.export_template->openIn(input);
   ensure_dir_valid(out_path);
-  wxFileOutputStream out(out_path);
-  if (!out.Ok()) throw Error(_("Unable to open file '") + out_path + _("' for output"));
-  out.Write(*in);
+  unique_ptr<wxFileOutputStream> out;
+  retry_io([&]{
+    out = make_unique<wxFileOutputStream>(out_path);
+    return out->Ok();
+  });
+  if (!out->Ok()) throw Error(_("Unable to open file '") + out_path + _("' for output"));
+  out->Write(*in);
+  if (!out->Ok() || (!in->Eof() && in->GetLastError() != wxSTREAM_NO_ERROR)) {
+    throw Error(_("Unable to write file '") + out_path + _("'"));
+  }
   SCRIPT_RETURN(out_name);
 }
 
@@ -419,11 +431,16 @@ SCRIPT_FUNCTION(write_text_file) {
   String out_path = get_export_full_path(file);
   // write
   ensure_dir_valid(out_path);
-  wxFileOutputStream out(out_path);
-  if (!out.Ok()) throw Error(_("Unable to open file '") + out_path + _("' for output"));
-  wxTextOutputStream tout(out);
+  unique_ptr<wxFileOutputStream> out;
+  retry_io([&]{
+    out = make_unique<wxFileOutputStream>(out_path);
+    return out->Ok();
+  });
+  if (!out->Ok()) throw Error(_("Unable to open file '") + out_path + _("' for output"));
+  wxTextOutputStream tout(*out);
   tout.WriteString(BYTE_ORDER_MARK);
   tout.WriteString(input);
+  if (!out->Ok()) throw Error(_("Unable to write file '") + out_path + _("'"));
   SCRIPT_RETURN(file);
 }
 
@@ -446,19 +463,21 @@ SCRIPT_FUNCTION(write_image_file) {
     SCRIPT_PARAM_DEFAULT(double, zoom, 100.0);
     SCRIPT_PARAM_DEFAULT(Degrees, angle, 0.0);
     SCRIPT_PARAM_DEFAULT(double, bleed, 0.0);
+    SCRIPT_PARAM_DEFAULT(bool, dfc, false);
     SCRIPT_PARAM_DEFAULT(bool, use_user_settings, false);
     if (use_user_settings) {
-      // Use the User's Preferences for Export Zoom, Angle and Bleed settings.
+      // Use the User's Preferences for Export Zoom, Angle, Bleed and DFC settings.
       Settings::ExportSettings card_settings = settings.exportSettingsFor(set->stylesheetFor(card->getValue()));
       zoom =  card_settings.zoom;
       angle = card_settings.angle_radians;
       bleed = card_settings.bleed_pixels;
+      dfc = card_settings.dfc_export;
     } else {
-      // Use the provided (or defaulted) Zoom, Angle and Bleed.
+      // Use the provided (or defaulted) Zoom, Angle, Bleed and DFC.
       zoom = zoom / 100.0;
       angle = deg_to_rad(angle);
     }
-    img = export_image(set, card->getValue(), true, zoom, angle, bleed);
+    img = export_image(set, card->getValue(), true, Settings::ExportSettings{zoom, angle, bleed, dfc});
   } else {
     SCRIPT_OPTIONAL_PARAM_(int, width)
     SCRIPT_OPTIONAL_PARAM_(int, height)
@@ -468,7 +487,9 @@ SCRIPT_FUNCTION(write_image_file) {
   if (!img.Ok()) throw Error(_("Unable to generate image for file ") + file);
   // write
   ensure_dir_valid(out_path);
-  img.SaveFile(out_path);
+  if (!retry_io([&]{ return img.SaveFile(out_path); })) {
+    throw Error(_("Unable to write image file '") + out_path + _("'"));
+  }
   ei.exported_images.insert(make_pair(file, wxSize(img.GetWidth(), img.GetHeight())));
   SCRIPT_RETURN(file);
 }

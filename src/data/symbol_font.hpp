@@ -57,9 +57,9 @@ public:
   size_t recognizePrefix(const String& text, size_t start) const;
   
   /// Draw a piece of text
-  void draw(RotatedDC& dc, Context& ctx, const RealRect& rect, double scale, const SymbolFontRef& font, const String& text);
+  void draw(RotatedDC& dc, Context& ctx, const RealRect& rect, double scale, const SymbolFontRef& font, const String& text, Color active_color);
   /// Get information on characters in a string
-  void getCharInfo(RotatedDC& dc, Context& ctx, double font_size, const String& text, vector<CharInfo>& out);
+  void getCharInfo(RotatedDC& dc, Context& ctx, double font_size, const String& text, vector<CharInfo>& out, Color active_color);
   
   /// Draw a piece of text prepared using split
   void draw(RotatedDC& dc, RealRect rect, double scale, const SymbolFontRef& font, const SplitSymbols& symbols);

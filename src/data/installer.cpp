@@ -17,6 +17,8 @@
 #include <util/platform.hpp>
 #include <gui/util.hpp> // load_resource_image
 #include <wx/webrequest.h>
+#include <wx/evtloop.h>
+#include <wx/timer.h>
 #include <wx/filename.h>
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
@@ -195,8 +197,17 @@ void Installer::addPackage(Packaged& package) {
   for (FileInfos::const_iterator it = file_infos.begin() ; it != file_infos.end() ; ++it) {
     String file = it->first;
     auto in_stream = package.openIn(file);
-    auto out_stream = openOut(name + _("/") + file);
-    out_stream->Write(*in_stream);
+    unique_ptr<wxOutputStream> out_stream;
+    retry_io([&]{
+      out_stream = openOut(name + _("/") + file);
+      return out_stream->IsOk();
+    });
+    if (out_stream->IsOk()) {
+      out_stream->Write(*in_stream);
+    }
+    if (!out_stream->IsOk() || (!in_stream->Eof() && in_stream->GetLastError() != wxSTREAM_NO_ERROR)) {
+      throw PackageError(_("Unable to add file '") + file + _("' to installer: the file could not be written."));
+    }
   }
 }
 
@@ -326,21 +337,98 @@ void InstallablePackage::determineStatus() {
   }
 }
 
-bool InstallablePackage::ensureIsDownloaded() {
+bool InstallablePackage::ensureIsDownloaded(const DownloadProgressCallback& progress) {
   if (!installer) return true; // Nothing to download
   if (installer->installer) return true; // Already loaded
   if (installer->installer_url.empty()) return false; // No URL
   // download installer
-  wxWebRequestSync request = wxWebSessionSync::GetDefault().CreateRequest(installer->installer_url);
-  auto const result = request.Execute();
-  if (!result) {
+  wxEvtHandler handler;
+  wxWebRequest request = wxWebSession::GetDefault().CreateRequest(&handler, installer->installer_url);
+  if (!request.IsOk()) {
     throw Error(_ERROR_2_("can't download installer", description->name, installer->installer_url));
-  } 
-  wxInputStream* is(request.GetResponse().GetStream());
-  installer->installer_file = wxFileName::CreateTempFileName(_("mse-installer"));
-  wxFileOutputStream os(installer->installer_file);
-  os.Write(*is);
-  os.Close();
+  }
+  request.SetStorage(wxWebRequest::Storage_None);
+  String installer_file = wxFileName::CreateTempFileName(_("mse-installer"));
+  unique_ptr<wxFileOutputStream> os;
+  retry_io([&]{
+    os = make_unique<wxFileOutputStream>(installer_file);
+    return os->IsOk();
+  });
+  if (!os->IsOk()) {
+    os.reset();
+    remove_file(installer_file);
+    throw Error(_ERROR_2_("can't download installer", description->name, installer->installer_url));
+  }
+  // state shared with the event handlers below
+  bool write_failed  = false; // could not write to the temporary file
+  bool unauthorized  = false; // the server wants credentials, we have none
+  bool user_aborted  = false; // the progress callback asked us to stop
+  bool cancel_sent   = false;
+  bool finished      = false; // the request has reached a final state
+  bool in_callback   = false; // guard against re-entrancy, the callback may process events
+  wxEventLoop loop;
+  handler.Bind(wxEVT_WEBREQUEST_DATA, [&](wxWebRequestEvent& ev) {
+    if (write_failed) return;
+    os->Write(ev.GetDataBuffer(), ev.GetDataSize());
+    if (!os->IsOk() || os->LastWrite() != ev.GetDataSize()) write_failed = true;
+  });
+  handler.Bind(wxEVT_WEBREQUEST_STATE, [&](wxWebRequestEvent& ev) {
+    switch (ev.GetState()) {
+      case wxWebRequest::State_Unauthorized:
+        unauthorized = true; // cancelled by the timer
+        break;
+      case wxWebRequest::State_Completed:
+      case wxWebRequest::State_Failed:
+      case wxWebRequest::State_Cancelled:
+        finished = true;
+        loop.Exit();
+        break;
+      default:
+        break;
+    }
+  });
+  // report progress and handle cancelling from a timer
+  wxTimer timer(&handler);
+  handler.Bind(wxEVT_TIMER, [&](wxTimerEvent&) {
+    if (finished || cancel_sent || in_callback) return;
+    if (write_failed || unauthorized) {
+      cancel_sent = true;
+      request.Cancel();
+      return;
+    }
+    if (progress) {
+      in_callback = true;
+      bool keep_going = progress(request.GetBytesReceived(), request.GetBytesExpectedToReceive());
+      in_callback = false;
+      if (!keep_going && !finished) {
+        user_aborted = true;
+        cancel_sent  = true;
+        request.Cancel();
+      }
+    }
+  });
+  // go
+  if (progress && !progress(0, -1)) {
+    os.reset();
+    remove_file(installer_file);
+    return false;
+  }
+  request.Start();
+  timer.Start(100);
+  loop.Run();
+  timer.Stop();
+  // check the result
+  bool ok = !user_aborted && !write_failed
+         && request.GetState() == wxWebRequest::State_Completed
+         && request.GetResponse().IsOk()
+         && request.GetResponse().GetStatus() < 400;
+  os.reset();
+  if (!ok) {
+    remove_file(installer_file);
+    if (user_aborted) return false;
+    throw Error(_ERROR_2_("can't download installer", description->name, installer->installer_url));
+  }
+  installer->installer_file = installer_file;
   // open installer
   installer->installer = make_intrusive<Installer>();
   installer->installer->open(installer->installer_file);

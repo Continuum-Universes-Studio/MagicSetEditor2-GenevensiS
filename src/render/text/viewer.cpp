@@ -320,7 +320,9 @@ size_t TextViewer::firstVisibleLine() const {
 }
 
 void TextViewer::scrollTo(size_t line_id) {
-  scrollBy(-lines.at(line_id).top);
+  if (lines.empty()) return;
+  if (line_id >= lines.size()) line_id = lines.size() - 1;
+  scrollBy(-lines[line_id].top);
 }
 void TextViewer::scrollBy(double delta) {
   if (delta == 0) return;
@@ -473,6 +475,10 @@ void TextViewer::prepareLines(RotatedDC& dc, const String& text, TextStyle& styl
     if (style.alignment.isScripted()) {
       style.layout = extractLayoutInfo();
       style.alignment.update(ctx); // allow this to affect the alignment
+    }
+    if (style.direction.isScripted()) {
+      style.layout = extractLayoutInfo();
+      style.direction.update(ctx); // allow this to affect the direction
     }
     if (!(style.paragraph_height <= 0 && (style.alignment & (ALIGN_MIDDLE | ALIGN_BOTTOM)))) {
       break; // no vertical shift to account for; one pass is enough
@@ -714,7 +720,7 @@ bool TextViewer::prepareLinesAtScale(RotatedDC& dc, const vector<CharInfo>& char
     } else if (c.break_after == LineBreak::SPACE && style.field().multi_line) {
       // Soft break == end of word
       accept_word = true;
-    } else if (c.break_after == LineBreak::MAYBE && style.direction == TOP_TO_BOTTOM) {
+    } else if (c.break_after == LineBreak::MAYBE && style.direction() == TOP_TO_BOTTOM) {
       break_now    = true;
       accept_word  = true;
       hide_breaker = false;

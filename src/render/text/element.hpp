@@ -93,9 +93,9 @@ private:
 /// A text element that uses a symbol font
 class SymbolTextElement : public TextElement {
 public:
-  SymbolTextElement(const String& content, size_t start, size_t end, const SymbolFontRef& font, Context* ctx)
+  SymbolTextElement(const String& content, size_t start, size_t end, const SymbolFontRef& font, Context* ctx, double active_font_size, Color active_font_color)
     : TextElement(start, end), content(content)
-    , font(font), ctx(*ctx)
+    , font(font), ctx(*ctx), active_font_size(active_font_size), active_font_color(active_font_color)
   {}
   
   void draw(RotatedDC& dc, double scale, const RealRect& rect, const double* xs, DrawWhat what, size_t start, size_t end, bool native_look) const override;
@@ -106,6 +106,8 @@ private:
   String content;
   const SymbolFontRef& font; // owned by TextStyle
   Context& ctx;
+  double active_font_size; ///< Effective font size, taking any enclosing <size> tag into account
+  Color active_font_color; ///< Effective text color, taking any enclosing <color> tag into account
 };
 
 // ----------------------------------------------------------------------------- : CompoundTextElement

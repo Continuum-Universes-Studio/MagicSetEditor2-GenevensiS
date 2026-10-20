@@ -10,6 +10,7 @@
 #include <gfx/gfx.hpp>
 #include <data/symbol_font.hpp>
 #include <data/stylesheet.hpp>
+#include <data/set.hpp>
 #include <util/dynamic_arg.hpp>
 #include <util/io/package_manager.hpp>
 #include <util/rotation.hpp>
@@ -77,23 +78,27 @@ public:
   /** This is the size of the resulting image, it does NOT convert back to internal coordinates */
   RealSize size(Package& pkg, double size);
   
-  void update(Context& ctx);
-  
-  String           code;      ///< Code for this symbol
-  Scriptable<bool> enabled;    ///< Is this symbol enabled?
-  bool             regex;      ///< Should this symbol be matched by a regex?
-  int              draw_text;    ///< The index of the captured regex expression to draw, or -1 to not draw text
-  Regex            code_regex;  ///< Regex for matching the symbol code
-  FontRefP         text_font;    ///< Font to draw text in.
+  /// Update scripts, local_package may be null
+  void update(Context& ctx, Package* local_package);
+
+  String           code;            ///< Code for this symbol
+  Scriptable<bool> enabled;         ///< Is this symbol enabled?
+  Scriptable<bool> preview_enabled; ///< Should this symbol get a preview bitmap in the insert symbol menu?
+  bool             regex;           ///< Should this symbol be matched by a regex?
+  int              draw_text;       ///< The index of the captured regex expression to draw, or -1 to not draw text
+  Regex            code_regex;      ///< Regex for matching the symbol code
+  FontRefP         text_font;       ///< Font to draw text in.
   Alignment        text_alignment;
   double           text_margin_left;
   double           text_margin_right;
   double           text_margin_top;
   double           text_margin_bottom;
 private:
-  ScriptableImage  image;      ///< The image for this symbol
-  double           img_size;    ///< Font size used by the image
-  wxSize           actual_size;  ///< Actual image size, only known after loading the image
+  ScriptableImage  image;           ///< The image for this symbol
+  double           img_size;        ///< Font size used by the image
+  wxSize           actual_size;     ///< Actual image size, only known after loading the image
+  Package*         local_package;   ///< The set the context belongs to, to load images stored in set fields, only valid right after an update(), don't keep it around
+
   /// Cached bitmaps for different sizes
   map<double, Bitmap> bitmaps;
   
@@ -102,12 +107,14 @@ private:
 
 SymbolInFont::SymbolInFont()
   : enabled(true)
+  , preview_enabled(true)
   , regex(false)
   , draw_text(-1)
   , text_alignment(ALIGN_MIDDLE_CENTER)
   , text_margin_left(0), text_margin_right(0)
   , text_margin_top(0),  text_margin_bottom(0)
   , actual_size(0,0)
+  , local_package(nullptr)
 {
   assert(symbol_font_for_reading());
   img_size = symbol_font_for_reading()->img_size;
@@ -119,7 +126,7 @@ Image SymbolInFont::getImage(Package& pkg, double size) {
   if (!image.isReady()) {
     throw Error(_("No image specified for symbol with code '") + code + _("' in symbol font."));
   }
-  Image img = image.generate(GeneratedImage::Options(0, 0, &pkg));
+  Image img = image.generate(GeneratedImage::Options(0, 0, &pkg, local_package));
   actual_size = wxSize(img.GetWidth(), img.GetHeight());
   // scale to match expected size
   Image resampled_image((int) (actual_size.GetWidth()  * size / img_size),
@@ -147,7 +154,7 @@ Bitmap SymbolInFont::getBitmap(Package& pkg, wxSize size) {
   if (!image.isReady()) {
     throw Error(_("No image specified for symbol with code '") + code + _("' in symbol font."));
   }
-  return Bitmap( image.generate(GeneratedImage::Options(size.x, size.y, &pkg, nullptr, ASPECT_BORDER)) );
+  return Bitmap( image.generate(GeneratedImage::Options(size.x, size.y, &pkg, local_package, ASPECT_BORDER)) );
 }
 
 RealSize SymbolInFont::size(Package& pkg, double size) {
@@ -159,19 +166,33 @@ RealSize SymbolInFont::size(Package& pkg, double size) {
                   actual_size.GetHeight() * size / img_size);
 }
 
-void SymbolInFont::update(Context& ctx) {
+void SymbolInFont::update(Context& ctx, Package* local_package) {
+  this->local_package = local_package;
   if (image.update(ctx)) {
     // image has changed, cache is no longer valid
     bitmaps.clear();
+    actual_size = wxSize(0,0); // the new image can have a different size, measure it again
   }
   enabled.update(ctx);
+  preview_enabled.update(ctx);
   if (text_font)
     text_font->update(ctx);
 }
+
+/// The set the context belongs to, or nullptr if there is none, to load set image fields
+static Package* local_package_of(Context& ctx) {
+  try {
+    return from_script<Set*>(ctx.getVariable(_("set")));
+  } catch (const ScriptError&) {
+    return nullptr;
+  }
+}
+
 void SymbolFont::update(Context& ctx) const {
+  Package* local_package = local_package_of(ctx); // once, not for each symbol
   // update all symbol-in-fonts
   FOR_EACH_CONST(sym, symbols) {
-    sym->update(ctx);
+    sym->update(ctx, local_package);
   }
 }
 
@@ -190,6 +211,7 @@ IMPLEMENT_REFLECTION(SymbolInFont) {
   REFLECT(text_margin_bottom);
   REFLECT(image);
   REFLECT(enabled);
+  REFLECT(preview_enabled);
   REFLECT_N("image_font_size", img_size);
 }
 
@@ -275,8 +297,10 @@ SymbolInFont* SymbolFont::defaultSymbol() const {
 
 // ----------------------------------------------------------------------------- : SymbolFont : drawing
 
-void SymbolFont::draw(RotatedDC& dc, Context& ctx, const RealRect& rect, double scale, const SymbolFontRef& font, const String& text) {
+void SymbolFont::draw(RotatedDC& dc, Context& ctx, const RealRect& rect, double scale, const SymbolFontRef& font, const String& text, Color active_color) {
   SplitSymbols symbols;
+  // expose the text's effective color, taking into account the <color> tags
+  ctx.setVariable(_("active_color"), to_script(active_color));
   update(ctx);
   split(text, symbols);
   draw(dc, rect, scale, font, symbols);
@@ -422,8 +446,9 @@ Image SymbolFont::getImage(double font_size, const DrawableSymbol& sym) {
 
 // ----------------------------------------------------------------------------- : SymbolFont : sizes
 
-void SymbolFont::getCharInfo(RotatedDC& dc, Context& ctx, double font_size, const String& text, vector<CharInfo>& out) {
+void SymbolFont::getCharInfo(RotatedDC& dc, Context& ctx, double font_size, const String& text, vector<CharInfo>& out, Color active_color) {
   SplitSymbols symbols;
+  ctx.setVariable(_("active_color"), to_script(active_color));
   update(ctx);
   split(text, symbols);
   getCharInfo(dc, font_size, symbols, out);
@@ -574,7 +599,7 @@ wxMenuItem* InsertSymbolMenu::makeMenuItem(wxMenu* parent, int first_id, SymbolF
         }
       }
     }
-    if (symbol) {
+    if (symbol && symbol->preview_enabled()) {
       item->SetBitmap(symbol->getBitmap(font, wxSize(16,16)));
     } else {
       item->SetBitmap(wxNullBitmap);

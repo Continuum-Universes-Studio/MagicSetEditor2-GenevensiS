@@ -409,10 +409,6 @@ Image BleedEdgedImage::generate(const Options& opt) {
   // create enlarged image
   Image base_img = base_image->generate(opt);
   int w = base_img.GetWidth(), h = base_img.GetHeight();
-  if (w <= 3 || h <= 3) {
-    queue_message(MESSAGE_ERROR, _("Image too small to add bleed edge"));
-    return base_img;
-  }
   bool is_landscape = w > h;
   int dw = int(w * (horizontal_size > 0.0 ? horizontal_size : is_landscape ? 0.037 : 0.048));
   int dh = int(h * (vertical_size   > 0.0 ? vertical_size   : is_landscape ? 0.048 : 0.037));
@@ -436,67 +432,8 @@ Image BleedEdgedImage::generate(const Options& opt) {
   }
   // paste original image
   img.Paste(base_img, dw, dh, wxIMAGE_ALPHA_BLEND_COMPOSE);
-  int pixel, mirror, x_start, y_start, x_size, y_size;
-  // fill left border
-  x_start = 0;
-  y_start = dh;
-  x_size = dw;
-  y_size = height - dh - dh;
-  for (int y = 0; y < y_size; ++y) {
-    for (int x = 0; x < x_size; ++x) {
-      pixel = x_start + x + (y_start + y) * width;
-      mirror = 2 * dw - x + (y_start + y) * width;
-      pixels[3 * pixel + 0] = pixels[3 * mirror + 0];
-      pixels[3 * pixel + 1] = pixels[3 * mirror + 1];
-      pixels[3 * pixel + 2] = pixels[3 * mirror + 2];
-      alpha[pixel] = alpha[mirror];
-    }
-  }
-  // fill right border
-  x_start = width - dw;
-  y_start = dh;
-  x_size = dw;
-  y_size = height - dh - dh;
-  for (int y = 0; y < y_size; ++y) {
-    for (int x = 0; x < x_size; ++x) {
-      pixel =        x_start + x + (y_start + y) * width;
-      mirror = - 2 + x_start - x + (y_start + y) * width;
-      pixels[3 * pixel + 0] = pixels[3 * mirror + 0];
-      pixels[3 * pixel + 1] = pixels[3 * mirror + 1];
-      pixels[3 * pixel + 2] = pixels[3 * mirror + 2];
-      alpha[pixel] = alpha[mirror];
-    }
-  }
-  // fill top border
-  x_start = 0;
-  y_start = 0;
-  x_size = width;
-  y_size = dh;
-  for (int y = 0; y < y_size; ++y) {
-    for (int x = 0; x < x_size; ++x) {
-      pixel =  x_start + x + (y_start + y) * width;
-      mirror = x_start + x + ( 2 * dh - y) * width;
-      pixels[3 * pixel + 0] = pixels[3 * mirror + 0];
-      pixels[3 * pixel + 1] = pixels[3 * mirror + 1];
-      pixels[3 * pixel + 2] = pixels[3 * mirror + 2];
-      alpha[pixel] = alpha[mirror];
-    }
-  }
-  // fill bottom border
-  x_start = 0;
-  y_start = height - dh;
-  x_size = width;
-  y_size = dh;
-  for (int y = 0; y < y_size; ++y) {
-    for (int x = 0; x < x_size; ++x) {
-      pixel =  x_start + x + (      y_start + y) * width;
-      mirror = x_start + x + (- 2 + y_start - y) * width;
-      pixels[3 * pixel + 0] = pixels[3 * mirror + 0];
-      pixels[3 * pixel + 1] = pixels[3 * mirror + 1];
-      pixels[3 * pixel + 2] = pixels[3 * mirror + 2];
-      alpha[pixel] = alpha[mirror];
-    }
-  }
+  // add bleed edge
+  if (!mirror_bleed_edge(img, dw, dh)) return base_img; // too small, error already reported
   // transfer metadata
   if (base_img.HasOption(wxIMAGE_OPTION_PNG_DESCRIPTION)) {
     String metadata = transformAllEncodedRects(base_img.GetOption(wxIMAGE_OPTION_PNG_DESCRIPTION), RealRect::translate, dw, dh);
@@ -605,10 +542,10 @@ UInt gaussian_blur(Byte* in, UInt* out, int w, int h, double radius) {
   memset(blur_x.get(), 0, w*h*sizeof(UInt));
   UInt total_x = 0;
   {
-    double sigma = radius * w;
+    double sigma = max(0.5, min(radius * w, 64.0));
     double mult = (1 << 8) / (sqrt(2 * M_PI) * sigma);
     double sigsqr2 = 1 / (2 * sigma * sigma);
-    int range = min(w, (int)(3*sigma));
+    int range = radius > 0 ? min(w, (int)(3*sigma)) : 0;
     for (int d = -range ; d <= range ; ++d) {
       UInt factor = (int)( mult * exp(-d * d * sigsqr2) );
       total_x += factor;
@@ -626,10 +563,10 @@ UInt gaussian_blur(Byte* in, UInt* out, int w, int h, double radius) {
   memset(out, 0, w*h*sizeof(UInt));
   UInt total_y = 0;
   {
-    double sigma = radius * h;
+    double sigma = max(0.5, min(radius * h, 64.0));
     double mult = (1 << 8) / (sqrt(2 * M_PI) * sigma);
     double sigsqr2 = 1 / (2 * sigma * sigma);
-    int range = min(h, (int)(3*sigma));
+    int range = radius > 0 ? min(h, (int)(3*sigma)) : 0;
     for (int d = -range ; d <= range ; ++d) {
       UInt factor = (UInt)( mult * exp(-d * d * sigsqr2) );
       total_y += factor;
@@ -649,7 +586,7 @@ UInt gaussian_blur(Byte* in, UInt* out, int w, int h, double radius) {
 Image DropShadowImage::generate(const Options& opt) {
   // sub image
   Image img = image->generate(opt);
-  if (!img.HasAlpha()) {
+  if (!img.IsOk() || !img.HasAlpha()) {
     // no alpha, there is nothing we can do
     return img;
   }
@@ -664,7 +601,7 @@ Image DropShadowImage::generate(const Options& opt) {
   int x_start = max(0,   dw), y_start = max(0,   dh);
   int x_end   = min(w, w+dw), y_end   = min(h, h+dh);
   int delta = dw + w * dh;
-  int sa = (int)(shadow_alpha * (1 << 16));
+  int sa = (int)(max(0.0, min(1.0, shadow_alpha)) * (1 << 16));
   for (int y = y_start ; y < y_end ; ++y) {
     for (int x = x_start ; x < x_end ; ++x) {
       int p  = x + y * w; // pixel we are working on
@@ -816,9 +753,12 @@ ScriptedImage::ScriptedImage(Set* set, const GeneratedImageP& image) {
 
   // add the file to the set
   LocalFileName new_image_file = set->newFileName(_("scripted_image"), _(".png"));
+  String out_path = set->nameOut(new_image_file);
+  if (!retry_io([&]{ return img.SaveFile(out_path, wxBITMAP_TYPE_PNG); })) {
+    throw ScriptError(_ERROR_1_("can't write image to set", out_path));
+  }
   savename = new_image_file.toStringForWriting();
   loadpath = savename;
-  img.SaveFile(set->nameOut(new_image_file), wxBITMAP_TYPE_PNG);
 }
 
 Image ScriptedImage::generate(const Options& opt) {
@@ -854,13 +794,15 @@ ImportedImage::ImportedImage(Set* set, const String& filepath) {
 
   // is the file an image?
   Image img;
-  img.LoadFile(loadpath);
-  if (!img.IsOk()) throw ScriptError(_ERROR_1_("import not image", loadpath));
+  if (!image_load_file(img, loadpath) || !img.IsOk()) throw ScriptError(_ERROR_1_("import not image", loadpath));
 
   // add the file to the set
   LocalFileName new_image_file = set->newFileName(savename, _(".png"));
+  String out_path = set->nameOut(new_image_file);
+  if (!retry_io([&]{ return img.SaveFile(out_path, wxBITMAP_TYPE_PNG); })) {
+    throw ScriptError(_ERROR_1_("can't write image to set", out_path));
+  }
   savename = new_image_file.toStringForWriting();
-  img.SaveFile(set->nameOut(new_image_file), wxBITMAP_TYPE_PNG);
 }
 
 Image ImportedImage::generate(const Options& opt) {
@@ -899,8 +841,11 @@ DownloadedImage::DownloadedImage(Set* set, const String& url) {
   
   // add the file to the set
   LocalFileName new_image_file = set->newFileName(savename, _(".png"));
+  String out_path = set->nameOut(new_image_file);
+  if (!retry_io([&]{ return wnd.image_out.SaveFile(out_path, wxBITMAP_TYPE_PNG); })) {
+    throw ScriptError(_ERROR_1_("can't write image to set", out_path));
+  }
   savename = new_image_file.toStringForWriting();
-  wnd.image_out.SaveFile(set->nameOut(new_image_file), wxBITMAP_TYPE_PNG);
 }
 
 Image DownloadedImage::generate(const Options& opt) {

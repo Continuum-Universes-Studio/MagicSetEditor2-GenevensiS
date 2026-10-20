@@ -56,8 +56,8 @@ TextFieldP TextCtrl::getFieldP() {
 void TextCtrl::updateSize() {
   wxSize cs = GetClientSize();
   ValueViewer& viewer = *viewers.front();
-  viewer.bounding_box.width  = cs.GetWidth()  - 2;
-  viewer.bounding_box.height = cs.GetHeight() - 2;
+  viewer.bounding_box.width  = max(1, cs.GetWidth()  - 2);
+  viewer.bounding_box.height = max(1, cs.GetHeight() - 2);
   viewers.front()->getEditor()->determineSize(true);
   InvalidateBestSize();
 }

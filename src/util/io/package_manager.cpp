@@ -230,9 +230,9 @@ void PackageManager::findAllInstalledPackages(vector<InstallablePackageP>& packa
   sort(packages);
 }
 
-bool PackageManager::install(const InstallablePackage& package) {
+bool PackageManager::install(const InstallablePackage& package, const InstallProgressCallback& progress) {
   bool install_local = package.has(PACKAGE_ACT_LOCAL);
-  return (install_local ? local : global).install(package);
+  return (install_local ? local : global).install(package, progress);
 }
 
 // ----------------------------------------------------------------------------- : PackageDirectory
@@ -272,7 +272,7 @@ void PackageDirectory::deleteEmptyFolders() {
     if (!wxDir::Exists(file)) continue;
     wxDir outerDir(file);
     if (!outerDir.HasFiles() && !outerDir.HasSubDirs()) {
-      wxRmdir(file);
+      retry_io([&]{ return wxRmdir(file); });
     }
   }
 }
@@ -421,14 +421,14 @@ String PackageDirectory::databaseFile() {
 
 // ----------------------------------------------------------------------------- : PackageDirectory : installing
 
-bool PackageDirectory::install(const InstallablePackage& package) {
+bool PackageDirectory::install(const InstallablePackage& package, const InstallProgressCallback& progress) {
   String n = name(package.description->name);
   if (package.action & PACKAGE_ACT_REMOVE) {
     if (!remove_file_or_dir(n)) return false;
     removeFromDatabase(package.description->name);
   } else if (package.action & PACKAGE_ACT_INSTALL) {
     if (!remove_file_or_dir(n + _(".new"))) return false;
-    bool ok = actual_install(package, n + _(".new"));
+    bool ok = actual_install(package, n + _(".new"), progress);
     if (!ok) return false;
     move_ignored_files(n, n + _(".new"), package.description->read_only_files); // copy over files from the old installed version to the new one
     if (!remove_file_or_dir(n)) return false;
@@ -440,7 +440,7 @@ bool PackageDirectory::install(const InstallablePackage& package) {
   return true;
 }
 
-bool PackageDirectory::actual_install(const InstallablePackage& package, const String& install_dir) {
+bool PackageDirectory::actual_install(const InstallablePackage& package, const String& install_dir, const InstallProgressCallback& progress) {
   String name = package.description->name;
   if (!package.installer->installer) {
     queue_message(MESSAGE_ERROR, _("Installer not found for package: ") + name);
@@ -449,6 +449,14 @@ bool PackageDirectory::actual_install(const InstallablePackage& package, const S
   Installer& installer = *package.installer->installer;
   // install files
   const Packaged::FileInfos& file_infos = installer.getFileInfos();
+  // count the files that belong to this package, so we can report progress
+  int files_total = 0, files_done = 0;
+  if (progress) {
+    for (Packaged::FileInfos::const_iterator it = file_infos.begin() ; it != file_infos.end() ; ++it) {
+      if (is_substr_i(it->first,0,name)) ++files_total;
+    }
+    progress(files_done, files_total);
+  }
   for (Packaged::FileInfos::const_iterator it = file_infos.begin() ; it != file_infos.end() ; ++it) {
     String file = it->first;
     if (!is_substr_i(file,0,name)) continue; // not the right package
@@ -457,12 +465,23 @@ bool PackageDirectory::actual_install(const InstallablePackage& package, const S
     create_parent_dirs(local_file);
     // copy file
     auto in_stream = installer.openIn(file);
-    wxFileOutputStream out_stream(local_file);
-    if (!out_stream.IsOk()) {
-      int act = wxMessageBox(_ERROR_1_("cannot create file", file), _TITLE_("cannot create file"), wxICON_ERROR | wxYES_NO);
+    unique_ptr<wxFileOutputStream> out_stream;
+    retry_io([&]{
+      out_stream = make_unique<wxFileOutputStream>(local_file);
+      return out_stream->IsOk();
+    });
+    if (out_stream->IsOk()) {
+      out_stream->Write(*in_stream);
+    }
+    if (!out_stream->IsOk() || (!in_stream->Eof() && in_stream->GetLastError() != wxSTREAM_NO_ERROR)) {
+      out_stream.reset();
+      remove_file(local_file);
+      int act = wxMessageBox(_ERROR_1_("cannot create file", file), _TITLE_("cannot create file"), wxICON_ERROR | wxYES_NO, wxGetActiveWindow());
       if (act == wxNO) return false;
     }
-    out_stream.Write(*in_stream);
+    // report progress
+    ++files_done;
+    if (progress) progress(files_done, files_total);
   }
   // update package database
   // TODO: bless the package?

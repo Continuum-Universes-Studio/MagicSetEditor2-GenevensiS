@@ -318,9 +318,6 @@ help:
 	app language:
 		참고: 변경 사항을 적용하려면
 		MSE를 다시 시작해야 합니다.
-	zoom export:
-		끄면 카드가 100% 크기 및 일반
-		회전으로 내보내지고 복사됩니다.
 
 	# apprentice export
 	set code:							세트 코드는 Apprentice이 세트를 참조하는 데 사용하는 두 문자 코드입니다.
@@ -356,6 +353,10 @@ help:
 	difference:							이 모양이 아래에 있는 모양과 겹치는 영역을 삭제합니다.
 	overlap:							이 모양은 아래 모양 위에 배치됩니다.
 	border:								이 모양을 테두리로 그립니다.
+	#TODO: Localize
+	fill:								Draws this shape with the fill color gradient
+	#TODO: Localize
+	accent:								Draws this shape with the accent color
 
 	# shape manipulation
 	drag to shear:						선택한 %s를 드래그하여 기울이기
@@ -438,6 +439,10 @@ tool:
 	difference:							차이점
 	overlap:							겹치다
 	border:								국경
+	#TODO: Localize
+	fill:								Fill
+	#TODO: Localize
+	accent:								Accent
 
 	ellipse:							타원
 	rectangle:							직사각형
@@ -539,6 +544,10 @@ tooltip:
 	difference:							아래 모양의 차이
 	overlap:							다른 도형 위에 배치
 	border:								테두리 모양
+	#TODO: Localize
+	fill:								Draw as the fill color gradient
+	#TODO: Localize
+	accent:								Draw as the accent color
 
 	ellipse:							원 / 타원
 	rectangle:							정사각형 / 직사각형
@@ -673,7 +682,6 @@ label:
 	export around 300:					Around 300 DPI
 	export force 300:					Force 300 DPI
 	export force 150:					Force 150 DPI
-	percent of normal:					정상 크기의 퍼센트
 	external programs:					외부 프로그램
 	apprentice:							&Apprentice:
 	#TODO: Localize
@@ -758,7 +766,6 @@ label:
 	zoom amount:						줌
 	zoom amount x:						줌 &X
 	zoom amount y:						줌 &Y
-	zoom %:								%
 	filter:								필터
 	sharpen filter:						필터를 선명하게
 	#TODO: Localize Section
@@ -793,6 +800,24 @@ label:
 	updates found:
 		Updates have been found.
 		Would you like to open the package manager?
+	#TODO: Localize
+	downloading updates:				Downloading packages (%s of %s)
+	#TODO: Localize
+	downloaded updates:					Downloaded %s of %s (%s%%)
+	#TODO: Localize
+	downloaded updates unknown:			Downloaded %s of unknown total
+	#TODO: Localize
+	installing updates:					Updating packages (%s of %s)
+	#TODO: Localize
+	installed updates:					Writing file %s of %s (%s%%)
+	#TODO: Localize
+	connecting updates:					Connecting...
+	#TODO: Localize
+	removing updates:					Removing Files...
+	#TODO: Localize
+	updating cards:						Updating Cards...
+	#TODO: Localize
+	current package:					Current package: %s
 
 	installed version:					설치된 버전:
 	installable version:				최신 버전:
@@ -804,6 +829,8 @@ label:
 
 	#TODO: Localize
 	load image:							Double click to load image
+	#TODO: Localize
+	edit symbol:						Double click to edit symbol
 
 	# print dialog
 	#TODO: Localize section
@@ -1107,6 +1134,8 @@ action:
 	reorder parts:						재 주문
 	change combine mode:				결합 모드 변경
 	change shape name:					도형 이름 변경
+	#TODO: Localize
+	change region:						Change region type
 	group parts:						그룹
 	ungroup parts:						그룹 해제
 
@@ -1148,6 +1177,14 @@ error:
 	package out of date:				패키지 '%s' (버전 %s) 오래된 것입니다, 버전 %s 필수
 	package too new:					패키지 '%s' (버전 %s) 호환되지 않습니다, 버전 %s 에 의해 요구됨 '%s'
 	#TODO: Localize
+	error loading set:					Error while loading set:
+	#TODO: Localize
+	error updating card:
+		Error while running update cards script:
+		  Stylesheet: %s
+		  Before version: %s
+		  Card: %s
+	#TODO: Localize
 	write to read only:					Trying to write to file that has been declared read only: '%s'
 	#TODO: Localize
 	uninstall read only:
@@ -1168,6 +1205,8 @@ error:
 		  depends on: %s %s
 	#TODO: Localize
 	icon too large:						Icon image file for package '%s' is too large. It should be 105x105 pixels max.
+	#TODO: Localize
+	malformed soft line:				Malformed <soft-line> tag found. Attempted to repair.
 
 	# image import
 	#TODO: Localize Section
@@ -1243,6 +1282,10 @@ error:
 	negative image height:				Image with zero or negative height created in function '%s'
 	#TODO: Localize
 	can't load image:					Failed to load image. Ensure the image's actual format matches its saved extension.
+	#TODO: Localize
+	can't save symbol:					Failed to save symbol file '%s'.
+	#TODO: Localize
+	can't write symbol:					Failed to write to symbol file '%s'.
 	#TODO: Localize
 	symbol image has alpha:				For best results, image should be black and white with no transparency.
 
@@ -1333,9 +1376,6 @@ error:
 		패키지 %s 용 설치 프로그램: %s 에서 다운로드할 수 없습니다.
 		아무것도 설치되지 않았습니다.
 
-	downloading updates:				업데이트 다운로드 중 (%d / %d)
-	installing updates:					패키지 업데이트 (%d / %d)
-
 	remove packages:
 		%s개의 패키지가 제거됩니다. 계속하시겠습니까?
 	remove packages modified:
@@ -1346,6 +1386,8 @@ error:
 	install packages successful:		%s개의 패키지가 성공적으로 설치되었습니다.
 	remove packages successful:			%s개의 패키지가 성공적으로 제거되었습니다.
 	change packages successful:			%s개의 패키지가 성공적으로 변경되었습니다.
+	#TODO: Localize
+	updating cards:						Updating Cards.
 
 	cannot create file:					파일 '%s' 를 생성할 수 없습니다. 설치를 계속하시겠습니까?
 

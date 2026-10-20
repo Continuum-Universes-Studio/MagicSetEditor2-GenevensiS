@@ -101,6 +101,8 @@ private:
   FilteredImageCardList* card_list;
   wxPanel*               nodes_panel;
   TextCtrl*              notes;
+  wxScrolledWindow*      editor_scroller;  ///< Contains the main editor, scrolls when the editor is taller than the panel
+  wxSizer*               editor_sizer;     ///< sizer inside editor_scroller, holds only `editor`
   wxScrolledWindow*      link_scroller;    ///< The linked cards area
   wxGridBagSizer*        link_boxes_sizer; ///< 2-column grid inside link_scroller
   vector<wxSizer*>       link_boxes;       ///< one box (wxStaticBoxSizer) per link slot
@@ -127,6 +129,8 @@ private:
   static const int LINK_BOX_COLUMNS = 2;
   /// Cap link_scroller's visible size so it uses a scroll bar if it gets bigger
   void updateLinkScrollerCap();
+  /// Size editor_scroller to fit the editor, but no taller than this panel; adds room for a scroll bar when needed
+  void updateEditorScrollerSize();
   /// Unlink the card shown in link slot `index` from the currently selected card
   void onUnlink(int index);
   // before Layout, call updateNotesPosition.

@@ -44,6 +44,8 @@ void KeywordsPanel::initControls() {
   ref_param = new wxButton(panel, ID_KEYWORD_REF_PARAM, _BUTTON_("refer parameter"));
   rules     = new TextCtrl(panel, ID_RULES,    true);
   errors    = new wxStaticText(panel, wxID_ANY, _(""));
+  reminder->SetMinSize(wxSize(-1, 48));
+  rules   ->SetMinSize(wxSize(-1, 48));
   filter    = nullptr;
   errors->SetForegroundColour(*wxRED);
   // warning about fixed keywords
@@ -226,9 +228,14 @@ void KeywordsPanel::onCommand(int id) {
     default:
       if (id >= ID_PARAM_TYPE_MIN && id < ID_PARAM_TYPE_MAX) {
         // add parameter
-        KeywordParamP param = set->game->keyword_parameter_types.at(id - ID_PARAM_TYPE_MIN);
-        String to_insert = _("<atom-param>") + param->name + _("</atom-param>");
-        match->insert(to_insert, _("Insert parameter"));
+        if (id - ID_PARAM_TYPE_MIN < set->game->keyword_parameter_types.size()) {
+          KeywordParamP param = set->game->keyword_parameter_types.at(id - ID_PARAM_TYPE_MIN);
+          String to_insert = _("<atom-param>") + param->name + _("</atom-param>");
+          match->insert(to_insert, _("Insert parameter"));
+        }
+        else {
+          throw InternalError(_("type param ID out of bounds!"));
+        }
       } else if (id >= ID_PARAM_REF_MIN && id < ID_PARAM_REF_MAX) {
         String to_insert = runRefScript(id - ID_PARAM_REF_MIN);
         reminder->insert(to_insert, _("Use parameter"));

@@ -312,10 +312,6 @@ help:
 	app language:
 		注意: 你必须重新启动MSE
 		才能使语言修改生效
-	zoom export:
-		（当关闭该项的时候，
-		卡牌会按照以下规则导出：
-		100%大小，不旋转）
 
 	# apprentice export
 	set code:							套牌代码是一个双字节代码，它能被Apprentice识别成一幅套牌
@@ -351,6 +347,10 @@ help:
 	difference:							这个图形和下面不相交，仅仅保留不在其他图形的区域
 	overlap:							替换并且将边框覆盖到上面的图形
 	border:								把这个图形绘制为边框
+	#TODO: Localize
+	fill:								Draws this shape with the fill color gradient
+	#TODO: Localize
+	accent:								Draws this shape with the accent color
 
 	# shape manipulation
 	drag to shear:						拖拽，修改选定的 %s
@@ -433,6 +433,10 @@ tool:
 	difference:							不相交
 	overlap:							覆盖
 	border:								边框
+	#TODO: Localize
+	fill:								Fill
+	#TODO: Localize
+	accent:								Accent
 
 	ellipse:							椭圆形
 	rectangle:							矩形
@@ -534,6 +538,10 @@ tooltip:
 	difference:							和下面的图形不相交
 	overlap:							覆盖上面的其他图形
 	border:								绘制边框
+	#TODO: Localize
+	fill:								Draw as the fill color gradient
+	#TODO: Localize
+	accent:								Draw as the accent color
 
 	ellipse:							圆形 / 椭圆形
 	rectangle:							正方形 /矩形
@@ -668,7 +676,6 @@ label:
 	export around 300:					Around 300 DPI
 	export force 300:					Force 300 DPI
 	export force 150:					Force 150 DPI
-	percent of normal:					% 之后导出
 	external programs:					外部程序
 	apprentice:							Apprentice:
 	apprentice exe:						可执行Apprentice
@@ -752,7 +759,6 @@ label:
 	zoom amount:						飞涨
 	zoom amount x:						飞涨 &X
 	zoom amount y:						飞涨 &Y
-	zoom %:								%
 	filter:								过滤
 	sharpen filter:						锐化
 	#TODO: Localize Section
@@ -787,6 +793,24 @@ label:
 	updates found:
 		Updates have been found.
 		Would you like to open the package manager?
+	#TODO: Localize
+	downloading updates:				Downloading packages (%s of %s)
+	#TODO: Localize
+	downloaded updates:					Downloaded %s of %s (%s%%)
+	#TODO: Localize
+	downloaded updates unknown:			Downloaded %s of unknown total
+	#TODO: Localize
+	installing updates:					Updating packages (%s of %s)
+	#TODO: Localize
+	installed updates:					Writing file %s of %s (%s%%)
+	#TODO: Localize
+	connecting updates:					Connecting...
+	#TODO: Localize
+	removing updates:					Removing Files...
+	#TODO: Localize
+	updating cards:						Updating Cards...
+	#TODO: Localize
+	current package:					Current package: %s
 
 	installed version:					安装版本
 	installable version:				最新版本
@@ -798,6 +822,8 @@ label:
 
 	#TODO: Localize
 	load image:							Double click to load image
+	#TODO: Localize
+	edit symbol:						Double click to edit symbol
 
 	# print dialog
 	#TODO: Localize section
@@ -1100,6 +1126,8 @@ action:
 	reorder parts:						再添加
 	change combine mode:				改变联合模式
 	change shape name:					改变图形名字
+	#TODO: Localize
+	change region:						Change region type
 	group parts:						分组
 	ungroup parts:						取消分组
 
@@ -1141,6 +1169,14 @@ error:
 	package out of date:				文件包 '%s' （版本 %s） 过期，需要 %s 以上版本
 	package too new:					文件包 '%s' （版本 %s）与这个版本不兼容 %s，需要 '%s' 以上版本
 	#TODO: Localize
+	error loading set:					Error while loading set:
+	#TODO: Localize
+	error updating card:
+		Error while running update cards script:
+		  Stylesheet: %s
+		  Before version: %s
+		  Card: %s
+	#TODO: Localize
 	write to read only:					Trying to write to file that has been declared read only: '%s'
 	#TODO: Localize
 	uninstall read only:
@@ -1161,6 +1197,8 @@ error:
 		  附加项目 到： %s %s
 	#TODO: Localize
 	icon too large:						Icon image file for package '%s' is too large. It should be 105x105 pixels max.
+	#TODO: Localize
+	malformed soft line:				Malformed <soft-line> tag found. Attempted to repair.
 
 	# image import
 	#TODO: Localize Section
@@ -1236,6 +1274,10 @@ error:
 	negative image height:				Image with zero or negative height created in function '%s'
 	#TODO: Localize
 	can't load image:					Failed to load image. Ensure the image's actual format matches its saved extension.
+	#TODO: Localize
+	can't save symbol:					Failed to save symbol file '%s'.
+	#TODO: Localize
+	can't write symbol:					Failed to write to symbol file '%s'.
 	#TODO: Localize
 	symbol image has alpha:				For best results, image should be black and white with no transparency.
 
@@ -1326,9 +1368,6 @@ error:
 		无法为文件包 %s 下载安装程序，从 %s
 		没有更新被安装
 
-	downloading updates:				更新文件下载中 (%d of %d)
-	installing updates:					文件包升级中 (%d of %d)
-
 	remove packages:
 		即将移除 %s 文件包，你想继续吗？
 	remove packages modified:
@@ -1339,6 +1378,8 @@ error:
 	install packages successful:		%s 文件包被成功安装
 	remove packages successful:			%s 文件包被成功移除.
 	change packages successful:			%s 文件包被成功修改
+	#TODO: Localize
+	updating cards:						Updating Cards.
 
 	cannot create file:					无法创建文件 '%s' ，继续安装？
 

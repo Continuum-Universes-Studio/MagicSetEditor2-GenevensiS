@@ -34,7 +34,9 @@ CardsPanel::CardsPanel(Window* parent, int id)
   : SetWindowPanel(parent, id)
 {
   // init controls
-  editor          = new CardEditor(this, ID_EDITOR);
+  editor_scroller = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxBORDER_NONE);
+  editor_scroller->SetScrollRate(0, 12);
+  editor          = new CardEditor(editor_scroller, ID_EDITOR);
   focused_editor  = editor;
   link_scroller   = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxBORDER_NONE);
   link_scroller->SetScrollRate(0, 12);
@@ -83,7 +85,10 @@ CardsPanel::CardsPanel(Window* parent, int id)
     s_left = new wxBoxSizer(wxVERTICAL); // Sizer for the selected card, and it's linked cards
       card_and_link = new wxBoxSizer(wxHORIZONTAL);
       s_left->Add(card_and_link);
-        card_and_link->Add(editor);
+        card_and_link->Add(editor_scroller, 0, wxEXPAND);
+          editor_sizer = new wxBoxSizer(wxVERTICAL);
+          editor_sizer->Add(editor);
+          editor_scroller->SetSizer(editor_sizer);
         card_and_link->Add(link_scroller, 0, wxEXPAND | wxLEFT, 2);
           link_boxes_sizer = new wxGridBagSizer(); // 2-column grid of link boxes; extra rows scroll
           link_scroller->SetSizer(link_boxes_sizer);
@@ -115,7 +120,7 @@ CardsPanel::CardsPanel(Window* parent, int id)
     menuCard->AppendSeparator();
     add_menu_item_tr(menuCard, ID_CARD_ADD, "card_add", "add_card");
     add_menu_item_tr(menuCard, ID_CARD_ADD_DOUBLE, "card_add_double", "add_card_double");
-    insertManyCardsMenu = add_menu_item_tr(menuCard, ID_CARD_ADD_MULT, "card_add_multiple", "add cards");
+    insertManyCardsMenu = add_menu_item_tr(menuCard, ID_CARD_ADD_MULT, "card_add_multiple", "add cards", wxITEM_NORMAL, new wxMenu());
     // NOTE: space after "Del" prevents wx from making del an accellerator
     // otherwise we delete a card when delete is pressed inside the editor
     // Adding a space never hurts, please keep it just to be safe.
@@ -211,8 +216,22 @@ void CardsPanel::updateNotesPosition() {
 }
 bool CardsPanel::Layout() {
   if (updating_card) return false;
+  updateEditorScrollerSize();
   updateNotesPosition();
   return SetWindowPanel::Layout();
+}
+
+void CardsPanel::updateEditorScrollerSize() {
+  wxSize editor_size = editor_sizer->CalcMin(); // the editor's own (unscrolled) size
+  if (editor_size.x <= 0 || editor_size.y <= 0) return; // editor isn't sized yet, try again later
+  wxSize size = editor_size;
+  int available_height = GetClientSize().y;
+  if (available_height > 0 && editor_size.y > available_height) {
+    // too tall to fit
+    size.y = available_height;
+    size.x += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X, editor_scroller);
+  }
+  editor_scroller->SetMinSize(size);
 }
 
 /*void removeInsertSymbolMenu() {
@@ -241,12 +260,20 @@ void CardsPanel::onChangeSet() {
   card_list->setSet(set);
   updateLinkScrollerCap();
   
-  // change insertManyCardsMenu
-  delete insertManyCardsMenu->GetSubMenu();
-  insertManyCardsMenu->SetSubMenu(makeAddCardsSubmenu(false));
-  // re-add the menu
-  menuCard->Remove(ID_CARD_ADD_MULT);
-  ((wxMenu*)menuCard)->Insert(6,insertManyCardsMenu); // HACK: the position is hardcoded
+  // change insertManyCardsMenu. it seems Remove()ing and re-Insert()ing a wxMenuItem into
+  // menuCard mid-list is buggy, so instead empty the submenu and rebuild it
+  {
+    wxMenu* add_cards_menu = insertManyCardsMenu->GetSubMenu();
+    while (add_cards_menu->GetMenuItemCount() > 0) {
+      add_cards_menu->Destroy(add_cards_menu->FindItemByPosition(0));
+    }
+    if (set && set->game && !set->game->add_cards_scripts.empty()) {
+      int id = ID_ADD_CARDS_MENU_MIN;
+      FOR_EACH(script, set->game->add_cards_scripts) {
+        add_cards_menu->Append(id++, script->name, script->description);
+      }
+    }
+  }
   // also for the toolbar dropdown menu
   if (toolAddCard) {
     // Originally this was using the menu directly, but there are compatibility issues apparently.
@@ -346,6 +373,7 @@ void CardsPanel::destroyUI(wxToolBar* tb, wxMenuBar* mb) {
   tb->DeleteTool(ID_CARD_LINK);
   tb->DeleteTool(ID_CARD_ROTATE);
   tb->DeleteTool(ID_CARD_COUNTER);
+  counts = nullptr;
   // remember the value in the filter control, because the card list remains filtered
   // the control is destroyed by DeleteTool
   filter_value = filter->getFilterString();
@@ -377,7 +405,8 @@ void CardsPanel::onUpdateUI(wxUpdateUIEvent& ev) {
       break;
     }
     case ID_CARD_ADD_MULT: {
-      ev.Enable(insertManyCardsMenu->GetSubMenu() != nullptr);
+      wxMenu* add_cards_menu = insertManyCardsMenu->GetSubMenu();
+      ev.Enable(add_cards_menu && add_cards_menu->GetMenuItemCount() > 0);
       break;
     }
     case ID_CARD_REMOVE:        ev.Enable(card_list->canDelete());      break;
@@ -532,8 +561,13 @@ void CardsPanel::onCommand(int id) {
         focused_editor->onCommand(id);
       } else if (id >= ID_ADD_CARDS_MENU_MIN && id <= ID_ADD_CARDS_MENU_MAX) {
         // add multiple cards
-        AddCardsScriptP script = set->game->add_cards_scripts.at(id - ID_ADD_CARDS_MENU_MIN);
-        script->perform(*set);
+        if (id - ID_ADD_CARDS_MENU_MIN < set->game->add_cards_scripts.size()) {
+          AddCardsScriptP script = set->game->add_cards_scripts.at(id - ID_ADD_CARDS_MENU_MIN);
+          script->perform(*set);
+        }
+        else {
+          throw InternalError(_("add cards script ID out of bounds!"));
+        }
       }
     }
   }
@@ -669,10 +703,10 @@ bool CardsPanel::doReplaceAll(wxFindReplaceData& what) {
 
 bool CardsPanel::search(FindInfo& find, bool from_start) {
   CardP current = card_list->getCard();
-  bool include = from_start || card_list->findGivenItemPos(current) == -1;
-  long count = card_list->GetItemCount();
-  for (long i = 0 ; i < count ; ++i) {
-    CardP card = card_list->getCard( find.forward() ? i : count - i - 1 );
+  bool include = from_start || !current;
+  size_t count = set->cards.size();
+  for (size_t i = 0 ; i < count ; ++i) {
+    CardP card = set->cards[ find.forward() ? i : count - i - 1 ];
     if (card == current) include = true;
     if (include) {
       editor->setCard(card);
@@ -702,6 +736,7 @@ void CardsPanel::selectCard(const CardP& card) {
   card_list->setCard(card);
 
   editor->setCard(card);
+  editor->InvalidateBestSize();
   vector<pair<CardP, String>> linked_cards = card ? card->getLinkedCards(*set) : vector<pair<CardP, String>>();
   int count = (int)linked_cards.size();
 
@@ -756,6 +791,7 @@ void CardsPanel::selectCard(const CardP& card) {
   updateLinkScrollerCap();
 
   Layout();
+  editor_scroller->FitInside();
   updateNotesPosition();
   wxCommandEvent ev(EVENT_SIZE_CHANGE, GetId());
   ProcessEvent(ev);

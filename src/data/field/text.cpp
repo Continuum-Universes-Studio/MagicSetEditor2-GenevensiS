@@ -90,6 +90,7 @@ int TextStyle::update(Context& ctx) {
   changes |= font       .update(ctx) * CHANGE_OTHER;
   changes |= symbol_font.update(ctx) * CHANGE_OTHER;
   changes |= alignment  .update(ctx) * CHANGE_OTHER;
+  changes |= direction  .update(ctx) * CHANGE_OTHER;
   changes |= padding_left        .update(ctx) * CHANGE_OTHER;
   changes |= padding_left_min    .update(ctx) * CHANGE_OTHER;
   changes |= padding_right       .update(ctx) * CHANGE_OTHER;
@@ -114,6 +115,7 @@ void TextStyle::initDependencies(Context& ctx, const Dependency& dep) const {
 void TextStyle::checkContentDependencies(Context& ctx, const Dependency& dep) const {
   Style   ::checkContentDependencies(ctx, dep);
   alignment.initDependencies(ctx, dep);
+  direction.initDependencies(ctx, dep);
 }
 
 template <typename T> void reflect_layout(T& handler,         const TextLayoutP& layout) {}
@@ -198,6 +200,14 @@ bool TextValue::update(Context& ctx) {
   WITH_DYNAMIC_ARG(value_being_updated, this);
   bool change = field().default_script.invokeOnDefault(ctx, value)
               | field().        script.invokeOn(ctx, value);
+  // repair <soft-line> tags
+  String fixed;
+  if (fix_soft_lines(value(), fixed)) {
+    bool was_default = value.isDefault();
+    value.assign(fixed);
+    value.makeDefault(was_default);
+    change = true;
+  }
   if (change) last_update.update();
   updateSortValue(ctx);
   return change;

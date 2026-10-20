@@ -133,6 +133,9 @@ enum PackageAction
 inline PackageAction operator | (PackageAction a, PackageAction b) { return (PackageAction)((int)a | (int) b); }
 inline bool flag(int flags, int flag) { return (flags & flag) == flag; }
 
+/// Callback used to report progress while downloading an installer
+typedef std::function<bool(long long bytes_received, long long bytes_total)> DownloadProgressCallback;
+
 /// A package that can be installed, or is already installed
 class InstallablePackage : public IntrusivePtrVirtualBase {
 public:
@@ -153,7 +156,9 @@ public:
   int           old_automatic;
   
   void determineStatus();
-  bool ensureIsDownloaded();
+
+  /// Download the installer for this package, if needed
+  bool ensureIsDownloaded(const DownloadProgressCallback& progress = nullptr);
 
   /// After the action, will the package be installed?
   bool willBeInstalled() const;

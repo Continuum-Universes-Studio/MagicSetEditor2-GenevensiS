@@ -310,7 +310,8 @@ Settings::ExportSettings Settings::exportSettingsFor(const StyleSheet& styleshee
   double zoom = settings.exportScaleSettingsFor(stylesheet);
   double angle = ss.card_normal_export() ? 0.0 : deg_to_rad(ss.card_angle());
   double bleed = ss.card_bleed_export() ? (stylesheet.card_dpi / 300.0) * 36.0 * zoom : 0.0; // 36 pixels of bleed on a 300 DPI print
-  return ExportSettings{zoom, angle, bleed};
+  bool dfc_export = ss.card_dfc_export();
+  return ExportSettings{zoom, angle, bleed, dfc_export};
 }
 
 IndexMap<FieldP,ValueP>& Settings::exportOptionsFor(const ExportTemplate& export_template) {
@@ -322,7 +323,8 @@ Settings::ExportSettings Settings::clipboardSettingsFor(const StyleSheet& styles
   double zoom = settings.clipboardScaleSettingsFor(stylesheet);
   double angle = ss.card_normal_export() ? 0.0 : deg_to_rad(ss.card_angle());
   double bleed = ss.card_bleed_export() ? (stylesheet.card_dpi / 300.0) * 36.0 * zoom : 0.0; // 36 pixels of bleed on a 300 DPI print
-  return ExportSettings{zoom, angle, bleed};
+  bool dfc_export = card_dfc_copy;
+  return ExportSettings{zoom, angle, bleed, dfc_export};
 }
 
 /// Retrieve the directory to use for settings and other data files
@@ -408,6 +410,10 @@ void Settings::read() {
     Reader reader(file, nullptr, filename);
     reader.handle_greedy(*this);
     // make sure things aren't in a problematic state
+    for (auto it = game_settings.begin(); it != game_settings.end(); ) {
+      if (trim(it->first).empty()) it = game_settings.erase(it);
+      else ++it;
+    }
     if (locale.Trim().empty()) locale = _("en");
     if (symbol_grid_size < 30) symbol_grid_size = 30;
     if (default_stylesheet_settings.card_zoom < 0.5) default_stylesheet_settings.card_zoom = 1.0;

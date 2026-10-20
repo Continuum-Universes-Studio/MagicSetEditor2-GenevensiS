@@ -29,9 +29,14 @@ public:
 
   /// Check for updates if the settings say so
   inline void check_updates() {
+#ifdef __APPLE__
+    // DialUpManager isn't supported on macOS; assume we're connected
+    bool connected = true;
+#else
     wxDialUpManager* manager = wxDialUpManager::Create();
     bool connected = manager->IsOk() && manager->IsOnline();
     delete manager;
+#endif
     if (!connected) return;
     if (settings.check_updates_when == CHECK_NEVER) return;
     int interval_days = (settings.check_updates_when == CHECK_7_DAYS) ? 7 : 30;
@@ -128,6 +133,7 @@ private:
         // ignore all errors, we don't want problems if update checking fails
         downloadable_installers.download_status = DONE;
         downloadable_installers.check_status = FAILED;
+        return 0;
       }
     }
   };
@@ -185,4 +191,3 @@ private:
     }
   };
 };
-

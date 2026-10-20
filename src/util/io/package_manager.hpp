@@ -17,6 +17,9 @@ DECLARE_POINTER_TYPE(PackageVersion);
 DECLARE_POINTER_TYPE(InstallablePackage);
 class PackageDependency;
 
+/// Callback used to report progress while installing a package
+typedef std::function<void(int files_done, int files_total)> InstallProgressCallback;
+
 // ----------------------------------------------------------------------------- : PackageVersion
 
 /*
@@ -84,7 +87,7 @@ public:
   void installedPackages(vector<InstallablePackageP>& packages);
   
   /// Install/uninstall a package
-  bool install(const InstallablePackage& package);
+  bool install(const InstallablePackage& package, const InstallProgressCallback& progress = nullptr);
   
   /// Bless a package
   void bless(const String& package_name);
@@ -100,7 +103,7 @@ private:
   
   String databaseFile();
   // Do the actual installation of a package
-  bool actual_install(const InstallablePackage& package, const String& install_dir);
+  bool actual_install(const InstallablePackage& package, const String& install_dir, const InstallProgressCallback& progress);
   
   DECLARE_REFLECTION();
 };
@@ -181,7 +184,7 @@ public:
   void findAllInstalledPackages(vector<InstallablePackageP>& packages);
   
   /// Install/uninstall a package, returns success
-  bool install(const InstallablePackage& package);
+  bool install(const InstallablePackage& package, const InstallProgressCallback& progress = nullptr);
 
   // --------------------------------------------------- : Other package like things
   

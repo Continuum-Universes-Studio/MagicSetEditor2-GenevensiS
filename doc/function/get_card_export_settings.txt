@@ -3,9 +3,10 @@ Function: get_card_export_settings
 --Usage--
 > get_card_export_settings(card)
 
-Get the zoom, angle and bleed with which a card is to be exported, as specified by the user in the preferences menu.
+Get the zoom, angle, bleed and dfc merge settings with which a card is to be exported, as specified by the user in the preferences menu.
 
-Returns and array whose first element is the zoom percentage, the second is the angle in degrees, and the third is the bleed edge size in pixels.
+Returns and array whose first element is the zoom percentage, the second is the angle in degrees, the third is the bleed edge size in pixels,
+and the fourth is whether or not the other face of the card should be included in the render.
 
 --Parameters--
 ! Parameter	Type					Description

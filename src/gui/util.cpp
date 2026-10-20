@@ -10,8 +10,10 @@
 #include <gui/util.hpp>
 #include <util/error.hpp>
 #include <util/rotation.hpp>
+#include <util/file_utils.hpp>
 #include <wx/renderer.h>
 #include <wx/stdpaths.h>
+#include <wx/mstream.h>
 #include <gfx/gfx.hpp>
 
 #if wxUSE_UXTHEME && defined(__WXMSW__)
@@ -229,7 +231,7 @@ bool image_load_file(Image& image, wxInputStream &stream) {
 
 bool image_load_file(Image& image, const wxString &name) {
   wxLogNull noLog;
-  return image.LoadFile(name);
+  return retry_io([&]{ return image.LoadFile(name); });
 }
 
 // ----------------------------------------------------------------------------- : Tool/menu bar
@@ -353,8 +355,10 @@ wxIcon load_resource_icon(const String& name) {
   #else
     static String path = wxStandardPaths::Get().GetDataDir() + _("/resource/icon/");
     static String local_path = wxStandardPaths::Get().GetUserDataDir() + _("/resource/icon/");
-    if (wxFileExists(path + name + _(".ico"))) return wxIcon(path + name + _(".ico"), wxBITMAP_TYPE_ICO);
-    else return wxIcon(local_path + name + _(".ico"), wxBITMAP_TYPE_ICO);
+    String icon_path = wxFileExists(path + name + _(".ico")) ? (path + name + _(".ico")) : (local_path + name + _(".ico"));
+    wxIcon icon;
+    retry_io([&]{ icon = wxIcon(icon_path, wxBITMAP_TYPE_ICO); return icon.IsOk(); });
+    return icon;
   #endif
 }
 
@@ -430,7 +434,7 @@ void draw_control_box(Window* win, DC& dc, const wxRect& rect, bool focused, boo
   dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
   dc.DrawRectangle(rect);
   // draw the border
-  #if defined(__WXMSW__)
+  #if wxUSE_UXTHEME && defined(__WXMSW__)
     r.left   = rect.x - 2;
     r.top    = rect.y - 2;
     r.right  = rect.x + rect.width  + 2;

@@ -36,6 +36,7 @@ CardLinkWindow::CardLinkWindow(Window* parent, const SetP& set, const CardP& sel
   setRelationType();
   list = new SelectCardList(this, wxID_ANY);
   list->allow_back_face_hidding = false;
+  list->allow_drag = false;
   list->setSet(set);
   list->selectNone();
   sel_none = new wxButton(this, ID_SELECT_NONE, _BUTTON_("select none"));
@@ -70,7 +71,6 @@ void CardLinkWindow::getSelection(vector<CardP>& out) const {
 
 void CardLinkWindow::setSelection(const vector<CardP>& cards) {
   list->setSelection(cards);
-  queue_message(MESSAGE_WARNING, String("") << cards.size());
 }
 void CardLinkWindow::setRelationType() {
   int index = relation_type->GetSelection();
@@ -98,7 +98,6 @@ void CardLinkWindow::onRelationTypeChange(wxCommandEvent&) {
 }
 
 void CardLinkWindow::onOk(wxCommandEvent&) {
-  wxBusyCursor wait;
   // get the context
   CardListBase* card_list_window = dynamic_cast<CardListBase*>(parent);
   if (!card_list_window) {
@@ -113,13 +112,12 @@ void CardLinkWindow::onOk(wxCommandEvent&) {
   getSelection(linked_cards);
   // Check that we are not linking to self
   if (std::find(linked_cards.begin(), linked_cards.end(), selected_card) != linked_cards.end()) {
-    wxMessageDialog dial = wxMessageDialog(this, _ERROR_("cant link to self"), _TITLE_("warning"), wxICON_WARNING | wxOK);
-    dial.ShowModal();
+    wxMessageBox(_ERROR_("cant link to self"), _TITLE_("warning"), wxICON_WARNING | wxOK, this);
     linked_cards.erase(std::remove(linked_cards.begin(), linked_cards.end(), selected_card), linked_cards.end());
+    if (linked_cards.empty()) return;
   }
   if (linked_cards.empty()) {
-    wxMessageDialog dial = wxMessageDialog(this, _ERROR_("no cards selected"), _TITLE_("warning"), wxICON_WARNING | wxOK);
-    dial.ShowModal();
+    wxMessageBox(_ERROR_("no cards selected"), _TITLE_("warning"), wxICON_WARNING | wxOK, this);
     return;
   }
   vector<String> linked_uids;
@@ -132,11 +130,11 @@ void CardLinkWindow::onOk(wxCommandEvent&) {
   for (size_t i = 0; i < free_link_indexes.size(); ++i) {
     if (free_link_indexes[i] >= 0) free_link_count++;
   }
-  if (free_link_count < linked_cards.size()) {
-    wxMessageDialog dial = wxMessageDialog(this, _ERROR_1_("missing free links", wxString::Format(wxT("%i"), free_link_count)));
-    dial.ShowModal();
+  if ((size_t)free_link_count < linked_cards.size()) {
+    wxMessageBox(_ERROR_1_("missing free links", wxString::Format(wxT("%i"), free_link_count)), _TITLE_("warning"), wxICON_WARNING | wxOK, this);
     return;
   }
+  wxBusyCursor wait;
   // Get the relations
   String selected_relation_string;
   String linked_relation_string;
@@ -158,7 +156,7 @@ void CardLinkWindow::onOk(wxCommandEvent&) {
     }
   }
   // Find reciprocal free slots and make actions
-  String& selected_uid = selected_card->uid;
+  const String& selected_uid = selected_card->uid;
   for (size_t i = 0; i < linked_cards.size(); ++i) {
     int free_link_index = linked_cards[i]->findFreeLink(selected_uid, set->card_uids);
     if (free_link_index >= 0) {

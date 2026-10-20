@@ -287,9 +287,6 @@ help:
 	app language:
 		Bitte starten Sie MSE neu,
 		damit die Änderungen wirksam werden.
-	zoom export:
-		(Wenn ausgeschaltet, werden die
-		Karten normal exportiert)
 
 	# apprentice export
 	set code:							Der zweiteilige Code wird vom Rohling genutzt, um auf eine Edition zu verweisen.
@@ -324,7 +321,9 @@ help:
 	intersect:							Zeigt nur die gemeinsame Fläche an
 	difference:							Zeigt nur die Fläche an, in den sich die Objekte unterscheiden
 	overlap:							Zeigt das Objekt und seinen Rand über allem an
-	border:								Stellt das Objekt als Rand dar
+	border:								Zeichnet diese Form als Rahmen
+	fill:								Zeichnet diese Form mit dem Füllfarbverlauf
+	accent:								Zeichnet diese Form in der Akzentfarbe
 
 	# shape manipulation
 	drag to shear:						Ziehen, um %s zu schneiden
@@ -405,7 +404,9 @@ tool:
 	intersect:							Kombinieren
 	difference:							Unterscheiden
 	overlap:							Überlappen
-	border:								Rand
+	border:								Rahmen
+	fill:								Füllung
+	accent:								Akzent
 
 	ellipse:							Ellipse
 	rectangle:							Rechteck
@@ -499,7 +500,9 @@ tooltip:
 	intersect:							Zeigt nur die gemeinsame Fläche an
 	difference:							Zeigt nur die Fläche an, in den sich die Objekte unterscheiden
 	overlap:							Zeigt das Objekt und seinen Rand über allem an
-	border:								Stellt das Objekt als Rand dar
+	border:								Als Rahmen zeichnen
+	fill:								Als Füllfarbverlauf zeichnen
+	accent:								Als Akzent zeichnen
 
 	ellipse:							Ellipse / Kreis
 	rectangle:							Rechteck / Quadrat
@@ -618,7 +621,6 @@ label:
 	export around 300:					Etwa 300 DPI
 	export force 300:					Erzwungene 300 DPI
 	export force 150:					Erzwungene 150 DPI
-	percent of normal:					% der Normalgröße
 	external programs:					Externe Programme
 	apprentice:							&Rohling:
 	apprentice exe:						Rohling-Exe
@@ -695,7 +697,6 @@ label:
 	zoom amount:						Zoom
 	zoom amount x:						Zoom &X
 	zoom amount y:						Zoom &Y
-	zoom %:								%
 	filter:								Filter
 	sharpen filter:						&Schärfe-Filter
 	grid:								Raster
@@ -728,6 +729,16 @@ label:
 		Updates wurden gefunden.
 		Möchten Sie den Packagemanager öffnen?
 
+	downloading updates:				Pakete werden heruntergeladen (%s von %s)
+	downloaded updates:					%s von %s heruntergeladen (%s%%)
+	downloaded updates unknown:			%s von unbekannter Gesamtmenge heruntergeladen
+	installing updates:					Pakete werden aktualisiert (%s von %s)
+	installed updates:					Datei %s von %s wird geschrieben (%s%%)
+	connecting updates:					Verbindung wird hergestellt...
+	removing updates:					Dateien werden entfernt...
+	updating cards:						Karten werden aktualisiert...
+	current package:					Aktuelles Paket: %s
+
 	installed version:					Installierte Version
 	installable version:				Letzte Version
 	installer size:						Größe
@@ -736,6 +747,7 @@ label:
 	no version:							-
 
 	load image:							Doppelklicken Sie, um ein Bild zu laden
+	edit symbol:						Doppelklicken Sie, um das Symbol zu bearbeiten
 
 	# print dialog
 	put space between cards:			Soll zwischen den Karten ein Leerzeichen eingefügt werden?
@@ -999,6 +1011,7 @@ action:
 	reorder parts:						Neu anordnen
 	change combine mode:				Kombinierung ändern
 	change shape name:					Namen ändern
+	change region:						Bereichstyp ändern
 	group parts:						Gruppieren
 	ungroup parts:						Gruppierung entfernen
 
@@ -1037,6 +1050,12 @@ error:
 	package not found:					Package nicht gefunden: '%s'
 	package out of date:				Package '%s' (Version %s) ist nicht kompatibel, Version %s wird benötigt.
 	package too new:					Package '%s' (Version %s) ist nicht kompatibel mit Version %s, Version %s wird benötigt.
+	error loading set:					Fehler beim Laden der Edition:
+	error updating card:
+		Fehler beim Ausführen des Skripts zur Kartenaktualisierung:
+		  Stylesheet: %s
+		  Before version: %s
+		  Karte: %s
 	write to read only:					Es wird versucht, in eine als schreibgeschützt deklarierte Datei zu schreiben: '%s'
 	uninstall read only:
 		Das Package '%s' enthält die folgenden schreibgeschützten Dateien:
@@ -1054,6 +1073,7 @@ error:
 		Bitte fügen Sie folgendes ein:
 		  depends on: %s %s
 	icon too large:						Die Symbolbilddatei für das Package '%s' ist zu groß. Sie sollte maximal 105 x 105 Pixel groß sein.
+	malformed soft line:				Fehlerhaftes <soft-line>-Tag gefunden. Reparaturversuch unternommen.
 
 	# image import
 	import not found:					Datei nicht gefunden: '%s'
@@ -1115,6 +1135,8 @@ error:
 	negative image width:				Bild mit Breite Null oder negativer Breite, erstellt in der Funktion '%s'
 	negative image height:				Bild mit Höhe Null oder negativer Höhe, erstellt in der Funktion '%s'
 	can't load image:					Bild konnte nicht geladen werden. Stelle sicher, dass das tatsächliche Format des Bildes mit der gespeicherten Dateiendung übereinstimmt.
+	can't save symbol:					Fehler beim Speichern der Symboldatei '%s'.
+	can't write symbol:					Fehler beim Schreiben in die Symboldatei '%s'.
 	symbol image has alpha:				Für optimale Ergebnisse sollte das Bild schwarzweiß und ohne Transparenz sein.
 
 	# error from files
@@ -1193,9 +1215,6 @@ error:
 		Konnte nicht Installer für Package %s von %s herunterladen.
 		Es wurde nichts installiert.
 
-	downloading updates:				Updates werden heruntergeladen (%d of %d)
-	installing updates:					Packages werden aktuallisiert (%d of %d)
-
 	remove packages:
 		Möchten Sie %s Packages wirklich löschen?
 	remove packages modified:
@@ -1206,6 +1225,7 @@ error:
 	install packages successful:		%s Package(s) wurden erfolgreich installiert.
 	remove packages successful:			%s Package(s) wurden erfolgreich entfernt.
 	change packages successful:			%s Package(s) wurden erfolgreich geändert.
+	updating cards:						Karten aktualisieren.
 
 	cannot create file:					Datei '%s' kann nicht erstellt werden, trotzdem fortfahren?
 

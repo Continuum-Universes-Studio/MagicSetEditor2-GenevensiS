@@ -10,7 +10,7 @@ Documentation on https://mseverse.miraheze.org/wiki/Category:MSE_Documentation
 ## Dependencies
 
 The code depends on
- * wxWidgets >= 3.3.1
+ * wxWidgets >= 3.3.3
  * boost
  * hunspell
 
@@ -105,6 +105,11 @@ cmake --build .
  Use `-CMAKE_BUILD_TYPE=Debug` for a debug build.
 
 ### wx-config can't be found
+CMake first looks for a wxWidgets CMake config package, then falls back to
+`wx-config`. Both methods require the `core`, `base`, and `net` components.
+For a custom wxWidgets installation with a config package, pass
+`-DCMAKE_PREFIX_PATH=/path/to/wxWidgets/install` when configuring.
+
 On old versions it's possible that cmake can't find wx-config, to solve this add the tool to the cmake command manually like this: `-DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-config-gtk3`
 
 ### Installing resources
@@ -114,10 +119,10 @@ Templates are installed to `~/.magicseteditor/data`. Fonts are installed to `~/.
 
 ## Building on Mac OS
 
- * Install the dependencies; for example, using Homebrew: (Note: Tested with boost 1.84.0, wxmac (wxwidgets) 3.2.4, hunspell 1.7.2, cmake 3.28.3, dylibbundler 1.0.5.)
+ * Install the dependencies; for example, using Homebrew: (Note: Tested with boost 1.92.0, wxmac (wxwidgets) 3.3.3, hunspell 1.7.3, cmake 4.4.2, dylibbundler 1.0.5.)
 
 ```
-brew install boost wxwidgets hunspell cmake dylibbundler
+brew install boost wxwidgets hunspell cmake dylibbundler pkg-config
 ```
 
  * Then use cmake to build:
@@ -129,10 +134,14 @@ cmake --build .
 ```
 
  Use `CMAKE_BUILD_TYPE=Debug` for a debug build.
- * Finally, copy the resources to a SharedSupport directory and run the executable:
+ * Finally, run the application bundle:
 
 ```
-mkdir magicseteditor.app/Contents/SharedSupport
-cp -r ../resource magicseteditor.app/Contents/SharedSupport
 open ./magicseteditor.app
 ```
+
+### Installing resources
+When you launch the app, it should tell you where to put your templates. Typically that's `$HOME/Library/Application Support/magicseteditor` (copy the `data/` folder there).
+
+### Autoupdater support
+The auto-updater isn't working on macOS just yet, so you'll have to continue sourcing app and template updates the old-fashioned way.

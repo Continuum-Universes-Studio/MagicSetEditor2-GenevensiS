@@ -311,6 +311,33 @@ void CombiningModeAction::perform(bool to_undo) {
   }
 }
 
+// ----------------------------------------------------------------------------- : Change region
+
+SymbolRegionAction::SymbolRegionAction(const set<SymbolPartP>& parts, SymbolShapeRegion region)
+  : SymbolPartsAction(parts)
+{
+  FOR_EACH(p, parts) {
+    add(p, region);
+  }
+}
+void SymbolRegionAction::add(const SymbolPartP& part, SymbolShapeRegion region) {
+  if (part->isSymbolShape()) {
+    this->shapes.push_back(make_pair(static_pointer_cast<SymbolShape>(part), region));
+  } else if (SymbolGroup* g = part->isSymbolGroup()) {
+    FOR_EACH(p, g->parts) add(p, region);
+  }
+}
+
+String SymbolRegionAction::getName(bool to_undo) const {
+  return _ACTION_("change region");
+}
+
+void SymbolRegionAction::perform(bool to_undo) {
+  FOR_EACH(sa, shapes) {
+    swap(sa.first->region, sa.second);
+  }
+}
+
 // ----------------------------------------------------------------------------- : Change name
 
 SymbolPartNameAction::SymbolPartNameAction(const SymbolPartP& part, const String& name, size_t old_cursor, size_t new_cursor)
@@ -477,8 +504,13 @@ UngroupReorderSymbolPartsAction::UngroupReorderSymbolPartsAction(SymbolGroup& gr
   : group_parent(group_parent), group_pos(group_pos)
   , target_parent(target_parent), target_pos(target_pos)
 {
-  group = dynamic_pointer_cast<SymbolGroup>(group_parent.parts.at(group_pos));
-  assert(group);
+  if (group_pos < group_parent.parts.size()) {
+    group = dynamic_pointer_cast<SymbolGroup>(group_parent.parts.at(group_pos));
+    assert(group);
+  }
+  else {
+    throw InternalError(_("group pos out of bounds!"));
+  }
 }
 
 String UngroupReorderSymbolPartsAction::getName(bool to_undo) const {

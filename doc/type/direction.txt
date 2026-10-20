@@ -17,4 +17,5 @@ In scripts, direction is passed around as a string.
 --Examples--
 > direction: horizontal
 > direction: top to bottom
+> direction: { if styling.language == "Japanese" then "vertical" else "horizontal" }
 

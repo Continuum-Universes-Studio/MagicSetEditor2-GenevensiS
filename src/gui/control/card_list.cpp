@@ -284,8 +284,12 @@ void CardListBase::parseImageMetadata(CardP& card, const Image& image) {
           Image img = image.GetSubImage(rect);
           img = rotate_image(img, deg_to_rad(360 - degrees));
           LocalFileName filename = set->newFileName(_("cropped_image"), _(".png")); // a new unique name in the package
-          img.SaveFile(set->nameOut(filename), wxBITMAP_TYPE_PNG);
-          value->filename = filename;
+          String out_path = set->nameOut(filename);
+          if (retry_io([&]{ return img.SaveFile(out_path, wxBITMAP_TYPE_PNG); })) {
+            value->filename = filename;
+          } else {
+            value->filename = LocalFileName();
+          }
         }
         else {
           value->filename = LocalFileName();
@@ -304,8 +308,12 @@ void CardListBase::parseImageMetadata(CardP& card) {
       if (decodeImageFromString(value->filename.toStringForKey(), img)) {
         if (img.IsOk()) {
           LocalFileName filename = set->newFileName(_("decoded_image"), _(".png")); // a new unique name in the package
-          img.SaveFile(set->nameOut(filename), wxBITMAP_TYPE_PNG);
-          value->filename = filename;
+          String out_path = set->nameOut(filename);
+          if (retry_io([&]{ return img.SaveFile(out_path, wxBITMAP_TYPE_PNG); })) {
+            value->filename = filename;
+          } else {
+            value->filename = LocalFileName();
+          }
         }
         else {
           value->filename = LocalFileName();
@@ -347,13 +355,18 @@ bool CardListBase::parseFiles(wxArrayString& filenames, vector<CardP>& out) {
       // if it's an image file, try to get meta_data
       Image image_file;
       image_file.SetLoadFlags(image_file.GetLoadFlags() & ~wxImage::Load_Verbose);
-      if (image_file.LoadFile(filenames[i])) {
+      if (image_load_file(image_file, filenames[i])) {
         parseImage(image_file, out);
       }
       else queue_message(MESSAGE_ERROR, _ERROR_("can't load image"));
     } else {
       // if it's an url, request the data
-      std::ifstream ifs(filenames[i].ToStdString());
+      std::ifstream ifs;
+      retry_io([&]{
+        ifs.clear();
+        ifs.open(filenames[i].ToStdString());
+        return ifs.is_open() && ifs.good();
+      });
       if (ifs.bad() || ifs.fail() || !ifs.good() || !ifs.is_open()) continue;
       std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
       bool looks_like_text = std::all_of(content.begin(), content.end(), [](char c) {
@@ -691,8 +704,8 @@ void CardListBase::storeColumns() {
   }
   // store sorting
   GameSettings& gs = settings.gameSettingsFor(*set->game);
-  if (sort_by_column >= 0) gs.sort_cards_by = column_fields.at(sort_by_column)->name;
-  else                     gs.sort_cards_by = _("");
+  if (sort_by_column >= 0 && (size_t)sort_by_column < column_fields.size()) gs.sort_cards_by = column_fields[sort_by_column]->name;
+  else                                                                      gs.sort_cards_by = _("");
   gs.sort_cards_ascending = sort_ascending;
 }
 
@@ -781,11 +794,12 @@ void CardListBase::onChar(wxKeyEvent& ev) {
 
 void CardListBase::onBeginDrag(wxListEvent& ev) {
   ev.Skip();
+  if (!allow_drag) return;
   drop_timer.Start(200, wxTIMER_ONE_SHOT);
 }
 
 void CardListBase::OnDragTimer(wxTimerEvent& ev) {
-  if (ev.GetId() == ID_DROP_TIMER && wxGetMouseState().LeftIsDown()) {
+  if (allow_drag && ev.GetId() == ID_DROP_TIMER && wxGetMouseState().LeftIsDown()) {
     vector<CardP> cards;
     getSelection(cards);
     String transaction_id = generate_uid();

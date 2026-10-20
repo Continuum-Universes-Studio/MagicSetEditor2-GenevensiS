@@ -2,7 +2,7 @@ Function: write_image_file
 
 --Usage--
 > write_image_file(some_image, file: filename, width: 375, height: 523)
-> write_image_file(some_card, file: filename, zoom: 1.0, angle: 0.0, bleed: 18.0)
+> write_image_file(some_card, file: filename, zoom: 1.0, angle: 0.0, bleed: 18.0, dfc: false)
 
 Write a given image, or a given card's image to a file in the output directory.
 If a file with the given name already exists it is overwritten.
@@ -20,7 +20,8 @@ This function can only be used in an [[type:export template]], when <tt>create d
 | @zoom@	[[type:double]]		Zoom percentage to apply to the card render.
 | @angle@	[[type:double]]		Angle in degrees to apply to the card render.
 | @bleed@	[[type:double]]		Print bleed margin in pixels to apply to the card render.
-| @use_user_settings@	[[type:bool]]		Use app settings for zoom, angle and bleed instead.
+| @dfc@	[[type:boolean]]		Should the other face of the card be included in the render.
+| @use_user_settings@	[[type:bool]]		Use app settings for zoom, angle, bleed and dfc instead.
 
 --Examples--
 > write_image_file(file:"image_out.png", linear_blend(...)) == "image_out.png" # image_out.png now contains the given image

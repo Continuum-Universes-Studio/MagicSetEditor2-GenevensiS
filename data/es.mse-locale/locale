@@ -311,10 +311,6 @@ help:
 	app language:
 		Note: Debes reiniciar MSE
 		para que los cambios hagan efecto.
-	zoom export:
-		(Cuando está desactivado,
-		las cartas se exportan en
-		una orientación normal)
 
 	# apprentice export
 	set code:							Un código de Set es un código de dos caracteres que usa el Apprentice para referirse a un Set.
@@ -350,6 +346,10 @@ help:
 	difference:							Distingue esta forma de las que tiene debajo, deja sólo el área que no hay en ninguna otra forma
 	overlap:							Coloca esta forma, y su borde encima de las formas que están debajo
 	border:								Dibuja esta forma como un borde
+	#TODO: Localize
+	fill:								Draws this shape with the fill color gradient
+	#TODO: Localize
+	accent:								Draws this shape with the accent color
 
 	# shape manipulation
 	drag to shear:						Arrastra para inclinar la forma seleccionada %s
@@ -432,6 +432,10 @@ tool:
 	difference:							Diferenciar
 	overlap:							Superponer
 	border:								Borde
+	#TODO: Localize
+	fill:								Fill
+	#TODO: Localize
+	accent:								Accent
 
 	ellipse:							Elipse
 	rectangle:							Rectángulo
@@ -534,6 +538,10 @@ tooltip:
 	difference:							Diferenciar de las formas de abajo
 	overlap:							Poner encima de las otras formas
 	border:								Dibujar como un borde
+	#TODO: Localize
+	fill:								Draw as the fill color gradient
+	#TODO: Localize
+	accent:								Draw as the accent color
 
 	ellipse:							Círculo / Elipse
 	rectangle:							Cuadrado / Rectángulo
@@ -668,7 +676,6 @@ label:
 	export around 300:					Around 300 DPI
 	export force 300:					Force 300 DPI
 	export force 150:					Force 150 DPI
-	percent of normal:					% del tamaño normal
 	external programs:					Programas externos
 	apprentice:							&Apprentice:
 	apprentice exe:						Ejecutable de Apprentice
@@ -752,7 +759,6 @@ label:
 	zoom amount:						Zoom
 	zoom amount x:						Zoom &X
 	zoom amount y:						Zoom &Y
-	zoom %:								%
 	filter:								Filtro
 	sharpen filter:						&Filtro de Sharpening o Perfilado
 	#TODO: Localize Section
@@ -787,6 +793,24 @@ label:
 	updates found:
 		Updates have been found.
 		Would you like to open the package manager?
+	#TODO: Localize
+	downloading updates:				Downloading packages (%s of %s)
+	#TODO: Localize
+	downloaded updates:					Downloaded %s of %s (%s%%)
+	#TODO: Localize
+	downloaded updates unknown:			Downloaded %s of unknown total
+	#TODO: Localize
+	installing updates:					Updating packages (%s of %s)
+	#TODO: Localize
+	installed updates:					Writing file %s of %s (%s%%)
+	#TODO: Localize
+	connecting updates:					Connecting...
+	#TODO: Localize
+	removing updates:					Removing Files...
+	#TODO: Localize
+	updating cards:						Updating Cards...
+	#TODO: Localize
+	current package:					Current package: %s
 
 	installed version:					Versión instalada:
 	installable version:				Última versión:
@@ -798,6 +822,8 @@ label:
 
 	#TODO: Localize
 	load image:							Double click to load image
+	#TODO: Localize
+	edit symbol:						Double click to edit symbol
 
 	# print dialog
 	#TODO: Localize section
@@ -1100,6 +1126,8 @@ action:
 	reorder parts:						Reordenar
 	change combine mode:				Cambiar modo combinación
 	change shape name:					Cambiar nombre de forma
+	#TODO: Localize
+	change region:						Change region type
 	group parts:						Agrupar
 	ungroup parts:						Desagrupar
 
@@ -1141,6 +1169,14 @@ error:
 	package out of date:				El paquete '%s' (versión %s) está desactualizado, se requiere la versión %s.
 	package too new:					El paquete '%s' (versión %s) no es compatible con la versión %s, requerido por '%s'
 	#TODO: Localize
+	error loading set:					Error while loading set:
+	#TODO: Localize
+	error updating card:
+		Error while running update cards script:
+		  Stylesheet: %s
+		  Before version: %s
+		  Card: %s
+	#TODO: Localize
 	write to read only:					Trying to write to file that has been declared read only: '%s'
 	#TODO: Localize
 	uninstall read only:
@@ -1161,6 +1197,8 @@ error:
 		  depends on: %s %s
 	#TODO: Localize
 	icon too large:						Icon image file for package '%s' is too large. It should be 105x105 pixels max.
+	#TODO: Localize
+	malformed soft line:				Malformed <soft-line> tag found. Attempted to repair.
 
 	# image import
 	#TODO: Localize Section
@@ -1236,6 +1274,10 @@ error:
 	negative image height:				Image with zero or negative height created in function '%s'
 	#TODO: Localize
 	can't load image:					Failed to load image. Ensure the image's actual format matches its saved extension.
+	#TODO: Localize
+	can't save symbol:					Failed to save symbol file '%s'.
+	#TODO: Localize
+	can't write symbol:					Failed to write to symbol file '%s'.
 	#TODO: Localize
 	symbol image has alpha:				For best results, image should be black and white with no transparency.
 
@@ -1326,9 +1368,6 @@ error:
 		No se pudo descargar el instalador para el paquete %s desde %s.
 		No se ha instalado nada.
 
-	downloading updates:				Descargando actualizaciones (%d de %d)
-	installing updates:					Actualizando paquetes (%d of %d)
-
 	remove packages:
 		Se eliminarán %s paquetes, ¿quieres continuar?
 	remove packages modified:
@@ -1339,6 +1378,8 @@ error:
 	install packages successful:		%s paquetes se instalaron con éxito.
 	remove packages successful:			%s paquetes se han eliminado.
 	change packages successful:			%s paquetes se han cambiado correctamente.
+	#TODO: Localize
+	updating cards:						Updating Cards.
 
 	cannot create file:					No se pudo crear el archivo '%s', ¿continuar con la instalación?
 

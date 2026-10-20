@@ -250,7 +250,9 @@ private:
     assert(content.size() == end-start);
     // use symbol font?
     if (symbol > 0 && style.symbol_font.valid()) {
-      elements.push_back(make_intrusive<SymbolTextElement>(content, start, end, style.symbol_font, &ctx));
+      double active_font_size = !sizes.empty() ? sizes.back() : style.symbol_font.size();
+      Color active_font_color = !colors.empty() ? colors.back() : style.font.color();
+      elements.push_back(make_intrusive<SymbolTextElement>(content, start, end, style.symbol_font, &ctx, active_font_size, active_font_color));
     } else {
       // text, possibly mixed with symbols
       DrawWhat what = soft > 0 ? DRAW_ACTIVE : DRAW_NORMAL;
@@ -269,6 +271,8 @@ private:
         size_t text_pos = 0;
         size_t pos = 0;
         FontRefP font;
+        double symbol_active_font_size = !sizes.empty() ? sizes.back() : style.symbol_font.size();
+        Color symbol_active_font_color = !colors.empty() ? colors.back() : style.font.color();
         while (pos < end-start) {
           if (size_t n = style.symbol_font.font->recognizePrefix(content,pos)) {
             // at 'pos' there are n symbol font characters
@@ -277,7 +281,7 @@ private:
               if (!font) font = makeFont(style);
               elements.push_back(make_intrusive<FontTextElement>(content.substr(text_pos, pos-text_pos), start+text_pos, start+pos, font, what, line_break));
             }
-            elements.push_back(make_intrusive<SymbolTextElement>(content.substr(pos,n), start+pos, start+pos+n, style.symbol_font, &ctx));
+            elements.push_back(make_intrusive<SymbolTextElement>(content.substr(pos,n), start+pos, start+pos+n, style.symbol_font, &ctx, symbol_active_font_size, symbol_active_font_color));
             text_pos = pos += n;
           } else {
             ++pos;

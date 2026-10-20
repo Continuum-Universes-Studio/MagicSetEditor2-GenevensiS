@@ -121,6 +121,8 @@ public:
   void getSelection(vector<CardP>& out) const;
   /// Can this card list hide back faces if the settings dictate it
   bool allow_back_face_hidding = true;
+  /// Can cards be drag n dropped out of this list
+  bool allow_drag = true;
   /// Number of cards hidden from the last getItems() call because they are back faces
   int getHiddenBackFacesCount() const { return hidden_back_faces_count; }
 protected:

@@ -45,7 +45,6 @@ SetWindow::SetWindow(Window* parent, const SetP& set)
   : wxFrame(parent, wxID_ANY, _TITLE_("magic set editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE)
   , current_panel(nullptr)
   , find_data(wxFR_DOWN)
-  , number_of_recent_sets(0)
 {
   SetIcon(load_resource_icon(_("app")));
 
@@ -111,6 +110,7 @@ SetWindow::SetWindow(Window* parent, const SetP& set)
   menuBar->Append(menuHelp, _MENU_("help"));
   
   SetMenuBar(menuBar);
+  rebuildRecentSetsMenu();
   
   // status bar
   CreateStatusBar();
@@ -508,10 +508,6 @@ void SetWindow::onUpdateUI(wxUpdateUIEvent& ev) {
     case ID_FILE_EXPORT_IMAGE: ev.Enable(!!current_panel->selectedCard());          break;
     case ID_FILE_EXPORT_APPR:  ev.Enable(set->game->isMagic());                break;
     case ID_FILE_EXPORT_MWS:   ev.Enable(set->game->isMagic());                break;
-    case ID_FILE_EXIT:
-      // update for ID_FILE_RECENT done for a different id, because ID_FILE_RECENT may not be in the menu yet
-      updateRecentSets();
-      break;
     // undo/redo
     case ID_EDIT_UNDO: {
       ev.Enable(set->actions.canUndo());
@@ -547,25 +543,33 @@ void SetWindow::onUpdateUI(wxUpdateUIEvent& ev) {
   }
 }
 
-static const int FILE_MENU_SIZE_BEFORE_RECENT_SETS = 12; // HACK; we should calculate the position to insert!
-void SetWindow::updateRecentSets() {
+void SetWindow::rebuildRecentSetsMenu() {
   wxMenuBar* mb = GetMenuBar();
-  assert(number_of_recent_sets <= (UInt)settings.recent_sets.size()); // the number of recent sets should only increase
+  wxMenu* file_menu = mb->GetMenu(0);
+
+  // Remove existing recent-set entries
+  for (UInt i = 0; i < settings.max_recent_sets; ++i) {
+    wxMenuItem* item = file_menu->FindItem(ID_FILE_RECENT + i);
+    if (item) file_menu->Destroy(item);
+  }
+
+  // Re-add current recent sets just before Exit's separator
+  size_t exit_pos;
+  file_menu->FindChildItem(ID_FILE_EXIT, &exit_pos);
+  size_t insert_pos = exit_pos - 1;
+
   UInt i = 0;
   FOR_EACH(file, settings.recent_sets) {
     if (i >= settings.max_recent_sets) break;
-    if (i < number_of_recent_sets) {
-      // menu item already exists, update it
-      mb->SetLabel(ID_FILE_RECENT + i, String(_("&")) << (i+1) << _(" ") << file);
-    } else {
-      // add new item
-      wxMenu* file_menu = mb->GetMenu(0);
-      size_t pos = file_menu->GetMenuItemCount() - 2; // last two items are separator and exit
-      file_menu->Insert(pos, ID_FILE_RECENT + i, String(_("&")) << (i+1) << _(" ") << file, _(""));
-    }
+    file_menu->Insert(insert_pos + i, ID_FILE_RECENT + i, String(_("&")) << (i+1) << _(" ") << file, _(""));
     i++;
   }
-  number_of_recent_sets = (UInt)settings.recent_sets.size();
+}
+
+void SetWindow::updateRecentSetsInAllWindows() {
+  FOR_EACH(w, set_windows) {
+    w->rebuildRecentSetsMenu();
+  }
 }
 
 // ----------------------------------------------------------------------------- : Window events - menu - file
@@ -595,6 +599,7 @@ void SetWindow::onFileSave(wxCommandEvent& ev) {
   } else {
     wxBusyCursor busy;
     settings.addRecentFile(set->absoluteFilename());
+    SetWindow::updateRecentSetsInAllWindows();
     set->save();
     set->actions.setSavePoint();
   }
@@ -616,6 +621,7 @@ void SetWindow::onFileSaveAsDirectory(wxCommandEvent&) {
     settings.default_set_dir = dlg.GetDirectory();
     set->saveAs(filename, true, true);
     settings.addRecentFile(filename);
+    SetWindow::updateRecentSetsInAllWindows();
     set->actions.setSavePoint();
     updateTitle(); // title may depend on filename
   }

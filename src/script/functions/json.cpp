@@ -452,11 +452,7 @@ inline boost::json::string to_json_string(const String& s) {
 template <typename T>
 void write(boost::json::object& out, const String& name, const T& value) {
   wxStringOutputStream stream;
-  Writer writer(stream);
-  // Keep the serialized value compact without violating Writer's block
-  // invariant. A negative indentation makes exitBlock() assert as soon as a
-  // non-empty value is written.
-  writer.indentation = 0;
+  Writer writer(stream, false);
   writer.handle(name, value);
   String string = stream.GetString();
   if (!string.empty()) {
@@ -620,7 +616,7 @@ boost::json::object mse_to_json(const StyleP& style) {
     stylev.emplace("always_symbol",                                    s->always_symbol);
     stylev.emplace("allow_formating",                                  s->allow_formating);
     stylev.emplace("alignment",            alignment_to_string(        s->alignment()));
-    stylev.emplace("direction",            direction_to_string(        s->direction));
+    stylev.emplace("direction",            direction_to_string(        s->direction()));
     stylev.emplace("padding_left",         String::Format(wxT("%.2f"), s->padding_left()));
     stylev.emplace("padding_right",        String::Format(wxT("%.2f"), s->padding_right()));
     stylev.emplace("padding_top",          String::Format(wxT("%.2f"), s->padding_top()));

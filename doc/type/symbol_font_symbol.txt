@@ -9,10 +9,11 @@ A single symbol in a [[type:symbol font]].
 | @image font size@	[[type:double]]				value from symbol font	To what point size does the images correspond?
 | @code@		[[type:string]] or [[type:regex]]	''required''		Text this symbol matches.
 | @regex@		[[type:boolean]]			@false@			Is the code a regular expression (as opposed to a string)?
-| @image@		[[type:scriptable]] [[type:image]]	''required''		Image of this symbol.
+| @image@		[[type:scriptable]] [[type:image]]	''required''		Image of this symbol.<br/>Inside the script determining this image, you have access to the active_color variable,.<br/>which contains the color of the text surrounding this symbol. If your symbol needs to match that color,.<br/>use the recolor_image script function, passing it the active_color.
 | @enabled@		[[type:scriptable]] [[type:boolean]]	@true@			Is this symbol actually used?<br/>
 			 					 			This can be scripted to optionally disable certain symbols.<br/>
 			 					 			If multiple symbols with the same code are given disabling the first switches to the second one.
+| @preview enabled@		[[type:scriptable]] [[type:boolean]]	@true@			Should the program attempt to render this symbol to create a preview in the Insert Symbol menu?
 | @draw text@			[[type:int]]			@-1@			The index of the captured regex expression to draw as text, or -1 to not draw text.<br/> For example with the code @"x([a-z])"@ and @draw text: 1@ the text of the symbol @"xb"@ will be @"b"@.
 | @text font@			[[type:font]]			 			Font to use for drawing text on symbols. The font size is in font points per text box font point.
 | @text alignment@		[[type:alignment]]		@"middle center"@	How should text be aligned on the symbol?
