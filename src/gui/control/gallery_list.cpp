@@ -11,6 +11,9 @@
 #include <gui/util.hpp>
 #include <gfx/gfx.hpp>
 #include <wx/dcbuffer.h>
+#ifdef __WXQT__
+#include <gui/control/qt_wheel_filter.hpp>
+#endif
 
 // ----------------------------------------------------------------------------- : Events
 
@@ -32,6 +35,15 @@ GalleryList::GalleryList(Window* parent, int id, int direction, bool always_focu
   col.selection  = NO_SELECTION;
   subcolumns.push_back(col);
   enable_themed_selection_rectangle(this);
+#ifdef __WXQT__
+  // Work around wxQt 3.3.3 losing downward wheel rotation and axis.
+  installGenevensisQtWheelFilter(this, [this](int delta) {
+    wheel_remainder += (mainSize(item_size) + SPACING) * delta;
+    const int pixels = wheel_remainder / 120;
+    wheel_remainder %= 120;
+    if (pixels != 0) scrollTo(visible_start - pixels);
+  });
+#endif
 }
 
 void GalleryList::selectSubColumn(size_t subcol) {
