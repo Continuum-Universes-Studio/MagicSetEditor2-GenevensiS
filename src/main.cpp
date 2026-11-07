@@ -27,6 +27,8 @@
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
 #include <wx/socket.h>
+#include <chrono>
+#include <iostream>
 
 ScriptValueP export_set(SetP const& set, vector<CardP> const& cards, ExportTemplateP const& exp, String const& outname);
 
@@ -60,6 +62,29 @@ public:
 
 IMPLEMENT_APP(MSE)
 
+// GUI benchmark state is active only for --benchmark-gui. The first visible
+// editor paint is recorded by CardViewer after its draw completes.
+namespace {
+  using BenchmarkClock = std::chrono::steady_clock;
+  BenchmarkClock::time_point benchmark_start;
+  bool benchmark_gui_active = false;
+  bool benchmark_gui_reported = false;
+}
+
+void benchmark_gui_card_painted(wxWindow* viewer) {
+  if (!benchmark_gui_active || benchmark_gui_reported || !viewer) return;
+  benchmark_gui_reported = true;
+  const auto first_paint = BenchmarkClock::now();
+  const double seconds = std::chrono::duration<double>(first_paint - benchmark_start).count();
+  std::cout << "BENCHMARK_GUI_FIRST_CARD_SECONDS=" << seconds << std::endl;
+
+  // Destroy after the paint event has unwound, never inside wxPaintEvent.
+  wxTheApp->CallAfter([viewer]() {
+    wxWindow* top = wxGetTopLevelParent(viewer);
+    if (top && !top->IsBeingDeleted()) top->Close();
+  });
+}
+
 // ----------------------------------------------------------------------------- : Checks
 
 void nag_about_ascii_version() {
@@ -79,6 +104,7 @@ void nag_about_ascii_version() {
 // ----------------------------------------------------------------------------- : Initialization
 
 int MSE::OnRun() {
+  benchmark_start = BenchmarkClock::now();
   try {
   #ifdef __WXMSW__
       SetAppName(_("Magic Set Editor"));
@@ -112,7 +138,21 @@ int MSE::OnRun() {
         const String& arg = args[0];
         // Find the extension
         wxFileName f(arg.Mid(0,arg.find_last_not_of(_("\\/")) + 1));
-        if (f.GetExt() == _("mse-symbol")) {
+        if (arg == _("--benchmark-gui")) {
+          if (args.size() != 2) {
+            std::cerr << "Usage: magicseteditor --benchmark-gui FILE.mse-set" << std::endl;
+            return EXIT_FAILURE;
+          }
+          const auto import_start = BenchmarkClock::now();
+          SetP benchmark_set = import_set(args[1]);
+          const auto import_done = BenchmarkClock::now();
+          const double import_seconds = std::chrono::duration<double>(import_done - import_start).count();
+          std::cout << "BENCHMARK_GUI_IMPORT_SECONDS=" << import_seconds << std::endl;
+          benchmark_gui_active = true;
+          Window* wnd = new SetWindow(nullptr, benchmark_set);
+          wnd->Show();
+          return runGUI();
+        } else if (f.GetExt() == _("mse-symbol")) {
           // Show the symbol editor
           Window* wnd = new SymbolWindow(nullptr, arg);
           wnd->Show();
