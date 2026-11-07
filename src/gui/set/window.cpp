@@ -138,6 +138,13 @@ SetWindow::SetWindow(Window* parent, const SetP& set)
   wxToolBar* tabBar = new wxToolBar(this, ID_TAB_BAR, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxNO_BORDER | wxTB_HORIZONTAL | wxTB_HORZ_TEXT | wxTB_NOALIGN);
   tabBar->SetToolBitmapSize(wxSize(18,18));
   wxSizer* s = new wxBoxSizer(wxVERTICAL);
+#ifdef __WXQT__
+  // wxQt's native toolbar expands embedded wxTextCtrls unpredictably.
+  auxiliary_toolbar = new wxPanel(this, wxID_ANY);
+  auxiliary_toolbar->SetSizer(new wxBoxSizer(wxHORIZONTAL));
+  s->Add(auxiliary_toolbar, 0, wxEXPAND | wxLEFT | wxRIGHT, 4);
+  auxiliary_toolbar->Hide();
+#endif
   s->Add(tabBar, 0, wxEXPAND | wxBOTTOM, 0);
   SetSizer(s);
   #if defined(__WXMSW__) && defined(TBSTYLE_EX_DOUBLEBUFFER)
@@ -230,6 +237,12 @@ void SetWindow::addPanel(wxMenu* windowMenu, wxToolBar* tabBar, SetWindowPanel* 
   set_menu_item_image(menu_item, image_name);
   // add to sizer
   GetSizer()->Add(panel, 1, wxEXPAND);
+}
+
+void SetWindow::showAuxiliaryToolbar(bool show) {
+  if (!auxiliary_toolbar) return;
+  GetSizer()->Show(auxiliary_toolbar, show);
+  Layout();
 }
 
 void SetWindow::selectPanel(int id) {
