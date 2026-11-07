@@ -118,6 +118,15 @@ private:
   // --------------------------------------------------- : Window events
   DECLARE_EVENT_TABLE();
   
+#ifdef __WXQT__
+  // wxQt's virtual list viewport may retain stale regions during resize
+  // and scrollbar thumb movement. Coalesce follow-up repaint requests.
+  bool qt_repaint_pending = false;
+  void queueQtViewportRefresh();
+  void onQtSize(wxSizeEvent& ev);
+  void onQtScroll(wxScrollWinEvent& ev);
+#endif
+
   void onColumnClick(wxListEvent& ev);
   void onItemFocus  (wxListEvent& ev);
   void onContextMenu(wxContextMenuEvent&);
