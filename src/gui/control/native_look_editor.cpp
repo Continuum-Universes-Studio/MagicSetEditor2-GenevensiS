@@ -22,7 +22,13 @@ NativeLookEditor::NativeLookEditor(Window* parent, int id, long style)
 
 Rotation NativeLookEditor::getRotation() const {
   int dx = CanScroll(wxHORIZONTAL) ? GetScrollPos(wxHORIZONTAL) : 0;
+#ifdef __WXQT__
+  // wxQt may update the native scrollbar position before dispatching the
+  // event. The editor's own offset is authoritative for drawing and input.
+  int dy = CanScroll(wxVERTICAL) ? cached_scroll : 0;
+#else
   int dy = CanScroll(wxVERTICAL) ? GetScrollPos(wxVERTICAL) : 0;
+#endif
   return Rotation(0, RealRect(RealPoint(-dx,-dy),GetClientSize()));
 }
 
@@ -84,6 +90,10 @@ void NativeLookEditor::resizeViewers() {
   }
   y = y - vspace + margin;
   SetVirtualSize(w, (int)y);
+#ifdef __WXQT__
+  // A newly loaded set or resized editor may have a smaller scroll range.
+  cached_scroll = max(0, min(cached_scroll, max(0, (int)y - h)));
+#endif
   if (CanScroll(wxVERTICAL)) {
     SetScrollbar(wxVERTICAL, cached_scroll, h, (int)y);
   }
@@ -111,7 +121,11 @@ void NativeLookEditor::onSize(wxSizeEvent& ev) {
 }
 void NativeLookEditor::onScroll(wxScrollWinEvent& ev) {
   if (ev.GetOrientation() == wxVERTICAL) {
+#ifdef __WXQT__
+    int y      = cached_scroll;
+#else
     int y      = GetScrollPos(wxVERTICAL);
+#endif
     int page   = GetClientSize().y;  // view size
     // determine new y offset
     // NOTE: can't use case, these are not constants
@@ -150,14 +164,29 @@ void NativeLookEditor::onMouseWheel(wxMouseEvent& ev) {
     }
   }
   // scroll entire window
-  int toScroll = 10 * ev.GetWheelRotation() * ev.GetLinesPerAction() / ev.GetWheelDelta(); // note: up is positive
+  const int delta = ev.GetWheelDelta();
+  if (delta <= 0) return;
+  // wxQt can deliver fractional wheel rotations (especially touchpads).
+  // Retain sub-step motion until it adds up to at least one pixel.
+#ifdef __WXQT__
+  wheel_remainder += 10 * ev.GetWheelRotation() * max(1, ev.GetLinesPerAction());
+  const int toScroll = wheel_remainder / delta;
+  wheel_remainder %= delta;
+  scrollTo(wxVERTICAL, cached_scroll - toScroll);
+#else
+  int toScroll = 10 * ev.GetWheelRotation() * ev.GetLinesPerAction() / delta; // up is positive
   int y = GetScrollPos(wxVERTICAL);
   scrollTo(wxVERTICAL, y - toScroll);
+#endif
 }
 
 void NativeLookEditor::scrollTo(int direction, int pos) {
   if (direction == wxVERTICAL) {
+#ifdef __WXQT__
+    int y      = cached_scroll;
+#else
     int y      = GetScrollPos(wxVERTICAL);
+#endif
     int height = GetVirtualSize().y; // height
     int page   = GetClientSize().y;  // view size
     int bottom = max(0, height - page);
