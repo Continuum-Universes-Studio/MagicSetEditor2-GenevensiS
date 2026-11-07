@@ -285,7 +285,7 @@ void SetWindow::selectPanel(int id) {
     if (IsBeingDeleted() || current_panel != shown_panel) return;
     shown_panel->Layout();
     shown_panel->Refresh(false);
-    shown_panel->RefreshChildren();
+    // wxWindow::Refresh() also invalidates descendant controls.
   });
 #endif
 }
