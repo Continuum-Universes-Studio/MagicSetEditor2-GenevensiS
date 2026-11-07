@@ -8,6 +8,7 @@
 
 #include <util/prec.hpp>
 #include <gui/set/cards_panel.hpp>
+#include <gui/set/window.hpp>
 #include <gui/control/image_card_list.hpp>
 #include <gui/control/card_editor.hpp>
 #include <gui/control/text_ctrl.hpp>
@@ -319,6 +320,7 @@ wxMenu* CardsPanel::makeAddCardsSubmenu(bool add_single_card_option) {
 // ----------------------------------------------------------------------------- : UI
 
 void CardsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
+  toolbar_item_start = tb->GetToolsCount();
   // Toolbar
   add_tool_tr(tb, ID_FORMAT_FONT,          settings.darkModePrefix() + "font",          "font",          false, wxITEM_CHECK);
   add_tool_tr(tb, ID_FORMAT_BOLD,          settings.darkModePrefix() + "bold",          "bold",          false, wxITEM_CHECK);
@@ -342,15 +344,26 @@ void CardsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
     add_menu_item_tr(menuRotate, ID_CARD_ROTATE_180, "card_rotate_180", "rotate_180", wxITEM_CHECK);
     add_menu_item_tr(menuRotate, ID_CARD_ROTATE_90, "card_rotate_90", "rotate_90", wxITEM_CHECK);
   tb->SetDropdownMenu(ID_CARD_ROTATE, menuRotate);
-  // Filter/search textbox
-  tb->AddSeparator();
+  // Keep complex controls out of wxQt's native toolbar layout.
+  SetWindow* window = static_cast<SetWindow*>(GetParent());
+  wxPanel* auxiliary = window->auxiliaryToolbar();
+  if (!auxiliary) tb->AddSeparator();
   assert(!filter);
-  filter = new FilterCtrl(tb, ID_CARD_FILTER, _TOOL_("search cards"), _HELP_("search cards control"));
+  wxWindow* host = auxiliary ? static_cast<wxWindow*>(auxiliary) : static_cast<wxWindow*>(tb);
+  filter = new FilterCtrl(host, ID_CARD_FILTER, _TOOL_("search cards"), _HELP_("search cards control"));
   filter->setFilter(filter_value);
-  tb->AddControl(filter);
-  counts = new wxStaticText(tb, ID_CARD_COUNTER, _(""));
+  counts = new wxStaticText(host, ID_CARD_COUNTER, _(""));
+  if (auxiliary) {
+    filter->SetMinSize(wxSize(200, -1));
+    filter->SetMaxSize(wxSize(200, -1));
+    auxiliary->GetSizer()->Add(filter, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+    auxiliary->GetSizer()->Add(counts, 0, wxALIGN_CENTER_VERTICAL);
+    window->showAuxiliaryToolbar(true);
+  } else {
+    tb->AddControl(filter);
+    tb->AddControl(counts);
+  }
   updateCardCounts();
-  tb->AddControl(counts);
   tb->Realize();
   // Menus
   mb->Insert(2, menuCard,   _MENU_("cards"));
@@ -358,31 +371,19 @@ void CardsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
 }
 
 void CardsPanel::destroyUI(wxToolBar* tb, wxMenuBar* mb) {
-  // Toolbar
-  tb->DeleteTool(ID_FORMAT_FONT);
-  tb->DeleteTool(ID_FORMAT_BOLD);
-  tb->DeleteTool(ID_FORMAT_ITALIC);
-  tb->DeleteTool(ID_FORMAT_UNDERLINE);
-  tb->DeleteTool(ID_FORMAT_STRIKETHROUGH);
-  tb->DeleteTool(ID_FORMAT_COLOR);
-  tb->DeleteTool(ID_FORMAT_BULLETPOINT);
-  tb->DeleteTool(ID_FORMAT_SYMBOL);
-  tb->DeleteTool(ID_FORMAT_REMINDER);
-  tb->DeleteTool(ID_CARD_ADD);
-  tb->DeleteTool(ID_CARD_REMOVE);
-  tb->DeleteTool(ID_CARD_LINK);
-  tb->DeleteTool(ID_CARD_ROTATE);
-  tb->DeleteTool(ID_CARD_COUNTER);
-  counts = nullptr;
-  // remember the value in the filter control, because the card list remains filtered
-  // the control is destroyed by DeleteTool
   filter_value = filter->getFilterString();
-  tb->DeleteTool(filter->GetId());
+  SetWindow* window = static_cast<SetWindow*>(GetParent());
+  if (wxPanel* auxiliary = window->auxiliaryToolbar()) {
+    window->showAuxiliaryToolbar(false);
+    auxiliary->GetSizer()->Clear(true);
+  }
   filter = nullptr;
-  // HACK: hardcoded size of rest of toolbar
-  tb->DeleteToolByPos(12); // delete separator
-  tb->DeleteToolByPos(12); // delete separator
-  tb->DeleteToolByPos(12); // delete separator
+  counts = nullptr;
+  // Remove exactly what this panel added, including separators.
+  while (tb->GetToolsCount() > toolbar_item_start) {
+    tb->DeleteToolByPos(toolbar_item_start);
+  }
+  toolAddCard = nullptr;
   // Menus
   mb->Remove(3);
   mb->Remove(2);
