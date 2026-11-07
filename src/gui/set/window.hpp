@@ -35,6 +35,10 @@ public:
   /// Get all card lists on all panels
   vector<CardListBase*> getCardLists();
 
+  /// Returns a normal, sizer-managed toolbar input strip on wxQt, nullptr elsewhere.
+  wxPanel* auxiliaryToolbar() const { return auxiliary_toolbar; }
+  void showAuxiliaryToolbar(bool show);
+
   // --------------------------------------------------- : Set actions
   
 private:
@@ -43,6 +47,7 @@ private:
   // --------------------------------------------------- : Data
   
   // gui items
+  wxPanel*                 auxiliary_toolbar = nullptr; ///< wxQt: host for panel-owned toolbar inputs
   vector<SetWindowPanel*> panels;        ///< All panels on this window
   SetWindowPanel*         current_panel;
   wxMenu*                 export_menu = nullptr;
