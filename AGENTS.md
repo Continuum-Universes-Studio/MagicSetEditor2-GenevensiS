@@ -35,6 +35,7 @@ This file applies to the entire repository. It is intended for human maintainers
 - The linked-card picker previously crashed because icons added to `wxImageList(15,15)` were not guaranteed to be 15×15. Keep image dimensions consistent before adding.
 - Custom styling dropdowns and their popup/mouse handling remain regression-test targets; don't assume an earlier mouse fix solved every case.
 - Existing Qt-only scrollbar repaint workarounds in `item_list.cpp` should be assessed for correctness and responsiveness rather than copied to every control.
+- **KDE UI font parity:** Some custom-drawn widgets bypass Qt's normal widget font inheritance. wxQt-specific adjustments in `native_look_editor.cpp`, `drop_down_list.cpp`, `package_list.cpp`, `stats_panel.cpp`, `graph.cpp`, `random_pack_panel.cpp`, and `console_panel.cpp` use `wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)` for interface text. Preserve intentional fonts from card/set style definitions; they are content typography, not UI chrome. On wxQt, test Style, Set Info, dropdowns, Statistics graphs/sidebar, Random Pack, and Console against the configured KDE font. Preserve wxGTK's existing rendering unless an independently verified change is desired.
 
 ## Verification checklist for GUI changes
 
