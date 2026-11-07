@@ -7,6 +7,9 @@
 // ----------------------------------------------------------------------------- : Includes
 
 #include <util/prec.hpp>
+#ifdef __WXQT__
+#include <gui/control/qt_gui_font.hpp>
+#endif
 #include <render/value/choice.hpp>
 #include <render/card/viewer.hpp>
 
@@ -114,10 +117,23 @@ void draw_choice_viewer(RotatedDC& dc, ValueViewer& viewer, ChoiceStyle& style, 
       font.color = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
       margin += 1.;
     }
-    dc.SetFont(font, 1.0);
-    RealSize size = dc.GetTextExtent(text);
-    RealPoint text_pos = align_in_rect(text_align, size, dc.getInternalRect()) + RealSize(margin, 0);
-    dc.DrawTextWithShadowOrStroke(text, font, text_pos);
+#ifdef __WXQT__
+    // Native editor fields are interface chrome, not card artwork. Their
+    // closed values should match Qt's application font just like popups.
+    if (viewer.nativeLook()) {
+      dc.SetFont(genevensisQtGuiFont());
+      dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
+      RealSize size = dc.GetTextExtent(text);
+      RealPoint text_pos = align_in_rect(text_align, size, dc.getInternalRect()) + RealSize(margin, 0);
+      dc.DrawText(text, text_pos);
+    } else
+#endif
+    {
+      dc.SetFont(font, 1.0);
+      RealSize size = dc.GetTextExtent(text);
+      RealPoint text_pos = align_in_rect(text_align, size, dc.getInternalRect()) + RealSize(margin, 0);
+      dc.DrawTextWithShadowOrStroke(text, font, text_pos);
+    }
     if (viewer.nativeLook()) font.color = font_color;
   }
 }
