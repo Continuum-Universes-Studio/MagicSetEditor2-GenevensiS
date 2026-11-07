@@ -277,6 +277,17 @@ void SetWindow::selectPanel(int id) {
   fixMinWindowSize();
   // select something
   current_panel->SetFocus();
+#ifdef __WXQT__
+  // Panel widgets can become visible before Qt has completed the splitter
+  // and virtual list viewport layout. Repaint only after that event cycle.
+  SetWindowPanel* shown_panel = current_panel;
+  CallAfter([this, shown_panel]() {
+    if (IsBeingDeleted() || current_panel != shown_panel) return;
+    shown_panel->Layout();
+    shown_panel->Refresh(false);
+    shown_panel->RefreshChildren();
+  });
+#endif
 }
 
 void toolbar_SetToolNormalBitmap(wxToolBar* toolbar, int id, wxBitmap const& bitmap) {
