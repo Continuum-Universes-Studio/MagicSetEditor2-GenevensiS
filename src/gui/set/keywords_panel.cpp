@@ -141,15 +141,24 @@ void KeywordsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
   wxPanel* auxiliary = window->auxiliaryToolbar();
   if (!auxiliary) tb->AddSeparator();
   assert(!filter);
-  wxWindow* host = auxiliary ? static_cast<wxWindow*>(auxiliary) : static_cast<wxWindow*>(tb);
-  filter = new FilterCtrl(host, ID_KEYWORD_FILTER, _LABEL_("search keywords"), _HELP_("search_keywords_control"));
-  filter->setFilter(filter_value);
   if (auxiliary) {
-    filter->SetMinSize(wxSize(200, -1));
-    filter->SetMaxSize(wxSize(200, -1));
-    auxiliary->GetSizer()->Add(filter, 0, wxALIGN_CENTER_VERTICAL);
+    if (!toolbar_controls) {
+      toolbar_controls = new wxPanel(auxiliary, wxID_ANY);
+      toolbar_controls->SetSizer(new wxBoxSizer(wxHORIZONTAL));
+      filter = new FilterCtrl(toolbar_controls, ID_KEYWORD_FILTER,
+                              _LABEL_("search keywords"), _HELP_("search_keywords_control"));
+      filter->SetMinSize(wxSize(200, -1));
+      filter->SetMaxSize(wxSize(200, -1));
+      toolbar_controls->GetSizer()->Add(filter, 0, wxALIGN_CENTER_VERTICAL);
+      auxiliary->GetSizer()->Add(toolbar_controls, 0, wxALIGN_CENTER_VERTICAL);
+    }
+    filter->setFilter(filter_value);
+    toolbar_controls->Show();
+    toolbar_controls->Layout();
     window->showAuxiliaryToolbar(true);
   } else {
+    filter = new FilterCtrl(tb, ID_KEYWORD_FILTER, _LABEL_("search keywords"), _HELP_("search_keywords_control"));
+    filter->setFilter(filter_value);
     tb->AddControl(filter);
   }
   tb->Realize();
@@ -160,11 +169,12 @@ void KeywordsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
 void KeywordsPanel::destroyUI(wxToolBar* tb, wxMenuBar* mb) {
   filter_value = filter->getFilterString();
   SetWindow* window = static_cast<SetWindow*>(GetParent());
-  if (wxPanel* auxiliary = window->auxiliaryToolbar()) {
+  if (window->auxiliaryToolbar()) {
+    toolbar_controls->Hide();
     window->showAuxiliaryToolbar(false);
-    auxiliary->GetSizer()->Clear(true);
+  } else {
+    filter = nullptr;
   }
-  filter = nullptr;
   while (tb->GetToolsCount() > toolbar_item_start) {
     tb->DeleteToolByPos(toolbar_item_start);
   }
