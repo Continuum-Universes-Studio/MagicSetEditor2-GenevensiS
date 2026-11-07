@@ -28,6 +28,7 @@
 #include <wx/txtstrm.h>
 #include <wx/socket.h>
 #include <chrono>
+#include <cstdlib>
 #include <iostream>
 
 ScriptValueP export_set(SetP const& set, vector<CardP> const& cards, ExportTemplateP const& exp, String const& outname);
@@ -78,13 +79,17 @@ void benchmark_gui_card_painted(wxWindow* viewer) {
   const double seconds = std::chrono::duration<double>(first_paint - benchmark_start).count();
   std::cout << "BENCHMARK_GUI_FIRST_CARD_SECONDS=" << seconds << std::endl;
 
-  // The benchmark must not rely on SetWindow::Close(): normal editor
-  // shutdown may invoke save prompts or be vetoed, leaving automated runs
-  // hanging after the measurement is printed. Exit the GUI event loop
-  // directly, but only after the current paint event has unwound.
+  // Benchmark-only termination after the paint event has unwound.
+  // wxQt can keep the process alive after ExitMainLoop(), and the normal
+  // SetWindow::Close() path may ask to save. We intentionally exclude GUI
+  // teardown/shutdown from this workload: no set is saved or modified.
+  // std::_Exit bypasses C++ static destructors and wxWidgets OnExit(), so
+  // output must be flushed before leaving. Never use outside benchmark mode.
   wxTheApp->CallAfter([]() {
-    std::cout << "BENCHMARK_GUI_EXIT_REQUESTED=1" << std::endl;
-    wxTheApp->ExitMainLoop();
+    std::cout << "BENCHMARK_GUI_COMPLETE=1" << std::endl;
+    std::cout.flush();
+    std::cerr.flush();
+    std::_Exit(EXIT_SUCCESS);
   });
 }
 
