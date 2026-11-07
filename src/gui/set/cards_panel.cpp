@@ -108,6 +108,15 @@ CardsPanel::CardsPanel(Window* parent, int id)
             link_grid->Add(link_viewers[i],    wxGBPosition(1, 0), wxGBSpan(1, 2));
             if (i == 0) link_grid->Add(link_editor, wxGBPosition(2, 0), wxGBSpan(1, 2)); // shown instead of link_viewers[0] when there's exactly 1 link
           }
+#ifdef __WXQT__
+          // The linked-card widgets are siblings of the native QGroupBoxes,
+          // not Qt children of them. Newer group boxes otherwise cover the
+          // previously created CardViewer/CardEditor widgets (blank previews).
+          // Match the Preferences dialog's wxQt stacking workaround.
+          for (wxSizer* box : link_boxes) {
+            static_cast<wxStaticBoxSizer*>(box)->GetStaticBox()->Lower();
+          }
+#endif
   s->Add(s_left,   0, wxEXPAND | wxRIGHT, 2);
   s->Add(splitter, 1, wxEXPAND);
   SetSizer(s);
