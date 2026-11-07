@@ -18,6 +18,7 @@
 
 // Implemented by the application. No-op outside --benchmark-gui.
 void benchmark_gui_card_painted(wxWindow* viewer);
+void benchmark_gui_card_paint_started();
 
 // ----------------------------------------------------------------------------- : Events
 
@@ -123,6 +124,9 @@ void CardViewer::onPaint(wxPaintEvent&) {
   if (!up_to_date) {
     up_to_date = true;
     full_repaint = true;
+    if (GetId() == ID_EDITOR && getCard() && IsShownOnScreen()) {
+      benchmark_gui_card_paint_started();
+    }
     try {
       draw(dc);
     } CATCH_ALL_ERRORS(false); // don't show message boxes in onPaint!
