@@ -78,10 +78,13 @@ void benchmark_gui_card_painted(wxWindow* viewer) {
   const double seconds = std::chrono::duration<double>(first_paint - benchmark_start).count();
   std::cout << "BENCHMARK_GUI_FIRST_CARD_SECONDS=" << seconds << std::endl;
 
-  // Destroy after the paint event has unwound, never inside wxPaintEvent.
-  wxTheApp->CallAfter([viewer]() {
-    wxWindow* top = wxGetTopLevelParent(viewer);
-    if (top && !top->IsBeingDeleted()) top->Close();
+  // The benchmark must not rely on SetWindow::Close(): normal editor
+  // shutdown may invoke save prompts or be vetoed, leaving automated runs
+  // hanging after the measurement is printed. Exit the GUI event loop
+  // directly, but only after the current paint event has unwound.
+  wxTheApp->CallAfter([]() {
+    std::cout << "BENCHMARK_GUI_EXIT_REQUESTED=1" << std::endl;
+    wxTheApp->ExitMainLoop();
   });
 }
 
