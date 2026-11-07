@@ -42,6 +42,7 @@ This file applies to the entire repository. It is intended for human maintainers
 - Build and test **wxQt** and, where relevant, **wxGTK**. Common local build paths are `build-qt` and `build-ninja`, but they are machine-specific, not required project layout.
 - With the pointer over **content** (not just the scrollbar), test wheel **up and down** in Style, Set Info, and Statistics sidebar. Also verify Cards and Keywords remain smooth.
 - Test scrollbar thumb dragging, high-resolution touchpad/wheel behavior if available, selection/editing, popup/dropdown mouse interaction, and switching panels.
+- In Style and Set Info, drag across text in a native editor field, then try Shift+Arrow and Ctrl+A. Check that the selection is visible and the selected text remains readable in both light and dark KDE themes; clear the selection and confirm the KDE field font remains. Repeat a text selection in the Cards editor and on wxGTK to catch rendering regressions.
 - Recheck linked-card dialogs/previews, Preferences controls, toolbar filters, and basic set opening/saving.
 - Do not claim tests or compilation succeeded unless actually run. If unable to run locally, state that clearly and provide exact reproduction steps.
 - The opt-in `--benchmark-gui FILE.mse-set` mode exists for development diagnostics. It intentionally calls `std::_Exit` after first-card paint; it is **not** a normal app shutdown or a measure of sustained editing performance. Do not invoke it during regular user flows.
