@@ -70,6 +70,20 @@ namespace {
   BenchmarkClock::time_point benchmark_start;
   bool benchmark_gui_active = false;
   bool benchmark_gui_reported = false;
+  bool benchmark_gui_paint_started = false;
+
+  void report_benchmark_stage(const char* name) {
+    if (!benchmark_gui_active) return;
+    const double seconds = std::chrono::duration<double>(
+      BenchmarkClock::now() - benchmark_start).count();
+    std::cout << name << "=" << seconds << std::endl;
+  }
+}
+
+void benchmark_gui_card_paint_started() {
+  if (benchmark_gui_reported || benchmark_gui_paint_started) return;
+  benchmark_gui_paint_started = true;
+  report_benchmark_stage("BENCHMARK_GUI_PAINT_START_SECONDS");
 }
 
 void benchmark_gui_card_painted(wxWindow* viewer) {
@@ -158,7 +172,9 @@ int MSE::OnRun() {
           std::cout << "BENCHMARK_GUI_IMPORT_SECONDS=" << import_seconds << std::endl;
           benchmark_gui_active = true;
           Window* wnd = new SetWindow(nullptr, benchmark_set);
+          report_benchmark_stage("BENCHMARK_GUI_WINDOW_CONSTRUCTED_SECONDS");
           wnd->Show();
+          report_benchmark_stage("BENCHMARK_GUI_WINDOW_SHOWN_SECONDS");
           return runGUI();
         } else if (f.GetExt() == _("mse-symbol")) {
           // Show the symbol editor
