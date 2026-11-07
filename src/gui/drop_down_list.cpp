@@ -89,7 +89,11 @@ DropDownList::DropDownList(Window* parent, bool is_submenu, ValueViewer* viewer)
   }
   // determine item height
   wxClientDC dc(this);
+  #ifdef __WXQT__
+  dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+#else
   dc.SetFont(*wxNORMAL_FONT);
+#endif
   int h;
   dc.GetTextExtent(_("X"), 0, &h);
   item_size.height = h + 2.0;
@@ -110,7 +114,11 @@ void DropDownList::show(bool in_place, wxPoint pos, RealRect* rect) {
   size_t count = itemCount();
   if (item_size.width == 100) { // not initialized
     wxClientDC dc(this);
-    dc.SetFont(*wxNORMAL_FONT);
+    #ifdef __WXQT__
+  dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+#else
+  dc.SetFont(*wxNORMAL_FONT);
+#endif
     for (size_t i = 0 ; i < count ; ++i) {
       int text_width;
       dc.GetTextExtent(capitalize(itemText(i)), &text_width, nullptr);
@@ -327,12 +335,22 @@ void DropDownList::draw(DC& dc) {
   dc.SetPen(*wxTRANSPARENT_PEN);
   dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
   dc.DrawRectangle(0, 0, cs.x, cs.y);
+  #ifdef __WXQT__
+  dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+#else
   dc.SetFont(*wxNORMAL_FONT);
+#endif
   if (is_slider) {
     // If it's a slider, draw the slider
     cs = GetClientSize();
     dc.SetPen(*wxBLACK_PEN);
+#ifdef __WXQT__
+    wxFont slider_font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+    slider_font.SetWeight(wxFONTWEIGHT_BOLD);
+    dc.SetFont(slider_font);
+#else
     dc.SetFont(wxFont(12, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, _("Arial")));
+#endif
 
     String first_item = capitalize(itemText(0));
     if (first_item == _("Default")) first_item = capitalize(itemText(1));
@@ -359,7 +377,11 @@ void DropDownList::draw(DC& dc) {
     dc.GetTextExtent(capitalize(itemText(selected_index)), &selected_text_width, nullptr);
     dc.DrawText(capitalize(itemText(selected_index)), slider_pos - selected_text_width/2, 44);
 
-    dc.SetFont(*wxNORMAL_FONT);
+    #ifdef __WXQT__
+  dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+#else
+  dc.SetFont(*wxNORMAL_FONT);
+#endif
   } else {
     // If it's not a slider, draw the list of items
     int y = marginH - visible_start;
