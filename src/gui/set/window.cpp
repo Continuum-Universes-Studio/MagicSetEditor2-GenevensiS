@@ -242,7 +242,9 @@ void SetWindow::addPanel(wxMenu* windowMenu, wxToolBar* tabBar, SetWindowPanel* 
 void SetWindow::showAuxiliaryToolbar(bool show) {
   if (!auxiliary_toolbar) return;
   GetSizer()->Show(auxiliary_toolbar, show);
+  if (show) auxiliary_toolbar->GetSizer()->Layout();
   Layout();
+  if (show) auxiliary_toolbar->Layout();
 }
 
 void SetWindow::selectPanel(int id) {
