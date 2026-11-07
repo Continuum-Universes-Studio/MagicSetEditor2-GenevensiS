@@ -13,12 +13,26 @@
 #include <data/stylesheet.hpp>
 #include <data/export_template.hpp>
 #include <data/settings.hpp>
+#ifdef __WXQT__
+#include <gui/control/qt_wheel_filter.hpp>
+#endif
 
 // ----------------------------------------------------------------------------- : NativeLookEditor
 
 NativeLookEditor::NativeLookEditor(Window* parent, int id, long style)
   : DataEditor(parent, id, style)
-{}
+{
+#ifdef __WXQT__
+  // wxQt 3.3.3 misclassifies negative vertical wheel deltas as horizontal,
+  // so the wxEVT_MOUSEWHEEL handler never sees correct downward input.
+  installGenevensisQtWheelFilter(this, [this](int delta) {
+    wheel_remainder += 30 * delta;
+    const int pixels = wheel_remainder / 120;
+    wheel_remainder %= 120;
+    if (pixels != 0) scrollTo(wxVERTICAL, cached_scroll - pixels);
+  });
+#endif
+}
 
 Rotation NativeLookEditor::getRotation() const {
   int dx = CanScroll(wxHORIZONTAL) ? GetScrollPos(wxHORIZONTAL) : 0;
