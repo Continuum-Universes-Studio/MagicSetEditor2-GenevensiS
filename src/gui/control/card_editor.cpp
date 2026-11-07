@@ -283,10 +283,17 @@ void DataEditor::insert(const String& text, const String& action_name) {
 // ----------------------------------------------------------------------------- : Mouse events
 
 void DataEditor::onLeftDown(wxMouseEvent& ev) {
-  ev.Skip(); // for focus
-  CaptureMouse();
-  // change selection?
-  selectViewer(ev, &ValueEditor::onLeftDown);
+    // wxQt may not automatically focus custom wxWindow controls
+    // when a left mouse event is forwarded.
+    if (!HasFocus()) {
+        SetFocus();
+    }
+
+    // Preserve MSE's existing mouse selection behavior.
+    CaptureMouse();
+    selectViewer(ev, &ValueEditor::onLeftDown);
+
+    ev.Skip();
 }
 void DataEditor::onLeftUp(wxMouseEvent& ev) {
   if (HasCapture()) ReleaseMouse();
@@ -446,7 +453,8 @@ static CardsPanel* find_cards_panel(wxWindow* w) {
     if (CardsPanel* panel = dynamic_cast<CardsPanel*>(w)) return panel;
   }
   return nullptr;
-}
+}
+
 void DataEditor::onChar(wxKeyEvent& ev) {
   if (ev.GetKeyCode() == WXK_TAB) {
     if (!ev.ShiftDown()) {
