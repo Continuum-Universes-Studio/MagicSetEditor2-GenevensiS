@@ -8,6 +8,7 @@
 
 #include <util/prec.hpp>
 #include <gui/set/keywords_panel.hpp>
+#include <gui/set/window.hpp>
 #include <gui/control/keyword_list.hpp>
 #include <gui/control/text_ctrl.hpp>
 #include <gui/util.hpp>
@@ -125,6 +126,7 @@ KeywordsPanel::~KeywordsPanel() {
 
 
 void KeywordsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
+  toolbar_item_start = tb->GetToolsCount();
   // Controls
   if (!isInitialized()) {
     wxBusyCursor busy;
@@ -134,27 +136,38 @@ void KeywordsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
   // Toolbar
   add_tool_tr(tb, ID_KEYWORD_ADD, "keyword_add", "add_keyword");
   add_tool_tr(tb, ID_KEYWORD_REMOVE, "keyword_del", "remove_keyword");
-  // Filter/search textbox
-  tb->AddSeparator();
+  // Keep wxQt input widgets outside the native toolbar's expanding layout.
+  SetWindow* window = static_cast<SetWindow*>(GetParent());
+  wxPanel* auxiliary = window->auxiliaryToolbar();
+  if (!auxiliary) tb->AddSeparator();
   assert(!filter);
-  filter = new FilterCtrl(tb, ID_KEYWORD_FILTER, _LABEL_("search keywords"), _HELP_("search_keywords_control"));
+  wxWindow* host = auxiliary ? static_cast<wxWindow*>(auxiliary) : static_cast<wxWindow*>(tb);
+  filter = new FilterCtrl(host, ID_KEYWORD_FILTER, _LABEL_("search keywords"), _HELP_("search_keywords_control"));
   filter->setFilter(filter_value);
-  tb->AddControl(filter);
+  if (auxiliary) {
+    filter->SetMinSize(wxSize(200, -1));
+    filter->SetMaxSize(wxSize(200, -1));
+    auxiliary->GetSizer()->Add(filter, 0, wxALIGN_CENTER_VERTICAL);
+    window->showAuxiliaryToolbar(true);
+  } else {
+    tb->AddControl(filter);
+  }
   tb->Realize();
   // Menus
   mb->Insert(2, menuKeyword,   _MENU_("keywords"));
 }
 
 void KeywordsPanel::destroyUI(wxToolBar* tb, wxMenuBar* mb) {
-  // Toolbar
-  tb->DeleteTool(ID_KEYWORD_ADD);
-  tb->DeleteTool(ID_KEYWORD_REMOVE);
-  // remember value of filter control
   filter_value = filter->getFilterString();
-  tb->DeleteTool(filter->GetId());
+  SetWindow* window = static_cast<SetWindow*>(GetParent());
+  if (wxPanel* auxiliary = window->auxiliaryToolbar()) {
+    window->showAuxiliaryToolbar(false);
+    auxiliary->GetSizer()->Clear(true);
+  }
   filter = nullptr;
-  // HACK: hardcoded size of rest of toolbar
-  tb->DeleteToolByPos(12); // delete separator
+  while (tb->GetToolsCount() > toolbar_item_start) {
+    tb->DeleteToolByPos(toolbar_item_start);
+  }
   // Menus
   mb->Remove(2);
   
