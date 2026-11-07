@@ -283,17 +283,23 @@ void DataEditor::insert(const String& text, const String& action_name) {
 // ----------------------------------------------------------------------------- : Mouse events
 
 void DataEditor::onLeftDown(wxMouseEvent& ev) {
-    // wxQt may not automatically focus custom wxWindow controls
-    // when a left mouse event is forwarded.
+    // wxQt does not reliably assign keyboard focus to this custom editor
+    // through the skipped mouse event, so focus it explicitly.
     if (!HasFocus()) {
         SetFocus();
     }
 
-    // Preserve MSE's existing mouse selection behavior.
     CaptureMouse();
     selectViewer(ev, &ValueEditor::onLeftDown);
 
+#ifndef __WXQT__
+    // Preserve the existing native mouse-event behavior on other backends.
     ev.Skip();
+#else
+    // Opening a custom DropDownList installs a popup-dismissal handler on
+    // our parent during selectViewer(). Do not propagate the very click
+    // that opened it into that new handler: wxQt can close it immediately.
+#endif
 }
 void DataEditor::onLeftUp(wxMouseEvent& ev) {
   if (HasCapture()) ReleaseMouse();
