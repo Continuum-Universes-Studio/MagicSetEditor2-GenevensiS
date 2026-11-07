@@ -418,6 +418,13 @@ void DropDownList::onLeftDown(wxMouseEvent& ev) {
     ev.Skip();
     return;
   }
+#ifdef __WXQT__
+  // wxQt may deliver a press/release without an intervening motion event.
+  // The existing popup changes selected_item only from onMotion(), so
+  // clicking a row directly otherwise commits the previous selection.
+  // Reuse the normal hit testing (including slider and submenu handling).
+  onMotion(ev);
+#endif
   mouse_down = true; // prevent closing on mouseup of the click that opened the window
 }
 
