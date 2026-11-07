@@ -331,12 +331,19 @@ void CardsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
   add_tool_tr(tb, ID_FORMAT_BULLETPOINT,   settings.darkModePrefix() + "bullet_point",  "bullet_point",  false, wxITEM_CHECK);
   add_tool_tr(tb, ID_FORMAT_SYMBOL,        settings.darkModePrefix() + "symbol",        "symbols",       false, wxITEM_CHECK);
   add_tool_tr(tb, ID_FORMAT_REMINDER,      settings.darkModePrefix() + "reminder",      "reminder_text", false, wxITEM_CHECK);
+  // wxQt currently leaves native separator actions behind when dynamically
+  // removing panel tools. Skip panel-owned separators there; the shared
+  // toolbar's original separators remain unchanged.
+#ifndef __WXQT__
   tb->AddSeparator();
+#endif
   toolAddCard = add_tool_tr(tb, ID_CARD_ADD, "card_add", "add_card", false, wxITEM_DROPDOWN);
   tb->SetDropdownMenu(ID_CARD_ADD, makeAddCardsSubmenu(true));
   add_tool_tr(tb, ID_CARD_REMOVE, "card_del", "remove_card");
   add_tool_tr(tb, ID_CARD_LINK, settings.darkModePrefix() + "card_link", "link_card");
+#ifndef __WXQT__
   tb->AddSeparator();
+#endif
   add_tool_tr(tb, ID_CARD_ROTATE, "card_rotate", "rotate_card", false, wxITEM_DROPDOWN);
   auto menuRotate = new wxMenu();
     add_menu_item_tr(menuRotate, ID_CARD_ROTATE_0, "card_rotate_0", "rotate_0", wxITEM_CHECK);
