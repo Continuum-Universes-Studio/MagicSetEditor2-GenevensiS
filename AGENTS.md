@@ -30,6 +30,7 @@ This file applies to the entire repository. It is intended for human maintainers
 ## Other wxQt-specific compatibility notes
 
 - wxQt toolbars may mishandle embedded controls. Cards and Keywords use an auxiliary sizer-managed strip under `__WXQT__`; preserve toolbar/filter alignment and lifecycle.
+- **Toolbar panel-switch ordering:** wxQt 3.3.3's `wxToolBar::DoDeleteTool()` deletes the underlying `QToolButton` but doesn't explicitly remove its `QAction`, so native Qt action entries can survive tool deletion and shift the insertion positions of subsequent tools. `SetWindow` records the native toolbar's permanent prefix after its first `Realize()` and removes trailing orphan Qt actions **after** panel `destroyUI()` and **before** the next panel `initUI()`. Keep this wxQt-only synchronization, and verify order by cycling Cards → Style → Set Info → Keywords → Statistics → Cards multiple times. Revisit when upgrading wxWidgets; don't delete the permanent shared toolbar actions.
 - wxQt `wxStaticBox`/Qt `QGroupBox` stacking has obscured child controls. Existing fixes lower affected boxes in Preferences and linked-card sections. Check z-order when controls appear missing or unclickable.
 - The linked-card picker previously crashed because icons added to `wxImageList(15,15)` were not guaranteed to be 15×15. Keep image dimensions consistent before adding.
 - Custom styling dropdowns and their popup/mouse handling remain regression-test targets; don't assume an earlier mouse fix solved every case.
