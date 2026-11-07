@@ -7,6 +7,9 @@
 // ----------------------------------------------------------------------------- : Includes
 
 #include <util/prec.hpp>
+#ifdef __WXQT__
+#include <gui/control/qt_gui_font.hpp>
+#endif
 #include <gui/control/graph.hpp>
 #include <util/alignment.hpp>
 #include <gfx/gfx.hpp>
@@ -730,7 +733,7 @@ void GraphStats::setData(const GraphDataP& d) {
 RealSize GraphStats::determineSize(RotatedDC& dc) const {
   if (values.empty()) return RealSize(-1,-1);
   #ifdef __WXQT__
-    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    dc.SetFont(genevensisQtGuiFont());
 #else
     dc.SetFont(*wxNORMAL_FONT);
 #endif
@@ -763,7 +766,7 @@ void GraphStats::draw(RotatedDC& dc, int current, DrawLayer layer) const {
     dc.DrawRectangle(RealRect(pos,size));
     // draw items
     #ifdef __WXQT__
-    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    dc.SetFont(genevensisQtGuiFont());
 #else
     dc.SetFont(*wxNORMAL_FONT);
 #endif
@@ -782,7 +785,7 @@ RealSize GraphLegend::determineSize(RotatedDC& dc) const {
   if (!data) return RealSize(-1,-1);
   GraphAxis& axis = axis_data();
   #ifdef __WXQT__
-    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    dc.SetFont(genevensisQtGuiFont());
 #else
     dc.SetFont(*wxNORMAL_FONT);
 #endif
@@ -810,7 +813,7 @@ void GraphLegend::draw(RotatedDC& dc, int current, DrawLayer layer) const {
     dc.DrawRectangle(RealRect(pos,size));
     // draw items
     #ifdef __WXQT__
-    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    dc.SetFont(genevensisQtGuiFont());
 #else
     dc.SetFont(*wxNORMAL_FONT);
 #endif
@@ -851,7 +854,7 @@ void GraphLabelAxis::draw(RotatedDC& dc, int current, DrawLayer layer) const {
   int count = int(axis.groups.size());
   // Draw
   #ifdef __WXQT__
-    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    dc.SetFont(genevensisQtGuiFont());
 #else
     dc.SetFont(*wxNORMAL_FONT);
 #endif
@@ -953,7 +956,7 @@ void GraphValueAxis::draw(RotatedDC& dc, int current, DrawLayer layer) const {
   GraphAxis& axis = axis_data();
   double step_height = screen_rect.height / axis.max; // height of a single value
   #ifdef __WXQT__
-    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    dc.SetFont(genevensisQtGuiFont());
 #else
     dc.SetFont(*wxNORMAL_FONT);
 #endif
@@ -969,7 +972,7 @@ void GraphValueAxis::draw(RotatedDC& dc, int current, DrawLayer layer) const {
       // highlight?
       if (i == highlight) {
         #ifdef __WXQT__
-         wxFont font(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+         wxFont font(genevensisQtGuiFont());
 #else
          wxFont font(*wxNORMAL_FONT);
 #endif
@@ -991,7 +994,7 @@ void GraphValueAxis::draw(RotatedDC& dc, int current, DrawLayer layer) const {
       // restore font/pen
       if (i == highlight) {
         #ifdef __WXQT__
-    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    dc.SetFont(genevensisQtGuiFont());
 #else
     dc.SetFont(*wxNORMAL_FONT);
 #endif
