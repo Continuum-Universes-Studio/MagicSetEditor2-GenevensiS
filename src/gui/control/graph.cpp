@@ -729,7 +729,11 @@ void GraphStats::setData(const GraphDataP& d) {
 
 RealSize GraphStats::determineSize(RotatedDC& dc) const {
   if (values.empty()) return RealSize(-1,-1);
-  dc.SetFont(*wxNORMAL_FONT);
+  #ifdef __WXQT__
+    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+#else
+    dc.SetFont(*wxNORMAL_FONT);
+#endif
   item_size = RealSize(0,0);
   label_width = 0;
   FOR_EACH_CONST(v, values) {
@@ -758,7 +762,11 @@ void GraphStats::draw(RotatedDC& dc, int current, DrawLayer layer) const {
     dc.SetPen(fg);
     dc.DrawRectangle(RealRect(pos,size));
     // draw items
+    #ifdef __WXQT__
+    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+#else
     dc.SetFont(*wxNORMAL_FONT);
+#endif
     double y = pos.y + 1;
     FOR_EACH_CONST(v, values) {
       dc.DrawText(v.first,  RealPoint(pos.x + 3,               y + 2));
@@ -773,7 +781,11 @@ void GraphStats::draw(RotatedDC& dc, int current, DrawLayer layer) const {
 RealSize GraphLegend::determineSize(RotatedDC& dc) const {
   if (!data) return RealSize(-1,-1);
   GraphAxis& axis = axis_data();
-  dc.SetFont(*wxNORMAL_FONT);
+  #ifdef __WXQT__
+    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+#else
+    dc.SetFont(*wxNORMAL_FONT);
+#endif
   item_size = RealSize(0,0);
   FOR_EACH(g, axis.groups) {
     RealSize this_item_size = dc.GetTextExtent(g.name);
@@ -797,7 +809,11 @@ void GraphLegend::draw(RotatedDC& dc, int current, DrawLayer layer) const {
     dc.SetPen(fg);
     dc.DrawRectangle(RealRect(pos,size));
     // draw items
+    #ifdef __WXQT__
+    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+#else
     dc.SetFont(*wxNORMAL_FONT);
+#endif
     double y = pos.y + 1;
     for (int j = 0 ; j < (int)axis.groups.size() ; ++j) {
       int i = reverse ? (int)axis.groups.size() - j - 1 : j;
@@ -834,7 +850,11 @@ void GraphLabelAxis::draw(RotatedDC& dc, int current, DrawLayer layer) const {
   GraphAxis& axis = axis_data();
   int count = int(axis.groups.size());
   // Draw
-  dc.SetFont(*wxNORMAL_FONT);
+  #ifdef __WXQT__
+    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+#else
+    dc.SetFont(*wxNORMAL_FONT);
+#endif
   Color bg = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
   Color fg = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
   if (layer == LAYER_SELECTION && current >= 0) {
@@ -932,7 +952,11 @@ void GraphValueAxis::draw(RotatedDC& dc, int current, DrawLayer layer) const {
   RealRect screen_rect = dc.getInternalRect();
   GraphAxis& axis = axis_data();
   double step_height = screen_rect.height / axis.max; // height of a single value
-  dc.SetFont(*wxNORMAL_FONT);
+  #ifdef __WXQT__
+    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+#else
+    dc.SetFont(*wxNORMAL_FONT);
+#endif
   int label_step = (int) ceil(max(1.0, (dc.GetCharHeight()) / step_height)); // values per labeled line
   // Colors
   Color bg = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
@@ -944,7 +968,11 @@ void GraphValueAxis::draw(RotatedDC& dc, int current, DrawLayer layer) const {
     if (i % label_step == 0 || i == highlight) {
       // highlight?
       if (i == highlight) {
-        wxFont font(*wxNORMAL_FONT);
+        #ifdef __WXQT__
+         wxFont font(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+#else
+         wxFont font(*wxNORMAL_FONT);
+#endif
         font.SetWeight(wxFONTWEIGHT_BOLD);
         dc.SetFont(font);
         dc.SetPen(fg);
@@ -962,7 +990,11 @@ void GraphValueAxis::draw(RotatedDC& dc, int current, DrawLayer layer) const {
       }
       // restore font/pen
       if (i == highlight) {
-        dc.SetFont(*wxNORMAL_FONT);
+        #ifdef __WXQT__
+    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+#else
+    dc.SetFont(*wxNORMAL_FONT);
+#endif
         dc.SetPen(lerp(bg, fg, 0.2));
       }
     }
