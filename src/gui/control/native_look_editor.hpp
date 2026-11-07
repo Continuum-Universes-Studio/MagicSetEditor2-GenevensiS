@@ -41,6 +41,9 @@ private:
   
   int cached_thumb_pos = 0;
   int cached_scroll = 0;
+#ifdef __WXQT__
+  int wheel_remainder = 0;
+#endif
   
   DECLARE_EVENT_TABLE();
   
