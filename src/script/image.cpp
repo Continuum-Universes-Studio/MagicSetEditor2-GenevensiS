@@ -223,7 +223,22 @@ void CachedScriptableMask::getNoCache(const GeneratedImage::Options& img_options
   if (script.isBlank()) {
     other_mask.clear();
   } else {
+    // conform_image() mutates Options::width/height. Save the requested
+    // dimensions before generation so mask sizing uses the actual target.
+    const int target_width = img_options.width;
+    const int target_height = img_options.height;
     Image image = script.generate(img_options);
+
+    // At fractional preview zoom, aspect-ratio rounding may differ by one
+    // pixel. Match the target only for such small rounding discrepancies.
+    if (image.Ok() && target_width > 0 && target_height > 0 &&
+        (image.GetWidth() != target_width ||
+         image.GetHeight() != target_height) &&
+        std::abs(image.GetWidth() - target_width) <= 1 &&
+        std::abs(image.GetHeight() - target_height) <= 1) {
+      image = resample(image, target_width, target_height);
+    }
+
     other_mask.load(image);
   }
 }
