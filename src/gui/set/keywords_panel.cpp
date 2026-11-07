@@ -140,7 +140,7 @@ void KeywordsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
   SetWindow* window = static_cast<SetWindow*>(GetParent());
   wxPanel* auxiliary = window->auxiliaryToolbar();
   if (!auxiliary) tb->AddSeparator();
-  assert(!filter);
+  assert(!filter || auxiliary); // wxQt keeps its search widget between tab changes
   if (auxiliary) {
     if (!toolbar_controls) {
       toolbar_controls = new wxPanel(auxiliary, wxID_ANY);
