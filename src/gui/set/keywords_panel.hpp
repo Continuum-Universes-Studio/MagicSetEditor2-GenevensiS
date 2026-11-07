@@ -73,6 +73,7 @@ private:
   wxButton*         add_param;
   wxButton*         ref_param;
   size_t            toolbar_item_start = 0; ///< count of common tools before panel additions
+  wxPanel*          toolbar_controls = nullptr; ///< wxQt: persistent panel toolbar controls
   FilterCtrl*       filter;
   String            filter_value;
   
