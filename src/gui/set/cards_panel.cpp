@@ -349,18 +349,30 @@ void CardsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
   wxPanel* auxiliary = window->auxiliaryToolbar();
   if (!auxiliary) tb->AddSeparator();
   assert(!filter);
-  wxWindow* host = auxiliary ? static_cast<wxWindow*>(auxiliary) : static_cast<wxWindow*>(tb);
-  filter = new FilterCtrl(host, ID_CARD_FILTER, _TOOL_("search cards"), _HELP_("search cards control"));
-  filter->setFilter(filter_value);
-  counts = new wxStaticText(host, ID_CARD_COUNTER, _(""));
   if (auxiliary) {
-    filter->SetMinSize(wxSize(200, -1));
-    filter->SetMaxSize(wxSize(200, -1));
-    auxiliary->GetSizer()->Add(filter, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
-    auxiliary->GetSizer()->Add(counts, 0, wxALIGN_CENTER_VERTICAL);
+    // wxQt can defer destruction of native child widgets. Reusing the
+    // controls avoids overlapping search fields after tab changes.
+    if (!toolbar_controls) {
+      toolbar_controls = new wxPanel(auxiliary, wxID_ANY);
+      toolbar_controls->SetSizer(new wxBoxSizer(wxHORIZONTAL));
+      filter = new FilterCtrl(toolbar_controls, ID_CARD_FILTER,
+                              _TOOL_("search cards"), _HELP_("search cards control"));
+      counts = new wxStaticText(toolbar_controls, ID_CARD_COUNTER, _(""));
+      filter->SetMinSize(wxSize(200, -1));
+      filter->SetMaxSize(wxSize(200, -1));
+      toolbar_controls->GetSizer()->Add(filter, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+      toolbar_controls->GetSizer()->Add(counts, 0, wxALIGN_CENTER_VERTICAL);
+      auxiliary->GetSizer()->Add(toolbar_controls, 0, wxALIGN_CENTER_VERTICAL);
+    }
+    filter->setFilter(filter_value);
+    toolbar_controls->Show();
+    toolbar_controls->Layout();
     window->showAuxiliaryToolbar(true);
   } else {
+    filter = new FilterCtrl(tb, ID_CARD_FILTER, _TOOL_("search cards"), _HELP_("search cards control"));
+    filter->setFilter(filter_value);
     tb->AddControl(filter);
+    counts = new wxStaticText(tb, ID_CARD_COUNTER, _(""));
     tb->AddControl(counts);
   }
   updateCardCounts();
@@ -373,12 +385,13 @@ void CardsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
 void CardsPanel::destroyUI(wxToolBar* tb, wxMenuBar* mb) {
   filter_value = filter->getFilterString();
   SetWindow* window = static_cast<SetWindow*>(GetParent());
-  if (wxPanel* auxiliary = window->auxiliaryToolbar()) {
+  if (window->auxiliaryToolbar()) {
+    toolbar_controls->Hide();
     window->showAuxiliaryToolbar(false);
-    auxiliary->GetSizer()->Clear(true);
+  } else {
+    filter = nullptr;
+    counts = nullptr;
   }
-  filter = nullptr;
-  counts = nullptr;
   // Remove exactly what this panel added, including separators.
   while (tb->GetToolsCount() > toolbar_item_start) {
     tb->DeleteToolByPos(toolbar_item_start);
