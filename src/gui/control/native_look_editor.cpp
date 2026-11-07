@@ -57,7 +57,11 @@ void NativeLookEditor::drawViewer(RotatedDC& dc, ValueViewer& v) {
     // draw control border and box
     draw_control_box(this, dc.getDC(), dc.getExternalRect().grow(1), current_editor == e, e != nullptr);
     // draw label
+    #ifdef __WXQT__
+    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+#else
     dc.SetFont(*wxNORMAL_FONT);
+#endif
     dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
     dc.DrawText(v.getField()->caption.get(), RealPoint(margin_left - v.bounding_box.x, 1));
   }
@@ -75,7 +79,11 @@ void NativeLookEditor::resizeViewers() {
   {
     label_width = 0;
     wxClientDC dc(this);
+    #ifdef __WXQT__
+    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+#else
     dc.SetFont(*wxNORMAL_FONT);
+#endif
     FOR_EACH(v, viewers) {
       ValueEditor* e = v->getEditor();
       if (!e || e->drawLabel()) {
