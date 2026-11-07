@@ -11,6 +11,11 @@
 #include <gui/util.hpp>
 #include <wx/imaglist.h>
 
+#ifdef __WXQT__
+#include <QtWidgets/QAbstractScrollArea>
+#include <QtWidgets/QScrollBar>
+#endif
+
 // ----------------------------------------------------------------------------- : ItemList
 
 ItemList::ItemList(Window* parent, int id, long additional_style, bool multi_sel)
@@ -23,6 +28,22 @@ ItemList::ItemList(Window* parent, int id, long additional_style, bool multi_sel
   il->Add(load_resource_image(_("sort_asc")),  Color(255,0,255));
   il->Add(load_resource_image(_("sort_desc")), Color(255,0,255));
   AssignImageList(il, wxIMAGE_LIST_SMALL);
+
+#ifdef __WXQT__
+  // wxQt implements wxListView using QTreeView/QAbstractScrollArea.
+  // A wxListView refresh alone may leave stale QScrollBar thumb pixels.
+  if (auto* area = qobject_cast<QAbstractScrollArea*>(GetHandle())) {
+    auto* bar = area->verticalScrollBar();
+    if (bar) {
+      // Clear the previous thumb's background before painting the new one.
+      bar->setAutoFillBackground(true);
+      QObject::connect(bar, &QScrollBar::valueChanged, bar,
+                       [bar](int) { bar->update(); });
+      QObject::connect(bar, &QScrollBar::rangeChanged, bar,
+                       [bar](int, int) { bar->update(); });
+    }
+  }
+#endif
   // Theming things wx fails to do for us
   #if defined(__WXMSW__) && defined(LVS_EX_DOUBLEBUFFER)
     // Fancy theming (on windows)
@@ -255,6 +276,12 @@ void ItemList::queueQtViewportRefresh() {
     qt_repaint_pending = false;
     if (IsBeingDeleted() || !IsShownOnScreen()) return;
     Refresh(false);
+    // Native Qt scrollbars are separate QWidget children. Repaint them
+    // explicitly after the viewport's scroll/resize event has settled.
+    if (auto* area = qobject_cast<QAbstractScrollArea*>(GetHandle())) {
+      if (auto* bar = area->verticalScrollBar()) bar->update();
+      if (auto* bar = area->horizontalScrollBar()) bar->update();
+    }
   });
 }
 
