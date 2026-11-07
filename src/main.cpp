@@ -81,7 +81,7 @@ namespace {
 }
 
 void benchmark_gui_card_paint_started() {
-  if (benchmark_gui_reported || benchmark_gui_paint_started) return;
+  if (!benchmark_gui_active || benchmark_gui_reported || benchmark_gui_paint_started) return;
   benchmark_gui_paint_started = true;
   report_benchmark_stage("BENCHMARK_GUI_PAINT_START_SECONDS");
 }
