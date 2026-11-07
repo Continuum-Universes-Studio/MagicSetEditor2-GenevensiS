@@ -7,6 +7,9 @@
 // ----------------------------------------------------------------------------- : Includes
 
 #include <util/prec.hpp>
+#ifdef __WXQT__
+#include <gui/control/qt_gui_font.hpp>
+#endif
 #include <gui/control/native_look_editor.hpp>
 #include <gui/value/editor.hpp>
 #include <gui/util.hpp>
@@ -58,7 +61,7 @@ void NativeLookEditor::drawViewer(RotatedDC& dc, ValueViewer& v) {
     draw_control_box(this, dc.getDC(), dc.getExternalRect().grow(1), current_editor == e, e != nullptr);
     // draw label
     #ifdef __WXQT__
-    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    dc.SetFont(genevensisQtGuiFont());
 #else
     dc.SetFont(*wxNORMAL_FONT);
 #endif
@@ -80,7 +83,7 @@ void NativeLookEditor::resizeViewers() {
     label_width = 0;
     wxClientDC dc(this);
     #ifdef __WXQT__
-    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    dc.SetFont(genevensisQtGuiFont());
 #else
     dc.SetFont(*wxNORMAL_FONT);
 #endif
