@@ -112,6 +112,9 @@ private:
   
   /// First visible pixel position
   int visible_start;
+#ifdef __WXQT__
+  int wheel_remainder = 0;
+#endif
   /// First no-longer-visible pixel position
   inline int visibleEnd() const {
     return visible_start + mainSize(GetClientSize());
