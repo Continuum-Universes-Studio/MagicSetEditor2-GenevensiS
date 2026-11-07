@@ -5,6 +5,7 @@
 
 #ifdef __WXQT__
 #include <wx/font.h>
+#include <QtGui/QFont>
 #include <QtWidgets/QApplication>
 
 inline wxFont genevensisQtGuiFont() {
