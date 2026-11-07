@@ -111,6 +111,7 @@ private:
   vector<wxButton*>      link_unlinks;     ///< one unlink button per link slot
   wxButton*              link_select;      ///< "select this card" button, only used for slot 0
   HoverButton*           collapse_notes;
+  size_t                 toolbar_item_start = 0; ///< count of common tools before panel additions
   FilterCtrl*            filter;
   String                 filter_value;     ///< value of filter, need separate variable because the control is destroyed
   wxStaticText*          counts;
