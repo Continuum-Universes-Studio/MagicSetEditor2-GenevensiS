@@ -245,6 +245,31 @@ void ItemList::SetColumnImage(int col, int image) {
 
 // ----------------------------------------------------------------------------- : ItemList : Window events
 
+#ifdef __WXQT__
+void ItemList::queueQtViewportRefresh() {
+  if (qt_repaint_pending) return;
+  qt_repaint_pending = true;
+  // Scroll/splitter geometry is not necessarily updated until the current
+  // event has finished. Never force an Update() inside the scroll handler.
+  CallAfter([this]() {
+    qt_repaint_pending = false;
+    if (IsBeingDeleted() || !IsShownOnScreen()) return;
+    Refresh(false);
+  });
+}
+
+void ItemList::onQtSize(wxSizeEvent& ev) {
+  ev.Skip();
+  queueQtViewportRefresh();
+}
+
+void ItemList::onQtScroll(wxScrollWinEvent& ev) {
+  ev.Skip();
+  queueQtViewportRefresh();
+}
+#endif
+
+
 wxSize ItemList::DoGetBestClientSize() const {
   // wxWidgets decided to be 'smart', and calculate the best size of a list view based on the column header width.
   // But this also sets the minimum window size, so the window can't be made any smaller than that, even on small screens.
@@ -278,6 +303,10 @@ void ItemList::onItemFocus(wxListEvent& ev) {
 // ----------------------------------------------------------------------------- : ItemList : Event table
 
 BEGIN_EVENT_TABLE(ItemList, wxListView)
+#ifdef __WXQT__
+  EVT_SIZE(ItemList::onQtSize)
+  EVT_SCROLLWIN(ItemList::onQtScroll)
+#endif
   EVT_LIST_COL_CLICK    (wxID_ANY,  ItemList::onColumnClick)
   EVT_LIST_ITEM_FOCUSED  (wxID_ANY,  ItemList::onItemFocus)
 END_EVENT_TABLE  ()
