@@ -43,14 +43,23 @@ void PackageList::drawItem(DC& dc, int x, int y, size_t item) {
     dc.DrawBitmap(d->image, x + int(align_delta_x(ALIGN_CENTER, item_size.x, d->image.GetWidth())), y + 3, true);
   }
   // draw short name
+#ifdef __WXQT__
+  wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+  font.SetWeight(wxFONTWEIGHT_BOLD);
+#else
   wxFont font = wxFont(11,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,_("Arial"));
+#endif
   dc.SetFont(font);
   dc.GetTextExtent(capitalize(d->package->short_name), &w, &h);
   pos = align_in_rect(ALIGN_CENTER, RealSize(w,h), rect);
   dc.DrawText(capitalize(d->package->short_name), max(x+1,(int)pos.x), (int)pos.y + 110);
   // draw full name
+#ifdef __WXQT__
+  font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+#else
   font.SetPointSize(9);
   font.SetWeight(wxFONTWEIGHT_NORMAL);
+#endif
   dc.SetFont(font);
   dc.GetTextExtent(d->package->full_name, &w, &h);
   if (w > item_size.x) {
