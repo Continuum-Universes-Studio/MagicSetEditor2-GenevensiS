@@ -7,6 +7,9 @@
 // ----------------------------------------------------------------------------- : Includes
 
 #include <util/prec.hpp>
+#ifdef __WXQT__
+#include <gui/control/qt_gui_font.hpp>
+#endif
 #include <gui/control/package_list.hpp>
 #include <util/io/package_manager.hpp>
 #include <util/alignment.hpp>
@@ -44,7 +47,7 @@ void PackageList::drawItem(DC& dc, int x, int y, size_t item) {
   }
   // draw short name
 #ifdef __WXQT__
-  wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+  wxFont font = genevensisQtGuiFont();
   font.SetWeight(wxFONTWEIGHT_BOLD);
 #else
   wxFont font = wxFont(11,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,_("Arial"));
@@ -55,7 +58,7 @@ void PackageList::drawItem(DC& dc, int x, int y, size_t item) {
   dc.DrawText(capitalize(d->package->short_name), max(x+1,(int)pos.x), (int)pos.y + 110);
   // draw full name
 #ifdef __WXQT__
-  font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+  font = genevensisQtGuiFont();
 #else
   font.SetPointSize(9);
   font.SetWeight(wxFONTWEIGHT_NORMAL);
