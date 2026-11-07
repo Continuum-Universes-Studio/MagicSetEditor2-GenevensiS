@@ -7,6 +7,9 @@
 // ----------------------------------------------------------------------------- : Includes
 
 #include <util/prec.hpp>
+#ifdef __WXQT__
+#include <gui/control/qt_gui_font.hpp>
+#endif
 #include <gui/set/random_pack_panel.hpp>
 #include <gui/control/card_viewer.hpp>
 #include <gui/control/filtered_card_list.hpp>
@@ -93,7 +96,7 @@ void PackTotalsPanel::draw(DC& dc) {
   // draw table
   dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
   #ifdef __WXQT__
-    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    dc.SetFont(genevensisQtGuiFont());
 #else
     dc.SetFont(*wxNORMAL_FONT);
 #endif
@@ -179,7 +182,7 @@ public:
     dc.DrawRectangle(0,0,size.x,size.y);
     // draw label
     #ifdef __WXQT__
-    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    dc.SetFont(genevensisQtGuiFont());
 #else
     dc.SetFont(*wxNORMAL_FONT);
 #endif
@@ -192,7 +195,7 @@ public:
     int w,h;
     wxClientDC dc(const_cast<SelectableLabel*>(this));
     #ifdef __WXQT__
-    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    dc.SetFont(genevensisQtGuiFont());
 #else
     dc.SetFont(*wxNORMAL_FONT);
 #endif
