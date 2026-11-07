@@ -112,6 +112,7 @@ private:
   wxButton*              link_select;      ///< "select this card" button, only used for slot 0
   HoverButton*           collapse_notes;
   size_t                 toolbar_item_start = 0; ///< count of common tools before panel additions
+  wxPanel*               toolbar_controls = nullptr; ///< wxQt: persistent panel toolbar controls
   FilterCtrl*            filter;
   String                 filter_value;     ///< value of filter, need separate variable because the control is destroyed
   wxStaticText*          counts;
