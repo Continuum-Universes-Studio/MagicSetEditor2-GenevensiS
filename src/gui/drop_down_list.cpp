@@ -7,6 +7,9 @@
 // ----------------------------------------------------------------------------- : Includes
 
 #include <util/prec.hpp>
+#ifdef __WXQT__
+#include <gui/control/qt_gui_font.hpp>
+#endif
 #include <gui/drop_down_list.hpp>
 #include <gui/util.hpp>
 #include <render/value/viewer.hpp>
@@ -90,7 +93,7 @@ DropDownList::DropDownList(Window* parent, bool is_submenu, ValueViewer* viewer)
   // determine item height
   wxClientDC dc(this);
   #ifdef __WXQT__
-  dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+  dc.SetFont(genevensisQtGuiFont());
 #else
   dc.SetFont(*wxNORMAL_FONT);
 #endif
@@ -115,7 +118,7 @@ void DropDownList::show(bool in_place, wxPoint pos, RealRect* rect) {
   if (item_size.width == 100) { // not initialized
     wxClientDC dc(this);
     #ifdef __WXQT__
-  dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+  dc.SetFont(genevensisQtGuiFont());
 #else
   dc.SetFont(*wxNORMAL_FONT);
 #endif
@@ -336,7 +339,7 @@ void DropDownList::draw(DC& dc) {
   dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
   dc.DrawRectangle(0, 0, cs.x, cs.y);
   #ifdef __WXQT__
-  dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+  dc.SetFont(genevensisQtGuiFont());
 #else
   dc.SetFont(*wxNORMAL_FONT);
 #endif
@@ -345,7 +348,7 @@ void DropDownList::draw(DC& dc) {
     cs = GetClientSize();
     dc.SetPen(*wxBLACK_PEN);
 #ifdef __WXQT__
-    wxFont slider_font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+    wxFont slider_font = genevensisQtGuiFont();
     slider_font.SetWeight(wxFONTWEIGHT_BOLD);
     dc.SetFont(slider_font);
 #else
@@ -378,7 +381,7 @@ void DropDownList::draw(DC& dc) {
     dc.DrawText(capitalize(itemText(selected_index)), slider_pos - selected_text_width/2, 44);
 
     #ifdef __WXQT__
-  dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+  dc.SetFont(genevensisQtGuiFont());
 #else
   dc.SetFont(*wxNORMAL_FONT);
 #endif
