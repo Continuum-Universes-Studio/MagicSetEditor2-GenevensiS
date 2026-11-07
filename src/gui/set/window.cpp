@@ -38,6 +38,9 @@
 #include <data/format/formats.hpp>
 #include <data/action/value.hpp>
 #include <data/action/set.hpp>
+#ifdef __WXQT__
+#include <QtWidgets/QToolBar>
+#endif
 
 // ----------------------------------------------------------------------------- : Constructor
 
@@ -133,6 +136,13 @@ SetWindow::SetWindow(Window* parent, const SetP& set)
   add_tool(tb, ID_EDIT_REDO, settings.darkModePrefix() + "redo", {}, _TOOLTIP_1_("redo", {}), _HELP_("redo"));
   tb->AddSeparator();
   tb->Realize();
+#ifdef __WXQT__
+  // Only these actions are permanent. wxQt 3.3.3 does not always remove
+  // QAction entries when dynamically added wx toolbar tools are deleted.
+  if (auto* native_tb = qobject_cast<QToolBar*>(tb->GetHandle())) {
+    qt_base_toolbar_action_count = native_tb->actions().size();
+  }
+#endif
   
   // tab bar, sizer
   wxToolBar* tabBar = new wxToolBar(this, ID_TAB_BAR, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxNO_BORDER | wxTB_HORIZONTAL | wxTB_HORZ_TEXT | wxTB_NOALIGN);
@@ -260,6 +270,20 @@ void SetWindow::selectPanel(int id) {
   }
   // destroy & create menus
   if (current_panel) current_panel->destroyUI(GetToolBar(), GetMenuBar());
+#ifdef __WXQT__
+  // wxQt's DoDeleteTool() deletes the QToolButton, but may leave an
+  // orphaned QWidgetAction/QAction in the native toolbar. Such actions
+  // accumulate across panel switches and corrupt the insertion positions
+  // of newly added tools. Remove only actions after the original permanent
+  // toolbar prefix, and only after the wx panel has deleted its tools.
+  if (auto* native_tb = qobject_cast<QToolBar*>(GetToolBar()->GetHandle())) {
+    while (static_cast<size_t>(native_tb->actions().size()) > qt_base_toolbar_action_count) {
+      QAction* orphan = native_tb->actions().last();
+      native_tb->removeAction(orphan);
+      delete orphan;
+    }
+  }
+#endif
   current_panel = toSelect;
   current_panel->initUI(GetToolBar(), GetMenuBar());
   // show/hide panels and select tabs
