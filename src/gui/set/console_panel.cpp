@@ -7,6 +7,9 @@
 // ----------------------------------------------------------------------------- : Includes
 
 #include <util/prec.hpp>
+#ifdef __WXQT__
+#include <gui/control/qt_gui_font.hpp>
+#endif
 #include <gui/set/console_panel.hpp>
 #include <gui/set/window.hpp>
 #include <gui/control/text_ctrl.hpp>
@@ -252,7 +255,7 @@ private:
   void draw(wxDC& dc) const {
     clearDC(dc, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
     #ifdef __WXQT__
-    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    dc.SetFont(genevensisQtGuiFont());
 #else
     dc.SetFont(*wxNORMAL_FONT);
 #endif
@@ -396,7 +399,7 @@ private:
     wxBitmap bmp(1,1);
     dc.SelectObject(bmp);
     #ifdef __WXQT__
-    dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    dc.SetFont(genevensisQtGuiFont());
 #else
     dc.SetFont(*wxNORMAL_FONT);
 #endif
