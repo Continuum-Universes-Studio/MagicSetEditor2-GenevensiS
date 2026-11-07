@@ -48,6 +48,11 @@ private:
   
   // gui items
   wxPanel*                 auxiliary_toolbar = nullptr; ///< wxQt: host for panel-owned toolbar inputs
+#ifdef __WXQT__
+  // The original native toolbar actions are permanent; remove stale panel
+  // actions after each panel teardown before the next panel is initialized.
+  size_t qt_base_toolbar_action_count = 0;
+#endif
   vector<SetWindowPanel*> panels;        ///< All panels on this window
   SetWindowPanel*         current_panel;
   wxMenu*                 export_menu = nullptr;
