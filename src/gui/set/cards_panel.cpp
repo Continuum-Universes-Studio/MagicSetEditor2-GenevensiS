@@ -348,7 +348,7 @@ void CardsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
   SetWindow* window = static_cast<SetWindow*>(GetParent());
   wxPanel* auxiliary = window->auxiliaryToolbar();
   if (!auxiliary) tb->AddSeparator();
-  assert(!filter);
+  assert(!filter || auxiliary); // wxQt keeps its search widget between tab changes
   if (auxiliary) {
     // wxQt can defer destruction of native child widgets. Reusing the
     // controls avoids overlapping search fields after tab changes.
