@@ -7,6 +7,9 @@
 // ----------------------------------------------------------------------------- : Includes
 
 #include <util/prec.hpp>
+#ifdef __WXQT__
+#include <gui/control/qt_gui_font.hpp>
+#endif
 #include <render/value/multiple_choice.hpp>
 #include <render/value/choice.hpp>
 #include <render/card/viewer.hpp>
@@ -85,11 +88,23 @@ void MultipleChoiceValueViewer::drawChoice(RotatedDC& dc, RealPoint& pos, const 
       margin = RealSize(1., 0);
     }
     String text = tr(getStylePackage(), choice, capitalize_sentence);
-    dc.SetFont(font,1);
-    RealSize text_size = dc.GetTextExtent(text);
-    RealPoint text_pos = align_in_rect(ALIGN_MIDDLE_LEFT, text_size, RealRect(pos.x + size.width + 1, pos.y, 0,size.height)) + margin;
-    dc.DrawTextWithShadowOrStroke(text, font, text_pos);
-    size = add_horizontal(size, text_size);
+#ifdef __WXQT__
+    if (nativeLook()) {
+      dc.SetFont(genevensisQtGuiFont());
+      dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
+      RealSize text_size = dc.GetTextExtent(text);
+      RealPoint text_pos = align_in_rect(ALIGN_MIDDLE_LEFT, text_size, RealRect(pos.x + size.width + 1, pos.y, 0,size.height)) + margin;
+      dc.DrawText(text, text_pos);
+      size = add_horizontal(size, text_size);
+    } else
+#endif
+    {
+      dc.SetFont(font,1);
+      RealSize text_size = dc.GetTextExtent(text);
+      RealPoint text_pos = align_in_rect(ALIGN_MIDDLE_LEFT, text_size, RealRect(pos.x + size.width + 1, pos.y, 0,size.height)) + margin;
+      dc.DrawTextWithShadowOrStroke(text, font, text_pos);
+      size = add_horizontal(size, text_size);
+    }
     if (nativeLook()) font.color = font_color;
   }
   // next position
