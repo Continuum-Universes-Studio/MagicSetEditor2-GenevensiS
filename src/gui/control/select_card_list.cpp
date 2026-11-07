@@ -14,15 +14,30 @@
 
 // ----------------------------------------------------------------------------- : SelectCardList
 
+namespace {
+  // wxImageList::Add() splits large bitmaps into fixed-size cells. wxQt's
+  // GetSubBitmap() asserts if a source is smaller than the image-list cell,
+  // while differently sized icons may produce unintended extra entries.
+  // Keep all four indices stable by normalizing each resource before Add().
+  Image selectCardListIcon(const String& name) {
+    Image image = load_resource_image(name);
+    if (image.IsOk() && (image.GetWidth() != 15 || image.GetHeight() != 15)) {
+      image.Rescale(15, 15, wxIMAGE_QUALITY_HIGH);
+    }
+    return image;
+  }
+}
+
 SelectCardList::SelectCardList(Window* parent, int id, long additional_style)
   : CardListBase(parent, id, additional_style)
 {
-  // create image list
+  // Each image occupies exactly one 15x15 image-list cell. Keep the first two
+  // sort indicators, followed by unchecked (index 2) and checked (index 3).
   wxImageList* il = new wxImageList(15,15);
-  il->Add(load_resource_image(_("sort_asc")),  Color(255,0,255));
-  il->Add(load_resource_image(_("sort_desc")), Color(255,0,255));
-  il->Add(load_resource_image(settings.darkModePrefix() + _("deselected")));
-  il->Add(load_resource_image(settings.darkModePrefix() + _("selected")));
+  il->Add(selectCardListIcon(_("sort_asc")),  Color(255,0,255));
+  il->Add(selectCardListIcon(_("sort_desc")), Color(255,0,255));
+  il->Add(selectCardListIcon(settings.darkModePrefix() + _("deselected")));
+  il->Add(selectCardListIcon(settings.darkModePrefix() + _("selected")));
   AssignImageList(il, wxIMAGE_LIST_SMALL);
 }
 SelectCardList::~SelectCardList() {}
