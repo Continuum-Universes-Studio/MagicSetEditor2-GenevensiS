@@ -224,6 +224,18 @@ void CachedScriptableMask::getNoCache(const GeneratedImage::Options& img_options
     other_mask.clear();
   } else {
     Image image = script.generate(img_options);
+
+    // When preserving aspect ratio at fractional preview scales, integer
+    // rounding can make a mask one pixel smaller than the requested target.
+    // Keep masks pixel-aligned without altering larger, invalid mismatches.
+    if (image.Ok() && img_options.width > 0 && img_options.height > 0 &&
+        (image.GetWidth() != img_options.width ||
+         image.GetHeight() != img_options.height) &&
+        std::abs(image.GetWidth() - img_options.width) <= 1 &&
+        std::abs(image.GetHeight() - img_options.height) <= 1) {
+      image = resample(image, img_options.width, img_options.height);
+    }
+
     other_mask.load(image);
   }
 }
