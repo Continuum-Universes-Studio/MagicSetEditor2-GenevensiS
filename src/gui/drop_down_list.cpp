@@ -9,6 +9,7 @@
 #include <util/prec.hpp>
 #ifdef __WXQT__
 #include <gui/control/qt_gui_font.hpp>
+#include <QtWidgets/QWidget>
 #endif
 #include <gui/drop_down_list.hpp>
 #include <gui/util.hpp>
@@ -109,6 +110,12 @@ DropDownList::~DropDownList() {
 }
 
 void DropDownList::show(bool in_place, wxPoint pos, RealRect* rect) {
+#ifdef __WXQT__
+  // Qt::Popup can auto-hide the native window on an outside click without
+  // passing through our wxWidgets realHide() bookkeeping. Reconcile both
+  // visibility states before deciding this popup is already open.
+  if (IsShown() && GetHandle() && !GetHandle()->isVisible()) realHide();
+#endif
   if (IsShown()) return;
   onShow();
   // find selection
@@ -185,12 +192,17 @@ void DropDownList::show(bool in_place, wxPoint pos, RealRect* rect) {
   // visible item
   visible_start = 0;
   ensureSelectedItemVisible();
-  // set event handler
+  // wxQt implements wxPopupWindow with a native Qt::Popup. It already
+  // handles clicks outside the popup; wx's historical DropDownHider
+  // interception conflicts with Qt's popup mouse routing, particularly
+  // with nested choice menus. Retain the original behavior elsewhere.
+#ifndef __WXQT__
   if (hider) {
     assert(hider2);
     wxGetTopLevelParent(GetParent())->PushEventHandler(hider);
     GetParent()                     ->PushEventHandler(hider2);
   }
+#endif
   // show
   if (selected_item == NO_SELECTION && itemCount() > 0) selected_item = 0; // select first item by default
   mouse_down = false;
@@ -234,8 +246,10 @@ void DropDownList::realHide() {
   } else {
     redrawArrowOnParent();
     // disconnect event handler
+#ifndef __WXQT__
     GetParent()                     ->RemoveEventHandler(hider2);
     wxGetTopLevelParent(GetParent())->RemoveEventHandler(hider);
+#endif
   }
 }
 
@@ -553,6 +567,12 @@ void DropDownList::onScroll(wxScrollWinEvent& ev) {
 // ----------------------------------------------------------------------------- : DropDownList : Parent events
 
 bool DropDownList::onMouseInParent(wxMouseEvent& ev, bool open_in_place) {
+#ifdef __WXQT__
+  // Treat a natively auto-dismissed Qt::Popup as closed, even if wx still
+  // considers the wrapper shown. Otherwise the next click only "closes"
+  // a popup that isn't on screen.
+  if (IsShown() && GetHandle() && !GetHandle()->isVisible()) realHide();
+#endif
   if (IsShown()) hide(false);
   else           show(open_in_place, wxPoint(ev.GetX(), ev.GetY()));
   return true;
