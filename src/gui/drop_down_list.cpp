@@ -10,6 +10,8 @@
 #ifdef __WXQT__
 #include <gui/control/qt_gui_font.hpp>
 #include <QtWidgets/QWidget>
+#include <QtCore/QTimer>
+#include <QtGui/QCursor>
 #endif
 #include <gui/drop_down_list.hpp>
 #include <gui/util.hpp>
@@ -96,6 +98,28 @@ DropDownList::DropDownList(Window* parent, bool is_submenu, ValueViewer* viewer)
   // Apply to every popup, including nested DropDownList instances.
   if (QWidget* widget = GetHandle()) {
     widget->setMouseTracking(true);
+
+    // Nested native Qt::Popup windows can redirect/suppress ordinary move
+    // events from the wxWidgets handler, leaving hover stuck on the item
+    // which first opened a submenu. Query the *actual* pointer position
+    // while visible instead, so parent and child popups track independently.
+    // The timer belongs to the native widget and never runs on wxGTK.
+    auto* hover_timer = new QTimer(widget);
+    hover_timer->setInterval(25);
+    QObject::connect(hover_timer, &QTimer::timeout, widget, [this, widget]() {
+      if (!IsShown() || !widget->isVisible()) return;
+      const wxPoint point = ScreenToClient(wxPoint(QCursor::pos().x(), QCursor::pos().y()));
+      const wxSize size = GetClientSize();
+      if (point.x < marginW || point.x + marginW >= size.x ||
+          point.y < marginH || point.y + marginH >= size.y) {
+        return;
+      }
+      wxMouseEvent motion(wxEVT_MOTION);
+      motion.SetEventObject(this);
+      motion.SetPosition(point);
+      onMotion(motion);
+    });
+    hover_timer->start();
   }
 #endif
   if (is_submenu) {
@@ -296,6 +320,11 @@ bool DropDownList::showSubMenu(size_t item, int y) {
 
 bool DropDownList::selectItem(size_t item) {
   if ((int)item >= 0 && item < itemCount()) {
+#ifdef __WXQT__
+    // The native popup hover poll runs while the pointer is stationary too.
+    // Repaint only on a real selection change.
+    if (selected_item == item) return true;
+#endif
     selected_item = item;
     ensureSelectedItemVisible();
     Refresh(false);
