@@ -88,6 +88,16 @@ DropDownList::DropDownList(Window* parent, bool is_submenu, ValueViewer* viewer)
   , hider2(is_submenu ? nullptr : new DropDownHider(*this))
   , close_on_mouse_out(false)
 {
+#ifdef __WXQT__
+  // QWidget defaults to mouseTracking == false, so hovering without a
+  // pressed button does not emit QEvent::MouseMove. The custom popup uses
+  // wxEVT_MOTION to update selected_item and open nested submenus; without
+  // tracking, wxQt leaves the highlight locked on the initial entry.
+  // Apply to every popup, including nested DropDownList instances.
+  if (QWidget* widget = GetHandle()) {
+    widget->setMouseTracking(true);
+  }
+#endif
   if (is_submenu) {
     parent_menu = &dynamic_cast<DropDownList&>(*GetParent());
   }
