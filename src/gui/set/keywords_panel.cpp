@@ -343,7 +343,7 @@ void KeywordsPanel::onChangeSet() {
   match   ->getField().script = set->game->keyword_match_script;
   reminder->setSet(set);
   reminder->getStyle().padding_bottom = 2;
-  match   ->getStyle().font.size = 10;
+  reminder->getStyle().font.size = 10;
   reminder->updateSize();
   rules   ->setSet(set);
   // parameter & mode lists
