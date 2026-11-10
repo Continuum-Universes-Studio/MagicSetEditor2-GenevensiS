@@ -54,7 +54,7 @@ public:
   
   /// Prepare the text for drawing, if it is not already prepared
   /** Returns true if something has been done */
-  bool prepare(RotatedDC& dc, const String& text, TextStyle& style, Context&);
+  bool prepare(RotatedDC& dc, const String& text, TextStyle& style, Context&, bool native_look = false);
   /// Reset the cached data, at a new call to draw it will be recalculated
   /** If related, the new value is related to the old one, and layout information should be reused where possible
    */
@@ -134,9 +134,9 @@ private:
   vector<Line> lines; ///< The lines in the text box
   
   /// Prepare the lines, layout the text
-  void prepareLines(RotatedDC& dc, const String& text, TextStyle& style, Context& ctx);
+  void prepareLines(RotatedDC& dc, const String& text, TextStyle& style, Context& ctx, bool native_look);
   /// Find the scale to use for the text
-  void prepareLinesTryScales(RotatedDC& dc, const String& text, const TextStyle& style, vector<CharInfo>& chars_out);
+  void prepareLinesTryScales(RotatedDC& dc, const String& text, const TextStyle& style, vector<CharInfo>& chars_out, bool native_look);
   /// Prepare the lines, layout the text; at a specific scale
   /** Stores output in lines_out */
   bool prepareLinesAtScale(RotatedDC& dc, const vector<CharInfo>& chars, const TextStyle& style, bool stop_if_too_long, vector<Line>& lines_out, double top_offset = 0.0) const;
