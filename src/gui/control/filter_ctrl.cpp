@@ -38,12 +38,18 @@ FilterCtrl::FilterCtrl(wxWindow* parent, int id, String const& placeholder, Stri
   , placeholder(placeholder)
   , help_text(help_text)
 {
+  // Prevent wxQt from stretching the search field across the toolbar.
+  // Leave the height controlled by the native toolkit.
+  SetMinSize(wxSize(160, -1));
+  SetMaxSize(wxSize(160, -1));
+
   wxColour bg = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
-  #if !defined(__WXGTK__)
-    // Note: in wxGTK, it is not possible to add child windows to standard controls
-    clear_button = new HoverButton(this, wxID_ANY, _("btn_clear_filter"), bg, false);
-    clear_button->SetCursor(*wxSTANDARD_CURSOR);
-  #endif
+
+#if !defined(__WXGTK__)
+  clear_button = new HoverButton(this, wxID_ANY, _("btn_clear_filter"), bg, false);
+  clear_button->SetCursor(*wxSTANDARD_CURSOR);
+#endif
+
   onSize();
   update();
 }

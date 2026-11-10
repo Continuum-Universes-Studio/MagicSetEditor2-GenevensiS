@@ -16,6 +16,10 @@
 #include <wx/dcbuffer.h>
 #include <util/window_id.hpp>
 
+// Implemented by the application. No-op outside --benchmark-gui.
+void benchmark_gui_card_painted(wxWindow* viewer);
+void benchmark_gui_card_paint_started();
+
 // ----------------------------------------------------------------------------- : Events
 
 DEFINE_EVENT_TYPE(EVENT_SIZE_CHANGE);
@@ -120,10 +124,18 @@ void CardViewer::onPaint(wxPaintEvent&) {
   if (!up_to_date) {
     up_to_date = true;
     full_repaint = true;
+    if (GetId() == ID_EDITOR && getCard() && IsShownOnScreen()) {
+      benchmark_gui_card_paint_started();
+    }
     try {
       draw(dc);
     } CATCH_ALL_ERRORS(false); // don't show message boxes in onPaint!
     full_repaint = false;
+    // Notify the optional GUI benchmark after rendering the main editor's
+    // first card. Other card viewers (including linked previews) don't count.
+    if (GetId() == ID_EDITOR && getCard() && IsShownOnScreen()) {
+      benchmark_gui_card_painted(this);
+    }
   }
 }
 

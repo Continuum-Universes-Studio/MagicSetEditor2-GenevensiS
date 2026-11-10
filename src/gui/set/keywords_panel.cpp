@@ -8,6 +8,7 @@
 
 #include <util/prec.hpp>
 #include <gui/set/keywords_panel.hpp>
+#include <gui/set/window.hpp>
 #include <gui/control/keyword_list.hpp>
 #include <gui/control/text_ctrl.hpp>
 #include <gui/util.hpp>
@@ -125,6 +126,7 @@ KeywordsPanel::~KeywordsPanel() {
 
 
 void KeywordsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
+  toolbar_item_start = tb->GetToolsCount();
   // Controls
   if (!isInitialized()) {
     wxBusyCursor busy;
@@ -134,27 +136,48 @@ void KeywordsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
   // Toolbar
   add_tool_tr(tb, ID_KEYWORD_ADD, "keyword_add", "add_keyword");
   add_tool_tr(tb, ID_KEYWORD_REMOVE, "keyword_del", "remove_keyword");
-  // Filter/search textbox
-  tb->AddSeparator();
-  assert(!filter);
-  filter = new FilterCtrl(tb, ID_KEYWORD_FILTER, _LABEL_("search keywords"), _HELP_("search_keywords_control"));
-  filter->setFilter(filter_value);
-  tb->AddControl(filter);
+  // Keep wxQt input widgets outside the native toolbar's expanding layout.
+  SetWindow* window = static_cast<SetWindow*>(GetParent());
+  wxPanel* auxiliary = window->auxiliaryToolbar();
+  if (!auxiliary) tb->AddSeparator();
+  assert(!filter || auxiliary); // wxQt keeps its search widget between tab changes
+  if (auxiliary) {
+    if (!toolbar_controls) {
+      toolbar_controls = new wxPanel(auxiliary, wxID_ANY);
+      toolbar_controls->SetSizer(new wxBoxSizer(wxHORIZONTAL));
+      filter = new FilterCtrl(toolbar_controls, ID_KEYWORD_FILTER,
+                              _LABEL_("search keywords"), _HELP_("search_keywords_control"));
+      filter->SetMinSize(wxSize(200, -1));
+      filter->SetMaxSize(wxSize(200, -1));
+      toolbar_controls->GetSizer()->Add(filter, 0, wxALIGN_CENTER_VERTICAL);
+      auxiliary->GetSizer()->Add(toolbar_controls, 0, wxALIGN_CENTER_VERTICAL);
+    }
+    filter->setFilter(filter_value);
+    toolbar_controls->Show();
+    toolbar_controls->Layout();
+    window->showAuxiliaryToolbar(true);
+  } else {
+    filter = new FilterCtrl(tb, ID_KEYWORD_FILTER, _LABEL_("search keywords"), _HELP_("search_keywords_control"));
+    filter->setFilter(filter_value);
+    tb->AddControl(filter);
+  }
   tb->Realize();
   // Menus
   mb->Insert(2, menuKeyword,   _MENU_("keywords"));
 }
 
 void KeywordsPanel::destroyUI(wxToolBar* tb, wxMenuBar* mb) {
-  // Toolbar
-  tb->DeleteTool(ID_KEYWORD_ADD);
-  tb->DeleteTool(ID_KEYWORD_REMOVE);
-  // remember value of filter control
   filter_value = filter->getFilterString();
-  tb->DeleteTool(filter->GetId());
-  filter = nullptr;
-  // HACK: hardcoded size of rest of toolbar
-  tb->DeleteToolByPos(12); // delete separator
+  SetWindow* window = static_cast<SetWindow*>(GetParent());
+  if (window->auxiliaryToolbar()) {
+    toolbar_controls->Hide();
+    window->showAuxiliaryToolbar(false);
+  } else {
+    filter = nullptr;
+  }
+  while (tb->GetToolsCount() > toolbar_item_start) {
+    tb->DeleteToolByPos(toolbar_item_start);
+  }
   // Menus
   mb->Remove(2);
   

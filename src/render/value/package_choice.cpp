@@ -7,6 +7,9 @@
 // ----------------------------------------------------------------------------- : Includes
 
 #include <util/prec.hpp>
+#ifdef __WXQT__
+#include <gui/control/qt_gui_font.hpp>
+#endif
 #include <render/value/package_choice.hpp>
 #include <util/io/package_manager.hpp>
 #include <gui/util.hpp>
@@ -75,8 +78,18 @@ void PackageChoiceValueViewer::draw(RotatedDC& dc) {
     font.color = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
     margin = RealSize(1., 0);
   }
-  dc.SetFont(font, 1.0);
-  RealPoint pos = align_in_rect(ALIGN_MIDDLE_LEFT, RealSize(0, dc.GetCharHeight()), dc.getInternalRect()) + RealSize(17., 0) + margin;
-  dc.DrawTextWithShadowOrStroke(text, font, pos);
+#ifdef __WXQT__
+  if (nativeLook()) {
+    dc.SetFont(genevensisQtGuiFont());
+    dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
+    RealPoint pos = align_in_rect(ALIGN_MIDDLE_LEFT, RealSize(0, dc.GetCharHeight()), dc.getInternalRect()) + RealSize(17., 0) + margin;
+    dc.DrawText(text, pos);
+  } else
+#endif
+  {
+    dc.SetFont(font, 1.0);
+    RealPoint pos = align_in_rect(ALIGN_MIDDLE_LEFT, RealSize(0, dc.GetCharHeight()), dc.getInternalRect()) + RealSize(17., 0) + margin;
+    dc.DrawTextWithShadowOrStroke(text, font, pos);
+  }
   if (nativeLook()) font.color = font_color;
 }

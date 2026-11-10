@@ -38,6 +38,9 @@
 #include <data/format/formats.hpp>
 #include <data/action/value.hpp>
 #include <data/action/set.hpp>
+#ifdef __WXQT__
+#include <QtWidgets/QToolBar>
+#endif
 
 // ----------------------------------------------------------------------------- : Constructor
 
@@ -133,11 +136,25 @@ SetWindow::SetWindow(Window* parent, const SetP& set)
   add_tool(tb, ID_EDIT_REDO, settings.darkModePrefix() + "redo", {}, _TOOLTIP_1_("redo", {}), _HELP_("redo"));
   tb->AddSeparator();
   tb->Realize();
+#ifdef __WXQT__
+  // Only these actions are permanent. wxQt 3.3.3 does not always remove
+  // QAction entries when dynamically added wx toolbar tools are deleted.
+  if (auto* native_tb = qobject_cast<QToolBar*>(tb->GetHandle())) {
+    qt_base_toolbar_action_count = native_tb->actions().size();
+  }
+#endif
   
   // tab bar, sizer
   wxToolBar* tabBar = new wxToolBar(this, ID_TAB_BAR, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxNO_BORDER | wxTB_HORIZONTAL | wxTB_HORZ_TEXT | wxTB_NOALIGN);
   tabBar->SetToolBitmapSize(wxSize(18,18));
   wxSizer* s = new wxBoxSizer(wxVERTICAL);
+#ifdef __WXQT__
+  // wxQt's native toolbar expands embedded wxTextCtrls unpredictably.
+  auxiliary_toolbar = new wxPanel(this, wxID_ANY);
+  auxiliary_toolbar->SetSizer(new wxBoxSizer(wxHORIZONTAL));
+  s->Add(auxiliary_toolbar, 0, wxEXPAND | wxLEFT | wxRIGHT, 4);
+  auxiliary_toolbar->Hide();
+#endif
   s->Add(tabBar, 0, wxEXPAND | wxBOTTOM, 0);
   SetSizer(s);
   #if defined(__WXMSW__) && defined(TBSTYLE_EX_DOUBLEBUFFER)
@@ -232,6 +249,14 @@ void SetWindow::addPanel(wxMenu* windowMenu, wxToolBar* tabBar, SetWindowPanel* 
   GetSizer()->Add(panel, 1, wxEXPAND);
 }
 
+void SetWindow::showAuxiliaryToolbar(bool show) {
+  if (!auxiliary_toolbar) return;
+  GetSizer()->Show(auxiliary_toolbar, show);
+  if (show) auxiliary_toolbar->GetSizer()->Layout();
+  Layout();
+  if (show) auxiliary_toolbar->Layout();
+}
+
 void SetWindow::selectPanel(int id) {
   SetWindowPanel* toSelect = panels.at(id - ID_WINDOW_MIN);
   if (current_panel == toSelect) {
@@ -245,6 +270,20 @@ void SetWindow::selectPanel(int id) {
   }
   // destroy & create menus
   if (current_panel) current_panel->destroyUI(GetToolBar(), GetMenuBar());
+#ifdef __WXQT__
+  // wxQt's DoDeleteTool() deletes the QToolButton, but may leave an
+  // orphaned QWidgetAction/QAction in the native toolbar. Such actions
+  // accumulate across panel switches and corrupt the insertion positions
+  // of newly added tools. Remove only actions after the original permanent
+  // toolbar prefix, and only after the wx panel has deleted its tools.
+  if (auto* native_tb = qobject_cast<QToolBar*>(GetToolBar()->GetHandle())) {
+    while (static_cast<size_t>(native_tb->actions().size()) > qt_base_toolbar_action_count) {
+      QAction* orphan = native_tb->actions().last();
+      native_tb->removeAction(orphan);
+      delete orphan;
+    }
+  }
+#endif
   current_panel = toSelect;
   current_panel->initUI(GetToolBar(), GetMenuBar());
   // show/hide panels and select tabs
@@ -262,6 +301,17 @@ void SetWindow::selectPanel(int id) {
   fixMinWindowSize();
   // select something
   current_panel->SetFocus();
+#ifdef __WXQT__
+  // Panel widgets can become visible before Qt has completed the splitter
+  // and virtual list viewport layout. Repaint only after that event cycle.
+  SetWindowPanel* shown_panel = current_panel;
+  CallAfter([this, shown_panel]() {
+    if (IsBeingDeleted() || current_panel != shown_panel) return;
+    shown_panel->Layout();
+    shown_panel->Refresh(false);
+    // wxWindow::Refresh() also invalidates descendant controls.
+  });
+#endif
 }
 
 void toolbar_SetToolNormalBitmap(wxToolBar* toolbar, int id, wxBitmap const& bitmap) {

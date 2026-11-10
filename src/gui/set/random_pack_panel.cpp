@@ -7,6 +7,9 @@
 // ----------------------------------------------------------------------------- : Includes
 
 #include <util/prec.hpp>
+#ifdef __WXQT__
+#include <gui/control/qt_gui_font.hpp>
+#endif
 #include <gui/set/random_pack_panel.hpp>
 #include <gui/control/card_viewer.hpp>
 #include <gui/control/filtered_card_list.hpp>
@@ -92,7 +95,11 @@ void PackTotalsPanel::draw(DC& dc) {
   dc.DrawRectangle(0,0,size.x,size.y);
   // draw table
   dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
-  dc.SetFont(*wxNORMAL_FONT);
+  #ifdef __WXQT__
+    dc.SetFont(genevensisQtGuiFont());
+#else
+    dc.SetFont(*wxNORMAL_FONT);
+#endif
   int y = 0;
   int total = 0;
   FOR_EACH(pack, game->pack_types) {
@@ -174,7 +181,11 @@ public:
     wxSize size = dc.GetSize();
     dc.DrawRectangle(0,0,size.x,size.y);
     // draw label
+    #ifdef __WXQT__
+    dc.SetFont(genevensisQtGuiFont());
+#else
     dc.SetFont(*wxNORMAL_FONT);
+#endif
     int w,h;
     wxSize s = dc.GetSize();
     dc.GetTextExtent(label,&w,&h);
@@ -183,7 +194,11 @@ public:
   wxSize DoGetBestSize() const override {
     int w,h;
     wxClientDC dc(const_cast<SelectableLabel*>(this));
+    #ifdef __WXQT__
+    dc.SetFont(genevensisQtGuiFont());
+#else
     dc.SetFont(*wxNORMAL_FONT);
+#endif
     dc.GetTextExtent(label,&w,&h);
     return wxSize(w+6,h);
   }

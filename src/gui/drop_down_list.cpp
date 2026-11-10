@@ -7,6 +7,12 @@
 // ----------------------------------------------------------------------------- : Includes
 
 #include <util/prec.hpp>
+#ifdef __WXQT__
+#include <gui/control/qt_gui_font.hpp>
+#include <QtWidgets/QWidget>
+#include <QtCore/QTimer>
+#include <QtGui/QCursor>
+#endif
 #include <gui/drop_down_list.hpp>
 #include <gui/util.hpp>
 #include <render/value/viewer.hpp>
@@ -84,12 +90,48 @@ DropDownList::DropDownList(Window* parent, bool is_submenu, ValueViewer* viewer)
   , hider2(is_submenu ? nullptr : new DropDownHider(*this))
   , close_on_mouse_out(false)
 {
+#ifdef __WXQT__
+  // QWidget defaults to mouseTracking == false, so hovering without a
+  // pressed button does not emit QEvent::MouseMove. The custom popup uses
+  // wxEVT_MOTION to update selected_item and open nested submenus; without
+  // tracking, wxQt leaves the highlight locked on the initial entry.
+  // Apply to every popup, including nested DropDownList instances.
+  if (QWidget* widget = GetHandle()) {
+    widget->setMouseTracking(true);
+
+    // Nested native Qt::Popup windows can redirect/suppress ordinary move
+    // events from the wxWidgets handler, leaving hover stuck on the item
+    // which first opened a submenu. Query the *actual* pointer position
+    // while visible instead, so parent and child popups track independently.
+    // The timer belongs to the native widget and never runs on wxGTK.
+    auto* hover_timer = new QTimer(widget);
+    hover_timer->setInterval(25);
+    QObject::connect(hover_timer, &QTimer::timeout, widget, [this, widget]() {
+      if (!IsShown() || !widget->isVisible()) return;
+      const wxPoint point = ScreenToClient(wxPoint(QCursor::pos().x(), QCursor::pos().y()));
+      const wxSize size = GetClientSize();
+      if (point.x < marginW || point.x + marginW >= size.x ||
+          point.y < marginH || point.y + marginH >= size.y) {
+        return;
+      }
+      wxMouseEvent motion(wxEVT_MOTION);
+      motion.SetEventObject(this);
+      motion.SetPosition(point);
+      onMotion(motion);
+    });
+    hover_timer->start();
+  }
+#endif
   if (is_submenu) {
     parent_menu = &dynamic_cast<DropDownList&>(*GetParent());
   }
   // determine item height
   wxClientDC dc(this);
+  #ifdef __WXQT__
+  dc.SetFont(genevensisQtGuiFont());
+#else
   dc.SetFont(*wxNORMAL_FONT);
+#endif
   int h;
   dc.GetTextExtent(_("X"), 0, &h);
   item_size.height = h + 2.0;
@@ -102,6 +144,12 @@ DropDownList::~DropDownList() {
 }
 
 void DropDownList::show(bool in_place, wxPoint pos, RealRect* rect) {
+#ifdef __WXQT__
+  // Qt::Popup can auto-hide the native window on an outside click without
+  // passing through our wxWidgets realHide() bookkeeping. Reconcile both
+  // visibility states before deciding this popup is already open.
+  if (IsShown() && GetHandle() && !GetHandle()->isVisible()) realHide();
+#endif
   if (IsShown()) return;
   onShow();
   // find selection
@@ -110,7 +158,11 @@ void DropDownList::show(bool in_place, wxPoint pos, RealRect* rect) {
   size_t count = itemCount();
   if (item_size.width == 100) { // not initialized
     wxClientDC dc(this);
-    dc.SetFont(*wxNORMAL_FONT);
+    #ifdef __WXQT__
+  dc.SetFont(genevensisQtGuiFont());
+#else
+  dc.SetFont(*wxNORMAL_FONT);
+#endif
     for (size_t i = 0 ; i < count ; ++i) {
       int text_width;
       dc.GetTextExtent(capitalize(itemText(i)), &text_width, nullptr);
@@ -174,12 +226,17 @@ void DropDownList::show(bool in_place, wxPoint pos, RealRect* rect) {
   // visible item
   visible_start = 0;
   ensureSelectedItemVisible();
-  // set event handler
+  // wxQt implements wxPopupWindow with a native Qt::Popup. It already
+  // handles clicks outside the popup; wx's historical DropDownHider
+  // interception conflicts with Qt's popup mouse routing, particularly
+  // with nested choice menus. Retain the original behavior elsewhere.
+#ifndef __WXQT__
   if (hider) {
     assert(hider2);
     wxGetTopLevelParent(GetParent())->PushEventHandler(hider);
     GetParent()                     ->PushEventHandler(hider2);
   }
+#endif
   // show
   if (selected_item == NO_SELECTION && itemCount() > 0) selected_item = 0; // select first item by default
   mouse_down = false;
@@ -223,8 +280,10 @@ void DropDownList::realHide() {
   } else {
     redrawArrowOnParent();
     // disconnect event handler
+#ifndef __WXQT__
     GetParent()                     ->RemoveEventHandler(hider2);
     wxGetTopLevelParent(GetParent())->RemoveEventHandler(hider);
+#endif
   }
 }
 
@@ -261,6 +320,11 @@ bool DropDownList::showSubMenu(size_t item, int y) {
 
 bool DropDownList::selectItem(size_t item) {
   if ((int)item >= 0 && item < itemCount()) {
+#ifdef __WXQT__
+    // The native popup hover poll runs while the pointer is stationary too.
+    // Repaint only on a real selection change.
+    if (selected_item == item) return true;
+#endif
     selected_item = item;
     ensureSelectedItemVisible();
     Refresh(false);
@@ -327,12 +391,22 @@ void DropDownList::draw(DC& dc) {
   dc.SetPen(*wxTRANSPARENT_PEN);
   dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
   dc.DrawRectangle(0, 0, cs.x, cs.y);
+  #ifdef __WXQT__
+  dc.SetFont(genevensisQtGuiFont());
+#else
   dc.SetFont(*wxNORMAL_FONT);
+#endif
   if (is_slider) {
     // If it's a slider, draw the slider
     cs = GetClientSize();
     dc.SetPen(*wxBLACK_PEN);
+#ifdef __WXQT__
+    wxFont slider_font = genevensisQtGuiFont();
+    slider_font.SetWeight(wxFONTWEIGHT_BOLD);
+    dc.SetFont(slider_font);
+#else
     dc.SetFont(wxFont(12, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, _("Arial")));
+#endif
 
     String first_item = capitalize(itemText(0));
     if (first_item == _("Default")) first_item = capitalize(itemText(1));
@@ -359,7 +433,11 @@ void DropDownList::draw(DC& dc) {
     dc.GetTextExtent(capitalize(itemText(selected_index)), &selected_text_width, nullptr);
     dc.DrawText(capitalize(itemText(selected_index)), slider_pos - selected_text_width/2, 44);
 
-    dc.SetFont(*wxNORMAL_FONT);
+    #ifdef __WXQT__
+  dc.SetFont(genevensisQtGuiFont());
+#else
+  dc.SetFont(*wxNORMAL_FONT);
+#endif
   } else {
     // If it's not a slider, draw the list of items
     int y = marginH - visible_start;
@@ -418,6 +496,13 @@ void DropDownList::onLeftDown(wxMouseEvent& ev) {
     ev.Skip();
     return;
   }
+#ifdef __WXQT__
+  // wxQt may deliver a press/release without an intervening motion event.
+  // The existing popup changes selected_item only from onMotion(), so
+  // clicking a row directly otherwise commits the previous selection.
+  // Reuse the normal hit testing (including slider and submenu handling).
+  onMotion(ev);
+#endif
   mouse_down = true; // prevent closing on mouseup of the click that opened the window
 }
 
@@ -521,6 +606,12 @@ void DropDownList::onScroll(wxScrollWinEvent& ev) {
 // ----------------------------------------------------------------------------- : DropDownList : Parent events
 
 bool DropDownList::onMouseInParent(wxMouseEvent& ev, bool open_in_place) {
+#ifdef __WXQT__
+  // Treat a natively auto-dismissed Qt::Popup as closed, even if wx still
+  // considers the wrapper shown. Otherwise the next click only "closes"
+  // a popup that isn't on screen.
+  if (IsShown() && GetHandle() && !GetHandle()->isVisible()) realHide();
+#endif
   if (IsShown()) hide(false);
   else           show(open_in_place, wxPoint(ev.GetX(), ev.GetY()));
   return true;

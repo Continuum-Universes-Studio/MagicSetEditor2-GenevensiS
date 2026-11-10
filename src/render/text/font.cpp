@@ -7,6 +7,9 @@
 // ----------------------------------------------------------------------------- : Includes
 
 #include <util/prec.hpp>
+#ifdef __WXQT__
+#include <gui/control/qt_gui_font.hpp>
+#endif
 #include <render/text/element.hpp>
 #include <data/font.hpp>
 
@@ -26,8 +29,19 @@ void FontTextElement::draw(RotatedDC& dc, double scale, const RealRect& rect, co
     font->color = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
     margin = RealSize(1., 0);
   }
-  dc.SetFont(*font, scale);
-  dc.DrawTextWithShadowOrStroke(text, *font, rect.position() + margin);
+#ifdef __WXQT__
+  if (native_look) {
+    // Keep stylesheet and rich-text fonts for card rendering, but use KDE's
+    // application font for text displayed inside the native data editor.
+    dc.SetFont(genevensisQtGuiFont());
+    dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
+    dc.DrawText(text, rect.position() + margin);
+  } else
+#endif
+  {
+    dc.SetFont(*font, scale);
+    dc.DrawTextWithShadowOrStroke(text, *font, rect.position() + margin);
+  }
   if (native_look) font->color = font_color;
 }
 

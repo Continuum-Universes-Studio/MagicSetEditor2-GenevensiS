@@ -8,6 +8,7 @@
 
 #include <util/prec.hpp>
 #include <gui/set/cards_panel.hpp>
+#include <gui/set/window.hpp>
 #include <gui/control/image_card_list.hpp>
 #include <gui/control/card_editor.hpp>
 #include <gui/control/text_ctrl.hpp>
@@ -107,6 +108,15 @@ CardsPanel::CardsPanel(Window* parent, int id)
             link_grid->Add(link_viewers[i],    wxGBPosition(1, 0), wxGBSpan(1, 2));
             if (i == 0) link_grid->Add(link_editor, wxGBPosition(2, 0), wxGBSpan(1, 2)); // shown instead of link_viewers[0] when there's exactly 1 link
           }
+#ifdef __WXQT__
+          // The linked-card widgets are siblings of the native QGroupBoxes,
+          // not Qt children of them. Newer group boxes otherwise cover the
+          // previously created CardViewer/CardEditor widgets (blank previews).
+          // Match the Preferences dialog's wxQt stacking workaround.
+          for (wxSizer* box : link_boxes) {
+            static_cast<wxStaticBoxSizer*>(box)->GetStaticBox()->Lower();
+          }
+#endif
   s->Add(s_left,   0, wxEXPAND | wxRIGHT, 2);
   s->Add(splitter, 1, wxEXPAND);
   SetSizer(s);
@@ -319,6 +329,7 @@ wxMenu* CardsPanel::makeAddCardsSubmenu(bool add_single_card_option) {
 // ----------------------------------------------------------------------------- : UI
 
 void CardsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
+  toolbar_item_start = tb->GetToolsCount();
   // Toolbar
   add_tool_tr(tb, ID_FORMAT_FONT,          settings.darkModePrefix() + "font",          "font",          false, wxITEM_CHECK);
   add_tool_tr(tb, ID_FORMAT_BOLD,          settings.darkModePrefix() + "bold",          "bold",          false, wxITEM_CHECK);
@@ -329,12 +340,19 @@ void CardsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
   add_tool_tr(tb, ID_FORMAT_BULLETPOINT,   settings.darkModePrefix() + "bullet_point",  "bullet_point",  false, wxITEM_CHECK);
   add_tool_tr(tb, ID_FORMAT_SYMBOL,        settings.darkModePrefix() + "symbol",        "symbols",       false, wxITEM_CHECK);
   add_tool_tr(tb, ID_FORMAT_REMINDER,      settings.darkModePrefix() + "reminder",      "reminder_text", false, wxITEM_CHECK);
+  // wxQt currently leaves native separator actions behind when dynamically
+  // removing panel tools. Skip panel-owned separators there; the shared
+  // toolbar's original separators remain unchanged.
+#ifndef __WXQT__
   tb->AddSeparator();
+#endif
   toolAddCard = add_tool_tr(tb, ID_CARD_ADD, "card_add", "add_card", false, wxITEM_DROPDOWN);
   tb->SetDropdownMenu(ID_CARD_ADD, makeAddCardsSubmenu(true));
   add_tool_tr(tb, ID_CARD_REMOVE, "card_del", "remove_card");
   add_tool_tr(tb, ID_CARD_LINK, settings.darkModePrefix() + "card_link", "link_card");
+#ifndef __WXQT__
   tb->AddSeparator();
+#endif
   add_tool_tr(tb, ID_CARD_ROTATE, "card_rotate", "rotate_card", false, wxITEM_DROPDOWN);
   auto menuRotate = new wxMenu();
     add_menu_item_tr(menuRotate, ID_CARD_ROTATE_0, "card_rotate_0", "rotate_0", wxITEM_CHECK);
@@ -342,15 +360,38 @@ void CardsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
     add_menu_item_tr(menuRotate, ID_CARD_ROTATE_180, "card_rotate_180", "rotate_180", wxITEM_CHECK);
     add_menu_item_tr(menuRotate, ID_CARD_ROTATE_90, "card_rotate_90", "rotate_90", wxITEM_CHECK);
   tb->SetDropdownMenu(ID_CARD_ROTATE, menuRotate);
-  // Filter/search textbox
-  tb->AddSeparator();
-  assert(!filter);
-  filter = new FilterCtrl(tb, ID_CARD_FILTER, _TOOL_("search cards"), _HELP_("search cards control"));
-  filter->setFilter(filter_value);
-  tb->AddControl(filter);
-  counts = new wxStaticText(tb, ID_CARD_COUNTER, _(""));
+  // Keep complex controls out of wxQt's native toolbar layout.
+  SetWindow* window = static_cast<SetWindow*>(GetParent());
+  wxPanel* auxiliary = window->auxiliaryToolbar();
+  if (!auxiliary) tb->AddSeparator();
+  assert(!filter || auxiliary); // wxQt keeps its search widget between tab changes
+  if (auxiliary) {
+    // wxQt can defer destruction of native child widgets. Reusing the
+    // controls avoids overlapping search fields after tab changes.
+    if (!toolbar_controls) {
+      toolbar_controls = new wxPanel(auxiliary, wxID_ANY);
+      toolbar_controls->SetSizer(new wxBoxSizer(wxHORIZONTAL));
+      filter = new FilterCtrl(toolbar_controls, ID_CARD_FILTER,
+                              _TOOL_("search cards"), _HELP_("search cards control"));
+      counts = new wxStaticText(toolbar_controls, ID_CARD_COUNTER, _(""));
+      filter->SetMinSize(wxSize(200, -1));
+      filter->SetMaxSize(wxSize(200, -1));
+      toolbar_controls->GetSizer()->Add(filter, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+      toolbar_controls->GetSizer()->Add(counts, 0, wxALIGN_CENTER_VERTICAL);
+      auxiliary->GetSizer()->Add(toolbar_controls, 0, wxALIGN_CENTER_VERTICAL);
+    }
+    filter->setFilter(filter_value);
+    toolbar_controls->Show();
+    toolbar_controls->Layout();
+    window->showAuxiliaryToolbar(true);
+  } else {
+    filter = new FilterCtrl(tb, ID_CARD_FILTER, _TOOL_("search cards"), _HELP_("search cards control"));
+    filter->setFilter(filter_value);
+    tb->AddControl(filter);
+    counts = new wxStaticText(tb, ID_CARD_COUNTER, _(""));
+    tb->AddControl(counts);
+  }
   updateCardCounts();
-  tb->AddControl(counts);
   tb->Realize();
   // Menus
   mb->Insert(2, menuCard,   _MENU_("cards"));
@@ -358,31 +399,20 @@ void CardsPanel::initUI(wxToolBar* tb, wxMenuBar* mb) {
 }
 
 void CardsPanel::destroyUI(wxToolBar* tb, wxMenuBar* mb) {
-  // Toolbar
-  tb->DeleteTool(ID_FORMAT_FONT);
-  tb->DeleteTool(ID_FORMAT_BOLD);
-  tb->DeleteTool(ID_FORMAT_ITALIC);
-  tb->DeleteTool(ID_FORMAT_UNDERLINE);
-  tb->DeleteTool(ID_FORMAT_STRIKETHROUGH);
-  tb->DeleteTool(ID_FORMAT_COLOR);
-  tb->DeleteTool(ID_FORMAT_BULLETPOINT);
-  tb->DeleteTool(ID_FORMAT_SYMBOL);
-  tb->DeleteTool(ID_FORMAT_REMINDER);
-  tb->DeleteTool(ID_CARD_ADD);
-  tb->DeleteTool(ID_CARD_REMOVE);
-  tb->DeleteTool(ID_CARD_LINK);
-  tb->DeleteTool(ID_CARD_ROTATE);
-  tb->DeleteTool(ID_CARD_COUNTER);
-  counts = nullptr;
-  // remember the value in the filter control, because the card list remains filtered
-  // the control is destroyed by DeleteTool
   filter_value = filter->getFilterString();
-  tb->DeleteTool(filter->GetId());
-  filter = nullptr;
-  // HACK: hardcoded size of rest of toolbar
-  tb->DeleteToolByPos(12); // delete separator
-  tb->DeleteToolByPos(12); // delete separator
-  tb->DeleteToolByPos(12); // delete separator
+  SetWindow* window = static_cast<SetWindow*>(GetParent());
+  if (window->auxiliaryToolbar()) {
+    toolbar_controls->Hide();
+    window->showAuxiliaryToolbar(false);
+  } else {
+    filter = nullptr;
+    counts = nullptr;
+  }
+  // Remove exactly what this panel added, including separators.
+  while (tb->GetToolsCount() > toolbar_item_start) {
+    tb->DeleteToolByPos(toolbar_item_start);
+  }
+  toolAddCard = nullptr;
   // Menus
   mb->Remove(3);
   mb->Remove(2);

@@ -7,6 +7,9 @@
 // ----------------------------------------------------------------------------- : Includes
 
 #include <util/prec.hpp>
+#ifdef __WXQT__
+#include <gui/control/qt_gui_font.hpp>
+#endif
 #include <gui/set/stats_panel.hpp>
 #include <gui/control/graph.hpp>
 #include <gui/control/gallery_list.hpp>
@@ -85,7 +88,11 @@ void StatCategoryList::drawItem(DC& dc, int x, int y, size_t item) {
   // draw name
   RealRect rect(RealPoint(x + 24, y), RealSize(item_size.x - 30, item_size.y));
   String str = capitalize(cat.name);
-  dc.SetFont(*wxNORMAL_FONT);
+  #ifdef __WXQT__
+    dc.SetFont(genevensisQtGuiFont());
+#else
+    dc.SetFont(*wxNORMAL_FONT);
+#endif
   int w, h;
   dc.GetTextExtent(str, &w, &h);
   RealSize size = RealSize(w,h);
@@ -236,7 +243,11 @@ void StatDimensionList::drawItem(DC& dc, int x, int y, size_t item) {
   if (show_empty && item == 0) {
     RealRect rect(RealPoint(x + 24, y), RealSize(item_size.x - 30, item_size.y));
     String str = _("None");
+    #ifdef __WXQT__
+    dc.SetFont(genevensisQtGuiFont());
+#else
     dc.SetFont(*wxNORMAL_FONT);
+#endif
     int w, h;
     dc.GetTextExtent(str, &w, &h);
     RealSize size = RealSize(w,h);
@@ -266,7 +277,11 @@ void StatDimensionList::drawItem(DC& dc, int x, int y, size_t item) {
   // draw name
   RealRect rect(RealPoint(x + 24, y), RealSize(item_size.x - 30, item_size.y));
   String str = capitalize(dim.name);
-  dc.SetFont(*wxNORMAL_FONT);
+  #ifdef __WXQT__
+    dc.SetFont(genevensisQtGuiFont());
+#else
+    dc.SetFont(*wxNORMAL_FONT);
+#endif
   int w, h;
   dc.GetTextExtent(str, &w, &h);
   RealSize size = RealSize(w,h);

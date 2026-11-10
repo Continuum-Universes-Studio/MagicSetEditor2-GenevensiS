@@ -16,6 +16,9 @@
 #include <wx/spinctrl.h>
 #include <wx/filename.h>
 #include <wx/notebook.h>
+#ifdef __WXQT__
+#include <wx/statbox.h>
+#endif
 
 // use a combo box for the zoom choices instead of a spin control
 #define USE_ZOOM_COMBOBOX 1
@@ -31,6 +34,21 @@ public:
   
   /// Stores the settings from the panel in the global settings object
   virtual void store() = 0;
+
+protected:
+  // wxQt maps wxStaticBox to an opaque QGroupBox. Preferences creates its
+  // interactive controls before its static box sizers; Qt stacks newer
+  // group boxes above those controls and covers them. Lower group boxes.
+  void fixQtGroupBoxStacking() {
+#ifdef __WXQT__
+    for (wxWindowList::compatibility_iterator node = GetChildren().GetFirst();
+         node; node = node->GetNext()) {
+      if (dynamic_cast<wxStaticBox*>(node->GetData())) {
+        node->GetData()->Lower();
+      }
+    }
+#endif
+  }
 };
 
 // Preferences page for global MSE settings
@@ -191,6 +209,7 @@ GlobalPreferencesPage::GlobalPreferencesPage(Window* parent)
     s->Add(s4, 0, wxEXPAND | wxALL, 8);
   SetSizer(s);
   s->SetSizeHints(this);
+  fixQtGroupBoxStacking();
 }
 
 void GlobalPreferencesPage::store() {
@@ -249,6 +268,7 @@ DisplayPreferencesPage::DisplayPreferencesPage(Window* parent)
   s->Add(s4, 0, wxEXPAND | wxALL, 8);
   SetSizer(s);
   s->SetSizeHints(this);
+  fixQtGroupBoxStacking();
 }
 
 void DisplayPreferencesPage::store() {
@@ -378,6 +398,7 @@ TransfersPreferencesPage::TransfersPreferencesPage(Window* parent) : Preferences
   export_scale->SetFocus();
   SetSizer(s);
   s->SetSizeHints(this);
+  fixQtGroupBoxStacking();
 }
 
 void TransfersPreferencesPage::store() {
@@ -415,6 +436,7 @@ DirsPreferencesPage::DirsPreferencesPage(Window* parent)
     s->Add(s2, 0, wxEXPAND | wxALL, 8);
   SetSizer(s);
   s->SetSizeHints(this);
+  fixQtGroupBoxStacking();
 }
 
 void DirsPreferencesPage::store() {
