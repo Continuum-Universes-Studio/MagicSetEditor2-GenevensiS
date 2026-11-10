@@ -24,7 +24,7 @@
  */
 class ItemList : public wxListView {
 public:
-  ItemList(Window* parent, int id, long additional_style = 0, bool multi_sel = false);
+  ItemList(Window* parent, int id, long additional_style = 0, bool multi_sel = false, bool virtual_list = true);
   
   // --------------------------------------------------- : Selection
   
@@ -111,9 +111,11 @@ protected:
   long           sort_by_column3;   ///< Previous previous column used for sorting, or -1 if not sorted (stable sort aint workin so we doing this I guess)
   bool           sort_ascending;    ///< Sort order
   vector<VoidP>  sorted_list;       ///< Sorted list of items, can be considered a map: pos->item
+  bool           virtual_list;      ///< Use wx's callback-based virtual list model
   
 private:
   struct ItemComparer; // for comparing items
+  void refreshNativeItem(long pos);
   
   // --------------------------------------------------- : Window events
   DECLARE_EVENT_TABLE();
