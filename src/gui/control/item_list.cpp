@@ -18,8 +18,11 @@
 
 // ----------------------------------------------------------------------------- : ItemList
 
-ItemList::ItemList(Window* parent, int id, long additional_style, bool multi_sel)
-  : wxListView(parent, id, wxDefaultPosition, wxDefaultSize, additional_style | wxLC_REPORT | wxLC_VIRTUAL | (multi_sel ? 0 : wxLC_SINGLE_SEL))
+ItemList::ItemList(Window* parent, int id, long additional_style, bool multi_sel, bool virtual_list)
+  : wxListView(parent, id, wxDefaultPosition, wxDefaultSize,
+               additional_style | wxLC_REPORT | (virtual_list ? wxLC_VIRTUAL : 0) |
+               (multi_sel ? 0 : wxLC_SINGLE_SEL))
+  , virtual_list(virtual_list)
   , selected_item_pos(-1)
   , sort_by_column(-1), sort_by_column2(-1), sort_by_column3(-1), sort_ascending(true)
 {
@@ -193,6 +196,23 @@ struct ItemList::ItemComparer {
   }
 };
 
+void ItemList::refreshNativeItem(long pos) {
+  if (pos < 0 || pos >= static_cast<long>(sorted_list.size())) return;
+
+  // wxQt's virtual-list model omits TextAlignmentRole and ForegroundRole.
+  // Materialized rows use the regular model, so these item properties render
+  // consistently with wxGTK and the other supported wxWidgets ports.
+  for (long col = 0; col < GetColumnCount(); ++col) {
+    SetItem(pos, col, OnGetItemText(pos, col));
+  }
+
+  SetItemTextColour(pos, wxNullColour);
+  wxListItemAttr* attr = OnGetItemAttr(pos);
+  if (attr && attr->HasTextColour()) {
+    SetItemTextColour(pos, attr->GetTextColour());
+  }
+}
+
 void ItemList::refreshList(bool refresh_current_only) {
   // Get all items
   vector<VoidP> old_sorted_list;
@@ -204,13 +224,28 @@ void ItemList::refreshList(bool refresh_current_only) {
   }
   // Has the entire list changed?
   if (refresh_current_only && sorted_list == old_sorted_list) {
-    if (selected_item_pos >= 0) RefreshItem(selected_item_pos);
+    if (selected_item_pos >= 0) {
+      if (virtual_list) RefreshItem(selected_item_pos);
+      else refreshNativeItem(selected_item_pos);
+    }
     return;
   }
   // refresh
   // Note: Freeze/Thaw makes flicker worse
-  long item_count = (long)sorted_list.size();
-  SetItemCount(item_count);
+  long item_count = static_cast<long>(sorted_list.size());
+  if (virtual_list) {
+    SetItemCount(item_count);
+  } else {
+    DeleteAllItems();
+    for (long pos = 0; pos < item_count; ++pos) {
+      if (InsertItem(pos, OnGetItemText(pos, 0)) >= 0) {
+        for (long col = 1; col < GetColumnCount(); ++col) {
+          SetItem(pos, col, OnGetItemText(pos, col));
+        }
+        refreshNativeItem(pos);
+      }
+    }
+  }
   if (item_count == 0) {
     Refresh();
   } else {
@@ -219,11 +254,10 @@ void ItemList::refreshList(bool refresh_current_only) {
     focusNone();
     focusSelectedItem(true);
     // refresh items
-  
-    RefreshItems(0, item_count - 1);
+    if (virtual_list) RefreshItems(0, item_count - 1);
+    else Refresh(false);
   }
 }
-
 void ItemList::sortBy(long column, bool ascending) {
   // Change image in column header
   long count = GetColumnCount();
