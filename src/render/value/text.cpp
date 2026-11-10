@@ -16,7 +16,7 @@ IMPLEMENT_VALUE_VIEWER(Text);
 
 bool TextValueViewer::prepare(RotatedDC& dc) {
   getMask(dc); // ensure alpha/contour mask is loaded
-  return v.prepare(dc, value().value(), style(), getContext());
+  return v.prepare(dc, value().value(), style(), getContext(), nativeLook());
 }
 
 void TextValueViewer::draw(RotatedDC& dc) {
