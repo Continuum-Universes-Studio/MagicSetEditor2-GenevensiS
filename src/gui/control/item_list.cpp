@@ -22,9 +22,9 @@ ItemList::ItemList(Window* parent, int id, long additional_style, bool multi_sel
   : wxListView(parent, id, wxDefaultPosition, wxDefaultSize,
                additional_style | wxLC_REPORT | (virtual_list ? wxLC_VIRTUAL : 0) |
                (multi_sel ? 0 : wxLC_SINGLE_SEL))
-  , virtual_list(virtual_list)
   , selected_item_pos(-1)
   , sort_by_column(-1), sort_by_column2(-1), sort_by_column3(-1), sort_ascending(true)
+  , virtual_list(virtual_list)
 {
   // create image list
   wxImageList* il = new wxImageList(18,14);
@@ -239,9 +239,6 @@ void ItemList::refreshList(bool refresh_current_only) {
     DeleteAllItems();
     for (long pos = 0; pos < item_count; ++pos) {
       if (InsertItem(pos, OnGetItemText(pos, 0)) >= 0) {
-        for (long col = 1; col < GetColumnCount(); ++col) {
-          SetItem(pos, col, OnGetItemText(pos, col));
-        }
         refreshNativeItem(pos);
       }
     }
