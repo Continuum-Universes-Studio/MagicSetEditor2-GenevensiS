@@ -344,7 +344,7 @@ bool TextValueEditor::onLeftDown(const RealPoint& pos, wxMouseEvent& ev) {
       auto dcP = editor().overdrawDC();
       RotatedDC& dc = *dcP;
       Rotater r(dc, getRotation());
-      v.prepare(dc, value().value(), style(), getContext());
+      v.prepare(dc, value().value(), style(), getContext(), editor().nativeLook());
     }
     moveSelection(TYPE_INDEX, v.indexAt(pos), !ev.ShiftDown(), MOVE_MID);
   }
@@ -363,7 +363,7 @@ bool TextValueEditor::onMotion(const RealPoint& pos, wxMouseEvent& ev) {
       auto dcP = editor().overdrawDC();
       RotatedDC& dc = *dcP;
       Rotater r(dc, getRotation());
-      v.prepare(dc, value().value(), style(), getContext());
+      v.prepare(dc, value().value(), style(), getContext(), editor().nativeLook());
     }
     size_t index = v.indexAt(pos);
     if (select_words) {
@@ -1447,7 +1447,7 @@ void TextValueEditor::prepareDrawScrollbar(RotatedDC& dc) {
     style().width.mutate() -= scrollbar_width;
     // prepare text, and remember scroll position
     double scroll_pos = v.getExactScrollPosition();
-    v.prepare(dc, value().value(), style(), getContext());
+    v.prepare(dc, value().value(), style(), getContext(), editor().nativeLook());
     v.setExactScrollPosition(scroll_pos);
     // scroll to the same place, but always show the caret
     ensureCaretVisible();
