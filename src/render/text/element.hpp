@@ -62,7 +62,7 @@ public:
    *  this->start <= start < end <= this->end <= text.size() */
   virtual void draw(RotatedDC& dc, double scale, const RealRect& rect, const double* xs, DrawWhat what, size_t start, size_t end, bool native_look) const = 0;
   /// Get information on all characters in the range [start...end) and store them in out
-  virtual void getCharInfo(RotatedDC& dc, double scale, vector<CharInfo>& out) const = 0;
+  virtual void getCharInfo(RotatedDC& dc, double scale, vector<CharInfo>& out, bool native_look) const = 0;
   /// Return the minimum scale factor allowed (starts at 1)
   virtual double minScale() const = 0;
   /// Return the steps the scale factor should take
@@ -80,7 +80,7 @@ public:
   {}
   
   void draw(RotatedDC& dc, double scale, const RealRect& rect, const double* xs, DrawWhat what, size_t start, size_t end, bool native_look) const override;
-  void getCharInfo(RotatedDC& dc, double scale, vector<CharInfo>& out) const override;
+  void getCharInfo(RotatedDC& dc, double scale, vector<CharInfo>& out, bool native_look) const override;
   double minScale() const override;
   double scaleStep() const override;
 private:
@@ -99,7 +99,7 @@ public:
   {}
   
   void draw(RotatedDC& dc, double scale, const RealRect& rect, const double* xs, DrawWhat what, size_t start, size_t end, bool native_look) const override;
-  void getCharInfo(RotatedDC& dc, double scale, vector<CharInfo>& out) const override;
+  void getCharInfo(RotatedDC& dc, double scale, vector<CharInfo>& out, bool native_look) const override;
   double minScale() const override;
   double scaleStep() const override;
 private:
@@ -118,7 +118,7 @@ public:
   CompoundTextElement(size_t start, size_t end) : TextElement(start, end) {}
   
   void draw(RotatedDC& dc, double scale, const RealRect& rect, const double* xs, DrawWhat what, size_t start, size_t end, bool native_look) const override;
-  void getCharInfo(RotatedDC& dc, double scale, vector<CharInfo>& out) const override;
+  void getCharInfo(RotatedDC& dc, double scale, vector<CharInfo>& out, bool native_look) const override;
   double minScale() const override;
   double scaleStep() const override;
 
