@@ -174,11 +174,11 @@ void TextViewer::drawSeparators(RotatedDC& dc) {
   }
 }
 
-bool TextViewer::prepare(RotatedDC& dc, const String& text, TextStyle& style, Context& ctx) {
+bool TextViewer::prepare(RotatedDC& dc, const String& text, TextStyle& style, Context& ctx, bool native_look) {
   if (!prepared()) {
     // not prepared yet
     prepareElements(text, style, ctx);
-    prepareLines(dc, text, style, ctx);
+    prepareLines(dc, text, style, ctx, native_look);
     return true;
   } else {
     return false;
@@ -445,9 +445,9 @@ double lines_content_height(const vector<TextViewer::Line>& lines, size_t start_
   return height - lines[start_line].top;
 }
 
-void TextViewer::prepareLines(RotatedDC& dc, const String& text, TextStyle& style, Context& ctx) {
+void TextViewer::prepareLines(RotatedDC& dc, const String& text, TextStyle& style, Context& ctx, bool native_look) {
   vector<CharInfo> chars;
-  prepareLinesTryScales(dc, text, style, chars);
+  prepareLinesTryScales(dc, text, style, chars, native_look);
   assert(!lines.empty());
   
   // no text, find a dummy height for the single line we have
@@ -532,14 +532,14 @@ inline double bound_on_min_scale(RotatedDC& dc, const TextStyle& style, const ve
   return scale * tot_height / height;
 }
 
-void TextViewer::prepareLinesTryScales(RotatedDC& dc, const String& text, const TextStyle& style, vector<CharInfo>& chars) {
+void TextViewer::prepareLinesTryScales(RotatedDC& dc, const String& text, const TextStyle& style, vector<CharInfo>& chars, bool native_look) {
   // Bounds
   double min_scale = elements.minScale();
   double scale_step = max(0.01,elements.scaleStep());
   // Is there any scaling (common case is: no)
   if (min_scale >= 1.0) {
     scale = 1.0;
-    elements.getCharInfo(dc, scale, chars);
+    elements.getCharInfo(dc, scale, chars, native_look);
     prepareLinesAtScale(dc, chars, style, false, lines);
     return;
   }
@@ -561,7 +561,7 @@ void TextViewer::prepareLinesTryScales(RotatedDC& dc, const String& text, const 
   //           - change max_scale  
   
   // Try the layout at the previous scale, this could give a quick upper bound
-  elements.getCharInfo(dc, scale, chars);
+  elements.getCharInfo(dc, scale, chars, native_look);
   bool fits = prepareLinesAtScale(dc, chars, style, false, lines);
   if (fits) {
     min_scale = scale;
@@ -572,7 +572,7 @@ void TextViewer::prepareLinesTryScales(RotatedDC& dc, const String& text, const 
     scale += scale_step;
     vector<Line> lines_before;
     vector<CharInfo> chars_before;
-    elements.getCharInfo(dc, scale, chars_before);
+    elements.getCharInfo(dc, scale, chars_before, native_look);
     fits = prepareLinesAtScale(dc, chars_before, style, false, lines_before);
     if (fits) {
       // too bad
@@ -591,7 +591,7 @@ void TextViewer::prepareLinesTryScales(RotatedDC& dc, const String& text, const 
     // ensure invariant d (below)
     best_scale = scale = min_scale;
     chars.clear();
-    elements.getCharInfo(dc, scale, chars);
+    elements.getCharInfo(dc, scale, chars, native_look);
     prepareLinesAtScale(dc, chars, style, false, lines);
     max_scale = min(max_scale, bound_on_max_scale(dc,style,lines,scale));
   }
@@ -609,7 +609,7 @@ void TextViewer::prepareLinesTryScales(RotatedDC& dc, const String& text, const 
     scale = (min_scale + max_scale) / 2;
     vector<Line> lines_try;
     vector<CharInfo> chars_try;
-    elements.getCharInfo(dc, scale, chars_try);
+    elements.getCharInfo(dc, scale, chars_try, native_look);
     fits = prepareLinesAtScale(dc, chars_try, style, false, lines_try);
     if (fits) {
       min_scale = scale;
@@ -627,7 +627,7 @@ void TextViewer::prepareLinesTryScales(RotatedDC& dc, const String& text, const 
     // we'd better update lines, e doesn't hold
     scale = min_scale;
     chars.clear();
-    elements.getCharInfo(dc, scale, chars);
+    elements.getCharInfo(dc, scale, chars, native_look);
     fits = prepareLinesAtScale(dc, chars, style, false, lines);
   }
   scale = min_scale;
