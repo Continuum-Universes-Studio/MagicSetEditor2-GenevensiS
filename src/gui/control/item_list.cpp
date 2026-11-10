@@ -149,7 +149,7 @@ void ItemList::focusSelectedItem(bool force_focus) {
     if (selected_item_pos == -1 || (size_t)selected_item_pos >= sorted_list.size()) {
       // deselect currently selected item, if any
       long sel = GetFirstSelected();
-      Select(sel, false);
+      if (sel != wxNOT_FOUND) Select(sel, false);
     } else if (selected_item_pos != GetFocusedItem() || force_focus) {
       Select(selected_item_pos);
       Focus (selected_item_pos);
@@ -248,7 +248,9 @@ void ItemList::refreshList(bool refresh_current_only) {
   } else {
     // (re)select current item
     findSelectedItemPos();
-    focusNone();
+    // Rebuilding a materialized list already clears its native selection.
+    // Avoid wxQt SetItemState calls for rows that are not selected.
+    if (virtual_list) focusNone();
     focusSelectedItem(true);
     // refresh items
     if (virtual_list) RefreshItems(0, item_count - 1);
