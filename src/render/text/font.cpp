@@ -45,9 +45,14 @@ void FontTextElement::draw(RotatedDC& dc, double scale, const RealRect& rect, co
   if (native_look) font->color = font_color;
 }
 
-void FontTextElement::getCharInfo(RotatedDC& dc, double scale, vector<CharInfo>& out) const {
-  // font
-  dc.SetFont(*font, scale);
+void FontTextElement::getCharInfo(RotatedDC& dc, double scale, vector<CharInfo>& out, bool native_look) const {
+  // Match the metrics to draw(): native wxQt editors render with QApplication's
+  // font, while card text continues to use the stylesheet font.
+#ifdef __WXQT__
+  if (native_look) dc.SetFont(genevensisQtGuiFont());
+  else
+#endif
+    dc.SetFont(*font, scale);
   // find sizes & breaks
   double prev_width = 0;
   size_t line_start = start; // start of the current line

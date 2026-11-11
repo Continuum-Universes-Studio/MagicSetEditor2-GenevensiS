@@ -25,12 +25,12 @@ void CompoundTextElement::draw(RotatedDC& dc, double scale, const RealRect& rect
   }
 }
 
-void CompoundTextElement::getCharInfo(RotatedDC& dc, double scale, vector<CharInfo>& out) const {
+void CompoundTextElement::getCharInfo(RotatedDC& dc, double scale, vector<CharInfo>& out, bool native_look) const {
   for (auto const& e : children) {
     // characters before this element, after the previous
     assert(e->start >= out.size());
     out.resize(e->start);
-    e->getCharInfo(dc, scale, out);
+    e->getCharInfo(dc, scale, out, native_look);
   }
   assert(end >= out.size());
   out.resize(end);

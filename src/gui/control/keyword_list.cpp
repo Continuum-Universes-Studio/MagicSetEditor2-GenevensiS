@@ -28,10 +28,10 @@ DEFINE_EVENT_TYPE(EVENT_KEYWORD_SELECT);
 // ----------------------------------------------------------------------------- : KeywordList
 
 KeywordList::KeywordList(Window* parent, int id, long additional_style)
-  : ItemList(parent, id, additional_style)
+  : ItemList(parent, id, additional_style, false, false)
 {
   // Add columns
-  InsertColumn(0, _LABEL_("keyword"),  wxLIST_FORMAT_LEFT,    0);
+  InsertColumn(0, _LABEL_("keyword"),  wxLIST_FORMAT_LEFT,  180);
   InsertColumn(1, _LABEL_("match"),    wxLIST_FORMAT_LEFT,  200);
   InsertColumn(2, _LABEL_("mode"),     wxLIST_FORMAT_LEFT,   60);
   InsertColumn(3, _LABEL_("uses"),     wxLIST_FORMAT_RIGHT,  50);

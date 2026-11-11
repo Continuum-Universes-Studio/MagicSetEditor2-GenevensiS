@@ -22,7 +22,7 @@ void SymbolTextElement::draw(RotatedDC& dc, double scale, const RealRect& rect, 
   }
 }
 
-void SymbolTextElement::getCharInfo(RotatedDC& dc, double scale, vector<CharInfo>& out) const {
+void SymbolTextElement::getCharInfo(RotatedDC& dc, double scale, vector<CharInfo>& out, bool) const {
   if (font.font) {
     font.font->getCharInfo(dc, ctx, active_font_size * scale, content.substr(start - this->start, end-start), out, active_font_color);
   }
