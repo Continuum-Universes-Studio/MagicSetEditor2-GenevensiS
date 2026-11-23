@@ -58,7 +58,15 @@ CardListBase* CardSelectEvent::getTheCardList() const {
 // ----------------------------------------------------------------------------- : CardListBase
 
 CardListBase::CardListBase(Window* parent, int id, long additional_style)
-  : ItemList(parent, id, additional_style, true) , drop_timer(this, ID_DROP_TIMER)
+#ifdef __WXQT__
+  // wxQt's virtual list model omits ForegroundRole, so card color scripts are
+  // not painted for virtual rows. Materialize rows on wxQt so their per-item
+  // text colors are stored in the regular model; keep the virtual list on the
+  // other ports.
+  : ItemList(parent, id, additional_style, true, false), drop_timer(this, ID_DROP_TIMER)
+#else
+  : ItemList(parent, id, additional_style, true), drop_timer(this, ID_DROP_TIMER)
+#endif
 {
   drop_target = new CardListDropTarget(this);
 }

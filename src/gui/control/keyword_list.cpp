@@ -21,9 +21,28 @@
 #include <gfx/color.hpp>
 #include <wx/clipbrd.h>
 
+#ifdef __WXQT__
+#include <QtGui/QPalette>
+#include <QtWidgets/QApplication>
+#endif
+
 // ----------------------------------------------------------------------------- : Events
 
 DEFINE_EVENT_TYPE(EVENT_KEYWORD_SELECT);
+
+static wxColour readOnlyKeywordTextColour() {
+#ifdef __WXQT__
+  // Use Qt's disabled text color for game keywords. wxSystemSettings colours
+  // can collapse to the normal foreground on wxQt, making these rows look
+  // editable instead of gray.
+  const QColor colour = QApplication::palette().color(QPalette::Disabled, QPalette::Text);
+  if (colour.isValid()) return wxColour(colour.red(), colour.green(), colour.blue());
+  return wxColour(128, 128, 128);
+#else
+  return lerp(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW),
+              wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), 0.5);
+#endif
+}
 
 // ----------------------------------------------------------------------------- : KeywordList
 
@@ -235,7 +254,7 @@ wxListItemAttr* KeywordList::OnGetItemAttr(long pos) const {
   if (!kw.valid) {
     item_attr.SetTextColour(*wxRED);
   } else if (kw.fixed) {
-    item_attr.SetTextColour(lerp(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW),wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT),0.5));
+    item_attr.SetTextColour(readOnlyKeywordTextColour());
   }
   return &item_attr;
 }

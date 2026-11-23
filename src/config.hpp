@@ -8,8 +8,8 @@
 
 #define MSE_VERSION_MAJOR 2
 #define MSE_VERSION_MINOR 6
-#define MSE_VERSION_PATCH 1
+#define MSE_VERSION_PATCH 5
 
 // version number for .rc file
-#define MSE_VERSION_RESOURCE 2, 6, 1, 0
-#define MSE_VERSION_STRING "2.6.1 Continuum Edition"
+#define MSE_VERSION_RESOURCE 2, 6, 5, 0
+#define MSE_VERSION_STRING "2.6.5 Qt Continuum Edition"
